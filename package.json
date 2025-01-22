@@ -1,6 +1,6 @@
 {
   "name": "nutrition-llama",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Use llama\\'s structured output to generate data from images of nutrition facts tables",
   "main": "index.js",
   "type": "module",
