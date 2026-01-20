@@ -316,3 +316,37 @@ export async function loginUser(
     updatedAt: user.updatedAt,
   };
 }
+
+// Get user from request if authenticated (doesn't redirect, for middleware use)
+interface OptionalAuthResult {
+  user: User | null;
+  newAccessToken: string | null;
+}
+
+export async function getOptionalUser(req: Request): Promise<OptionalAuthResult> {
+  const accessToken = getCookie(req, "access_token");
+
+  if (accessToken) {
+    const payload = await verifyAccessToken(accessToken);
+    if (payload) {
+      const user = await getUserById(payload.userId);
+      if (user) {
+        return { user, newAccessToken: null };
+      }
+    }
+  }
+
+  // Access token invalid or missing - try refresh token
+  const refreshToken = getCookie(req, "refresh_token");
+  if (refreshToken) {
+    const user = await verifyRefreshTokenAndGetUser(refreshToken);
+    if (user) {
+      // Issue new access token
+      const newAccessToken = await createAccessToken(user);
+      return { user, newAccessToken };
+    }
+  }
+
+  // No valid tokens
+  return { user: null, newAccessToken: null };
+}
