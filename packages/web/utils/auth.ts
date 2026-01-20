@@ -201,10 +201,10 @@ export function setAuthCookies(
     `access_token=${accessToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${ACCESS_TOKEN_EXPIRY}`
   );
 
-  // Refresh token cookie (only sent to auth endpoints)
+  // Refresh token cookie
   headers.append(
     "Set-Cookie",
-    `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=${REFRESH_TOKEN_EXPIRY}`
+    `refresh_token=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${REFRESH_TOKEN_EXPIRY}`
   );
 }
 
@@ -215,7 +215,7 @@ export function clearAuthCookies(headers: Headers): void {
   );
   headers.append(
     "Set-Cookie",
-    "refresh_token=; HttpOnly; Secure; SameSite=Strict; Path=/api/auth; Max-Age=0"
+    "refresh_token=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"
   );
 }
 

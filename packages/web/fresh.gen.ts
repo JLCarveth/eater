@@ -27,6 +27,7 @@ import * as $log_index from "./routes/log/index.tsx";
 import * as $login from "./routes/login.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $scan from "./routes/scan.tsx";
+import * as $BarcodeScanner from "./islands/BarcodeScanner.tsx";
 import * as $CameraCapture from "./islands/CameraCapture.tsx";
 import * as $DailyLogManager from "./islands/DailyLogManager.tsx";
 import * as $FoodLogForm from "./islands/FoodLogForm.tsx";
@@ -64,6 +65,7 @@ const manifest = {
     "./routes/scan.tsx": $scan,
   },
   islands: {
+    "./islands/BarcodeScanner.tsx": $BarcodeScanner,
     "./islands/CameraCapture.tsx": $CameraCapture,
     "./islands/DailyLogManager.tsx": $DailyLogManager,
     "./islands/FoodLogForm.tsx": $FoodLogForm,

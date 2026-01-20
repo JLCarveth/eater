@@ -13,12 +13,13 @@ export async function handler(req: Request, ctx: FreshContext) {
   // If we issued a new access token, set it in the response
   if (newAccessToken) {
     const response = await ctx.next();
+    const body = await response.text();
     const headers = new Headers(response.headers);
     headers.append(
       "Set-Cookie",
       `access_token=${newAccessToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${ACCESS_TOKEN_EXPIRY}`
     );
-    return new Response(response.body, {
+    return new Response(body, {
       status: response.status,
       statusText: response.statusText,
       headers,

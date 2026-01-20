@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { MealType } from "@nutrition-llama/shared";
+import BarcodeScanner from "./BarcodeScanner.tsx";
 
 interface FoodLogFormProps {
   mode: "create" | "log";
@@ -29,6 +30,7 @@ export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
 
   const handleCreateFood = async (e: Event) => {
     e.preventDefault();
@@ -209,13 +211,25 @@ export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps
 
         <div>
           <label class="block text-sm font-medium text-gray-700">UPC Code (optional)</label>
-          <input
-            type="text"
-            value={upcCode}
-            onInput={(e) => setUpcCode((e.target as HTMLInputElement).value)}
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-            placeholder="Barcode number"
-          />
+          <div class="mt-1 flex rounded-md shadow-sm">
+            <input
+              type="text"
+              value={upcCode}
+              onInput={(e) => setUpcCode((e.target as HTMLInputElement).value)}
+              class="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              placeholder="Barcode number"
+            />
+            <button
+              type="button"
+              onClick={() => setShowBarcodeScanner(true)}
+              class="inline-flex items-center px-3 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+              title="Scan barcode"
+            >
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -330,6 +344,17 @@ export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps
       >
         {loading ? "Saving..." : "Save Food"}
       </button>
+
+      {/* Barcode Scanner Modal */}
+      {showBarcodeScanner && (
+        <BarcodeScanner
+          onScan={(code) => {
+            setUpcCode(code);
+            setShowBarcodeScanner(false);
+          }}
+          onClose={() => setShowBarcodeScanner(false)}
+        />
+      )}
     </form>
   );
 }
