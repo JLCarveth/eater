@@ -1,77 +1,130 @@
-# Nutrition Facts Analyzer
-## Overview
-The **Nutrition Facts Analyzer** is a Node.js application designed to extract and analyze nutritional information from images of nutrition labels. Using `Tesseract.js` for Optical Character Recognition (OCR) and the `node-llama-cpp` package for structured data inference, this tool can identify key nutritional data and present it in a JSON format. The application leverages a custom schema for nutrition facts and can run on multiple CPU cores for improved performance.
+# Nutrition Llama
+
+A full-stack nutrition tracking application that uses vision LLMs to analyze nutrition labels from photos.
 
 ## Features
-- **Image Processing:** Automatically resizes and processes images to optimize OCR accuracy.
-- **OCR Integration:** Utilizes `Tesseract.js` for reliable text extraction from nutrition labels.
-- **Structured Data Inference:** Employs `node-llama-cpp` to extract structured nutritional data in accordance with a predefined schema.
-- **Multi-Threading:** Supports clustering with multiple CPU cores to handle concurrent requests efficiently.
-- **HTTPS Support:** Secure server setup for production environments.
+
+- **Vision-based Label Analysis**: Captures nutrition labels via camera and extracts data using OpenAI-compatible vision models
+- **Food Logging**: Track daily food consumption with meal types and serving sizes
+- **Daily Summaries**: View aggregated macronutrients for any date
+- **User Accounts**: Secure authentication with JWT tokens
+
+## Architecture
+
+This is a monorepo with three packages:
+
+```
+nutrition-llama/
+├── packages/
+│   ├── api/      # Node.js nutrition analyzer API
+│   ├── web/      # Deno Fresh 2.0 frontend
+│   └── shared/   # Common TypeScript types
+├── migrations/   # PostgreSQL migrations
+└── scripts/      # Utility scripts
+```
+
+### API Package
+
+Express server that accepts nutrition label images and returns structured JSON data. Uses any OpenAI-compatible vision model (OpenAI, LM Studio, Ollama, etc.) to directly analyze images without OCR.
+
+### Web Package
+
+Deno Fresh 2.0 application with Preact and TailwindCSS. Features camera capture, food logging, and daily tracking views.
+
+## Prerequisites
+
+- **Node.js** 18+ (for the API)
+- **Deno** 2.0+ (for the web frontend)
+- **PostgreSQL** database
+- **OpenAI-compatible API** with a vision model (OpenAI, LM Studio, Ollama, etc.)
 
 ## Installation
-### Prerequisites
-- **Node.js** (version 16 or later)
-- **npm** (Node Package Manager)
 
-### Setting Up the Project
-1. **Clone the Repository:**
+1. **Clone the repository:**
    ```bash
-   git clone <your-repository-url>
-   cd nutrition-facts-analyzer
+   git clone <repository-url>
+   cd nutrition-llama
    ```
 
-2. **Install Dependencies:**
-    ```bash
-    npm install
-    ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-3. **Download Required Models:**
+3. **Set up PostgreSQL:**
+   ```bash
+   sudo -u postgres psql -c "CREATE USER nutrition_llama WITH PASSWORD 'your_password';"
+   sudo -u postgres psql -c "CREATE DATABASE nutrition_llama OWNER nutrition_llama;"
+   ```
 
-    #### LLaMA Model
-    Models can be downloaded from Huggingface using the `ipull` command:
-    ```bash
-    npx ipull <model-download-link>
-    ```
-    The code by default uses the [rocket-3b GGUF](https://huggingface.co/TheBloke/rocket-3B-GGUF/) model.
+4. **Configure environment variables:**
 
-    #### Tesseract Language Data
-    1. Create a tessdata directory:
-    ```bash
-    mkdir -p models/tessdata
-    ```
-    
-    2. Download the English language data:
-    ```bash
-    wget https://tessdata.projectnaptha.com/4.0.0_fast/eng.traineddata.gz
-    gunzip eng.traineddata.gz
-    mv eng.traineddata models/tessdata/
-    ```
+   Create a `.env` file:
+   ```bash
+   # Database
+   PGHOST=localhost
+   PGPORT=5432
+   PGUSER=nutrition_llama
+   PGPASSWORD=your_password
+   PGDATABASE=nutrition_llama
 
-4. **Set Up Environment Variables:**
-Create a `.env` file in the project root and configure the necessary variables:
-    ```bash
-    PORT=3000
-    NODE_ENV=development
-    SSL_KEY_PATH=/path/to/key.pem
-    SSL_CERT_PATH=/path/to/cert.pem
-    ```
+   # Auth secrets (generate secure random values)
+   ACCESS_TOKEN_SECRET=<32-byte-secret>
+   REFRESH_TOKEN_SECRET=<32-byte-secret>
+
+   # API URL for frontend
+   NUTRITION_API_URL=http://localhost:3000
+
+   # LLM Configuration
+   LLM_API_URL=http://localhost:1234/v1   # OpenAI-compatible endpoint
+   LLM_API_KEY=lm-studio                   # API key
+   LLM_MODEL=gpt-4o-mini                   # Vision-capable model
+   ```
+
+5. **Run database migrations:**
+   ```bash
+   deno task migrate
+   ```
 
 ## Usage
-1. Start the Server:
-    ```
-    npm run dev
-    ```
 
-2. Upload and Analyze an Image:
-    Use an HTTP client like cURL or [Bruno](https://github.com/usebruno/bruno) to POST an `image` file to the `/analyze-nutrition` route.
-    Example `curl` command:
-    ```bash
-    curl -X POST -F "image=@/path/to/image.jpg" http://localhost:3000/analyze-nutrition
-    ```
-    The server will return a JSON response with the extracted and structured nutritional data. 
+Start both development servers:
 
-## Acknowledgments
-Tesseract.js for OCR processing.  
-node-llama-cpp (and llama-cpp, of course!) for integrating LLaMA-based models.
-Meta for all of their wonderful, open work with the LLama models.
+```bash
+# Terminal 1 - API server (port 3000)
+deno task dev:api
+
+# Terminal 2 - Web frontend (port 8000)
+deno task dev:web
+```
+
+Or run them individually:
+
+```bash
+cd packages/api && deno task dev    # API with Deno
+cd packages/api && npm run dev      # API with Node.js
+cd packages/web && deno task dev    # Frontend
+```
+
+### API Endpoints
+
+- `GET /version` - Returns package version
+- `POST /analyze-nutrition` - Accepts `image` file, returns structured nutrition JSON
+
+Example:
+```bash
+curl -X POST -F "image=@/path/to/label.jpg" http://localhost:3000/analyze-nutrition
+```
+
+## Local LLM Setup
+
+For local development without OpenAI, use [LM Studio](https://lmstudio.ai/) with a vision model:
+
+1. Download and install LM Studio
+2. Download a vision-capable model (e.g., LLaVA, Qwen-VL)
+3. Start the local server (default: `http://localhost:1234/v1`)
+4. Set `LLM_API_URL=http://localhost:1234/v1` and `LLM_API_KEY=lm-studio`
+
+## License
+
+MIT

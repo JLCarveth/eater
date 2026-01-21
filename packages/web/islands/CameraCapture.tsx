@@ -318,43 +318,222 @@ export default function CameraCapture() {
       {state === "results" && analysisResult && (
         <div class="space-y-6">
           <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Extracted Nutrition Data</h3>
-            <dl class="grid grid-cols-2 gap-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-900">Extracted Nutrition Data</h3>
+              <span class="text-xs text-gray-500">Click any value to edit</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              {/* Serving Size */}
               <div>
-                <dt class="text-sm text-gray-500">Serving Size</dt>
-                <dd class="text-lg font-medium">
-                  {analysisResult.servingSize.value}{analysisResult.servingSize.unit}
-                </dd>
+                <label class="block text-sm text-gray-500 mb-1">Serving Size</label>
+                <div class="flex gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.servingSize.value}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        servingSize: { ...analysisResult.servingSize, value: val }
+                      });
+                    }}
+                    class="w-20 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <select
+                    value={analysisResult.servingSize.unit}
+                    onChange={(e) => {
+                      const unit = (e.target as HTMLSelectElement).value as "g" | "ml";
+                      setAnalysisResult({
+                        ...analysisResult,
+                        servingSize: { ...analysisResult.servingSize, unit }
+                      });
+                    }}
+                    class="px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="g">g</option>
+                    <option value="ml">ml</option>
+                  </select>
+                </div>
               </div>
+
+              {/* Calories */}
               <div>
-                <dt class="text-sm text-gray-500">Calories</dt>
-                <dd class="text-lg font-medium">{analysisResult.calories.value}</dd>
+                <label class="block text-sm text-gray-500 mb-1">Calories</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.calories.value}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        calories: { ...analysisResult.calories, value: val }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">kcal</span>
+                </div>
               </div>
+
+              {/* Protein */}
               <div>
-                <dt class="text-sm text-gray-500">Protein</dt>
-                <dd class="text-lg font-medium">{analysisResult.protein?.value || 0}g</dd>
+                <label class="block text-sm text-gray-500 mb-1">Protein</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.protein?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        protein: { value: val, unit: "g" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">g</span>
+                </div>
               </div>
+
+              {/* Carbohydrates */}
               <div>
-                <dt class="text-sm text-gray-500">Carbohydrates</dt>
-                <dd class="text-lg font-medium">{analysisResult.carbohydrates?.value || 0}g</dd>
+                <label class="block text-sm text-gray-500 mb-1">Carbohydrates</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.carbohydrates?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        carbohydrates: { value: val, unit: "g" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">g</span>
+                </div>
               </div>
+
+              {/* Total Fat */}
               <div>
-                <dt class="text-sm text-gray-500">Total Fat</dt>
-                <dd class="text-lg font-medium">{analysisResult.totalFat?.value || 0}g</dd>
+                <label class="block text-sm text-gray-500 mb-1">Total Fat</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.totalFat?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        totalFat: { value: val, unit: "g" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">g</span>
+                </div>
               </div>
+
+              {/* Fiber */}
               <div>
-                <dt class="text-sm text-gray-500">Fiber</dt>
-                <dd class="text-lg font-medium">{analysisResult.fiber?.value || 0}g</dd>
+                <label class="block text-sm text-gray-500 mb-1">Fiber</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.fiber?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        fiber: { value: val, unit: "g" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">g</span>
+                </div>
               </div>
+
+              {/* Sugars */}
               <div>
-                <dt class="text-sm text-gray-500">Sugars</dt>
-                <dd class="text-lg font-medium">{analysisResult.sugars?.value || 0}g</dd>
+                <label class="block text-sm text-gray-500 mb-1">Sugars</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.sugars?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        sugars: { value: val, unit: "g" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">g</span>
+                </div>
               </div>
+
+              {/* Sodium */}
               <div>
-                <dt class="text-sm text-gray-500">Sodium</dt>
-                <dd class="text-lg font-medium">{analysisResult.sodium?.value || 0}mg</dd>
+                <label class="block text-sm text-gray-500 mb-1">Sodium</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.sodium?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        sodium: { value: val, unit: "mg" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">mg</span>
+                </div>
               </div>
-            </dl>
+
+              {/* Cholesterol */}
+              <div>
+                <label class="block text-sm text-gray-500 mb-1">Cholesterol</label>
+                <div class="flex items-center gap-1">
+                  <input
+                    type="number"
+                    value={analysisResult.cholesterol?.value ?? 0}
+                    onInput={(e) => {
+                      const val = parseFloat((e.target as HTMLInputElement).value) || 0;
+                      setAnalysisResult({
+                        ...analysisResult,
+                        cholesterol: { value: val, unit: "mg" }
+                      });
+                    }}
+                    class="w-24 px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                    min="0"
+                    step="any"
+                  />
+                  <span class="text-gray-500">mg</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="bg-white shadow rounded-lg p-6 space-y-4">
