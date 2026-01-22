@@ -140,8 +140,11 @@ LLM_API_KEY=lm-studio                   # API key (use "lm-studio" for LM Studio
 LLM_MODEL=gpt-4o-mini                   # Model name (must support vision)
 ```
 
+Server ports:
+- `PORT` - Frontend port (default: 8000, used by Fresh)
+- `API_PORT` - API server port (default: 3000)
+
 Other options:
-- `PORT` - Server port (default: 3000)
 - `LOG_TIMINGS` - Set to "true" to enable performance logging
 
 ## Key User Flows

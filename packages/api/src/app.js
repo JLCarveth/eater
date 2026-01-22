@@ -116,7 +116,7 @@ function initializeServer() {
     }
   });
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.API_PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
     console.log(`Using LLM API: ${LLM_API_URL} with model: ${LLM_MODEL}`);
