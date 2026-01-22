@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from "preact/hooks";
+import { useState, useRef, useEffect, lazy, Suspense } from "preact/compat";
 import type { NutritionData } from "@nutrition-llama/shared";
 import ImageCropper from "./ImageCropper.tsx";
-import BarcodeScanner from "./BarcodeScanner.tsx";
+
+// Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
+const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 
 type CaptureState = "idle" | "camera" | "preview" | "cropping" | "analyzing" | "results" | "saving";
 
@@ -9,13 +11,17 @@ interface AnalysisResult extends NutritionData {
   name?: string;
 }
 
-export default function CameraCapture() {
+interface CameraCaptureProps {
+  initialUpc?: string | null;
+}
+
+export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
   const [state, setState] = useState<CaptureState>("idle");
   const [error, setError] = useState("");
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [foodName, setFoodName] = useState("");
-  const [upcCode, setUpcCode] = useState("");
+  const [upcCode, setUpcCode] = useState(initialUpc || "");
   const [saving, setSaving] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
 
@@ -600,13 +606,15 @@ export default function CameraCapture() {
 
       {/* Barcode Scanner Modal */}
       {showBarcodeScanner && (
-        <BarcodeScanner
-          onScan={(code) => {
-            setUpcCode(code);
-            setShowBarcodeScanner(false);
-          }}
-          onClose={() => setShowBarcodeScanner(false)}
-        />
+        <Suspense fallback={<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"><div class="text-white">Loading scanner...</div></div>}>
+          <BarcodeScanner
+            onScan={(code) => {
+              setUpcCode(code);
+              setShowBarcodeScanner(false);
+            }}
+            onClose={() => setShowBarcodeScanner(false)}
+          />
+        </Suspense>
       )}
     </div>
   );

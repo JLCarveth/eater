@@ -1,52 +1,58 @@
 /**
- * BarcodeDetector abstraction layer
- * Uses native BarcodeDetector API where available,
- * falls back to barcode-detector WASM polyfill
+ * Barcode scanning using zxing-wasm
+ * Works on all platforms via WebAssembly
  */
+
+import { readBarcodesFromImageData, type ReaderOptions } from "zxing-wasm/reader";
 
 // Supported barcode formats for UPC scanning
-export const UPC_FORMATS: BarcodeFormat[] = [
-  "upc_a",
-  "upc_e",
-  "ean_13",
-  "ean_8",
-];
-
-// Check if native BarcodeDetector is available
-export function hasNativeBarcodeDetector(): boolean {
-  return typeof globalThis.BarcodeDetector !== "undefined";
-}
-
-let cachedDetector: BarcodeDetector | null = null;
+const readerOptions: ReaderOptions = {
+  formats: ["EAN-8", "EAN-13", "UPC-A", "UPC-E"],
+  tryHarder: true,
+  maxNumberOfSymbols: 1,
+};
 
 /**
- * Get or create a BarcodeDetector instance
- * Uses native API if available, otherwise loads WASM polyfill
+ * Check if barcode scanning is supported
+ * zxing-wasm works on all modern browsers with WebAssembly support
  */
-export async function getBarcodeDetector(): Promise<BarcodeDetector> {
-  if (cachedDetector) {
-    return cachedDetector;
-  }
-
-  if (hasNativeBarcodeDetector()) {
-    cachedDetector = new globalThis.BarcodeDetector({ formats: UPC_FORMATS });
-    return cachedDetector;
-  }
-
-  // Dynamically import the polyfill
-  const { BarcodeDetector: PolyfillDetector } = await import("barcode-detector");
-  cachedDetector = new PolyfillDetector({ formats: UPC_FORMATS });
-  return cachedDetector;
+export function isBarcodeDetectorSupported(): boolean {
+  return typeof WebAssembly !== "undefined";
 }
 
 /**
- * Detect barcodes in an image source
+ * Detect barcodes in a video element by capturing a frame
  * Returns array of detected barcode values
  */
-export async function detectBarcodes(
-  source: ImageBitmapSource
+export async function detectBarcodesFromVideo(
+  video: HTMLVideoElement
 ): Promise<string[]> {
-  const detector = await getBarcodeDetector();
-  const results = await detector.detect(source);
-  return results.map((result) => result.rawValue);
+  // Create a canvas to capture the video frame
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error("Could not get canvas context");
+  }
+
+  // Draw the current video frame
+  ctx.drawImage(video, 0, 0);
+
+  // Get image data
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  // Read barcodes using zxing-wasm
+  const results = await readBarcodesFromImageData(imageData, readerOptions);
+
+  return results.map((result) => result.text);
+}
+
+/**
+ * Detect barcodes from an ImageData object
+ */
+export async function detectBarcodes(imageData: ImageData): Promise<string[]> {
+  const results = await readBarcodesFromImageData(imageData, readerOptions);
+  return results.map((result) => result.text);
 }

@@ -27,6 +27,7 @@ import * as $log_index from "./routes/log/index.tsx";
 import * as $login from "./routes/login.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $scan from "./routes/scan.tsx";
+import * as $upc from "./routes/upc.tsx";
 import * as $BarcodeScanner from "./islands/BarcodeScanner.tsx";
 import * as $CameraCapture from "./islands/CameraCapture.tsx";
 import * as $DailyLogManager from "./islands/DailyLogManager.tsx";
@@ -34,6 +35,7 @@ import * as $FoodLogForm from "./islands/FoodLogForm.tsx";
 import * as $ImageCropper from "./islands/ImageCropper.tsx";
 import * as $LoginForm from "./islands/LoginForm.tsx";
 import * as $RegisterForm from "./islands/RegisterForm.tsx";
+import * as $UpcLookup from "./islands/UpcLookup.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -63,6 +65,7 @@ const manifest = {
     "./routes/login.tsx": $login,
     "./routes/register.tsx": $register,
     "./routes/scan.tsx": $scan,
+    "./routes/upc.tsx": $upc,
   },
   islands: {
     "./islands/BarcodeScanner.tsx": $BarcodeScanner,
@@ -72,6 +75,7 @@ const manifest = {
     "./islands/ImageCropper.tsx": $ImageCropper,
     "./islands/LoginForm.tsx": $LoginForm,
     "./islands/RegisterForm.tsx": $RegisterForm,
+    "./islands/UpcLookup.tsx": $UpcLookup,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

@@ -50,7 +50,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
         </div>
 
         {/* Quick Actions */}
-        <div class="grid gap-4 md:grid-cols-3 mb-8">
+        <div class="grid gap-4 md:grid-cols-4 mb-8">
           <a
             href="/scan"
             class="flex items-center p-4 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors"
@@ -94,6 +94,21 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
             <div>
               <h3 class="font-medium text-gray-900">Food Log</h3>
               <p class="text-sm text-gray-500">Track daily meals</p>
+            </div>
+          </a>
+
+          <a
+            href="/upc"
+            class="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+          >
+            <div class="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 text-green-600 mr-4">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-medium text-gray-900">Quick Add</h3>
+              <p class="text-sm text-gray-500">Scan barcode</p>
             </div>
           </a>
         </div>

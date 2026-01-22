@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { getBarcodeDetector } from "../utils/barcode.ts";
+import { detectBarcodesFromVideo } from "../utils/barcode.ts";
 
 interface BarcodeScannerProps {
   onScan: (code: string) => void;
@@ -54,18 +54,15 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
         await videoRef.current.play();
       }
 
-      // Get barcode detector (native or polyfill)
-      const detector = await getBarcodeDetector();
-
-      // Start detection loop
+      // Start detection loop using zxing-wasm
       const detectLoop = async () => {
         if (!videoRef.current || !streamRef.current) return;
 
         try {
-          const results = await detector.detect(videoRef.current);
+          const results = await detectBarcodesFromVideo(videoRef.current);
 
           if (results.length > 0) {
-            const code = results[0].rawValue;
+            const code = results[0];
             triggerHaptic();
             setDetected(true);
 
@@ -86,9 +83,15 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
 
       animationRef.current = requestAnimationFrame(detectLoop);
     } catch (err) {
-      setError("Could not access camera. Please ensure camera permissions are granted.");
+      const message = err instanceof Error ? err.message : "An unknown error occurred";
+      if (message.includes("Permission denied") || message.includes("NotAllowedError")) {
+        setError("Camera access denied. Please allow camera permissions and try again.");
+      } else {
+        setError("Could not access camera. Please ensure camera permissions are granted.");
+      }
       setScanning(false);
-      console.error("Camera error:", err);
+      stopCamera();
+      console.error("Scanner error:", err);
     }
   };
 

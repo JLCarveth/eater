@@ -6,6 +6,7 @@ import FoodLogForm from "../../islands/FoodLogForm.tsx";
 
 interface NewFoodData {
   user: User;
+  initialUpc: string | null;
 }
 
 export const handler: Handlers<NewFoodData> = {
@@ -15,8 +16,13 @@ export const handler: Handlers<NewFoodData> = {
       return authResult.redirect;
     }
 
+    // Extract optional ?upc= query param to pre-fill UPC field
+    const url = new URL(req.url);
+    const initialUpc = url.searchParams.get("upc");
+
     return ctx.render({
       user: authResult.user!,
+      initialUpc,
     });
   },
 };
@@ -37,7 +43,7 @@ export default function NewFoodPage({ data }: PageProps<NewFoodData>) {
           <p class="text-gray-600">Enter nutrition information manually.</p>
         </div>
 
-        <FoodLogForm mode="create" />
+        <FoodLogForm mode="create" initialUpc={data.initialUpc} />
       </div>
     </>
   );

@@ -1,14 +1,17 @@
-import { useState } from "preact/hooks";
+import { useState, lazy, Suspense } from "preact/compat";
 import type { MealType } from "@nutrition-llama/shared";
-import BarcodeScanner from "./BarcodeScanner.tsx";
+
+// Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
+const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 
 interface FoodLogFormProps {
   mode: "create" | "log";
   foodId?: string;
   foodName?: string;
+  initialUpc?: string | null;
 }
 
-export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps) {
+export default function FoodLogForm({ mode, foodId, foodName, initialUpc }: FoodLogFormProps) {
   // Form state for creating new food
   const [name, setName] = useState("");
   const [servingSizeValue, setServingSizeValue] = useState("100");
@@ -21,7 +24,7 @@ export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps
   const [sugars, setSugars] = useState("");
   const [sodium, setSodium] = useState("");
   const [cholesterol, setCholesterol] = useState("");
-  const [upcCode, setUpcCode] = useState("");
+  const [upcCode, setUpcCode] = useState(initialUpc || "");
 
   // Log form state
   const [servings, setServings] = useState("1");
@@ -347,13 +350,15 @@ export default function FoodLogForm({ mode, foodId, foodName }: FoodLogFormProps
 
       {/* Barcode Scanner Modal */}
       {showBarcodeScanner && (
-        <BarcodeScanner
-          onScan={(code) => {
-            setUpcCode(code);
-            setShowBarcodeScanner(false);
-          }}
-          onClose={() => setShowBarcodeScanner(false)}
-        />
+        <Suspense fallback={<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"><div class="text-white">Loading scanner...</div></div>}>
+          <BarcodeScanner
+            onScan={(code) => {
+              setUpcCode(code);
+              setShowBarcodeScanner(false);
+            }}
+            onClose={() => setShowBarcodeScanner(false)}
+          />
+        </Suspense>
       )}
     </form>
   );
