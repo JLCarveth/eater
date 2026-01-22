@@ -1,0 +1,28 @@
+[Unit]
+Description=Nutrition Llama API
+Documentation=https://github.com/jlcarveth/nutrition-llama
+After=network.target
+
+[Service]
+Type=simple
+User=macros
+Group=macros
+WorkingDirectory=/opt/macros/packages/api
+ExecStart=/usr/local/bin/deno run -Ar src/app.js
+Restart=on-failure
+RestartSec=10
+
+# Environment
+Environment=DENO_DIR=/opt/macros/.deno
+Environment=PORT=3000
+EnvironmentFile=/opt/macros/.env
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/macros
+
+[Install]
+WantedBy=multi-user.target

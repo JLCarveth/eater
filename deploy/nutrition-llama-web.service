@@ -1,0 +1,25 @@
+[Unit]
+Description=Nutrition Llama Web Frontend
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=macros
+Group=macros
+WorkingDirectory=/opt/macros/packages/web
+ExecStart=/usr/local/bin/deno run -A main.ts
+Restart=on-failure
+RestartSec=5
+
+# Environment
+Environment=DENO_DIR=/opt/macros/.deno
+EnvironmentFile=/opt/macros/.env
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/macros
+
+[Install]
+WantedBy=multi-user.target
