@@ -6,6 +6,11 @@ interface DailyLogManagerProps {
   initialSummary: DailySummary | null;
 }
 
+// Calculate calories from macros: protein=4cal/g, carbs=4cal/g, fat=9cal/g
+function calculateCaloriesFromMacros(protein: number, carbs: number, fat: number): number {
+  return Math.round(protein * 4 + carbs * 4 + fat * 9);
+}
+
 export default function DailyLogManager({ date, initialSummary }: DailyLogManagerProps) {
   const [summary, setSummary] = useState<DailySummary | null>(initialSummary);
   const [foods, setFoods] = useState<NutritionRecord[]>([]);
@@ -18,6 +23,20 @@ export default function DailyLogManager({ date, initialSummary }: DailyLogManage
   const [editingEntry, setEditingEntry] = useState<string | null>(null);
   const [editServings, setEditServings] = useState("");
   const [editMealType, setEditMealType] = useState<MealType>("snack");
+
+  // Quick entry mode state
+  const [entryMode, setEntryMode] = useState<"food" | "quick">("food");
+  const [quickProtein, setQuickProtein] = useState("");
+  const [quickCarbs, setQuickCarbs] = useState("");
+  const [quickFat, setQuickFat] = useState("");
+  const [quickName, setQuickName] = useState("");
+
+  // Calculate calories for quick entry display
+  const quickCalories = calculateCaloriesFromMacros(
+    parseFloat(quickProtein) || 0,
+    parseFloat(quickCarbs) || 0,
+    parseFloat(quickFat) || 0
+  );
 
   // Load user's foods when add form is opened
   useEffect(() => {
@@ -52,21 +71,51 @@ export default function DailyLogManager({ date, initialSummary }: DailyLogManage
 
   const handleAddEntry = async (e: Event) => {
     e.preventDefault();
-    if (!selectedFoodId) return;
+
+    // Validate based on entry mode
+    if (entryMode === "food" && !selectedFoodId) return;
+    if (entryMode === "quick") {
+      const protein = parseFloat(quickProtein) || 0;
+      const carbs = parseFloat(quickCarbs) || 0;
+      const fat = parseFloat(quickFat) || 0;
+      if (protein === 0 && carbs === 0 && fat === 0) {
+        setError("Please enter at least one macro value");
+        return;
+      }
+    }
 
     setLoading(true);
     setError("");
 
     try {
-      const response = await fetch("/api/log", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      let body: Record<string, unknown>;
+
+      if (entryMode === "food") {
+        body = {
           nutritionRecordId: selectedFoodId,
           servings: parseFloat(servings),
           mealType,
           loggedDate: date,
-        }),
+        };
+      } else {
+        // Quick entry mode - send macros
+        body = {
+          quickMacros: {
+            protein: parseFloat(quickProtein) || 0,
+            carbs: parseFloat(quickCarbs) || 0,
+            fat: parseFloat(quickFat) || 0,
+            name: quickName.trim() || undefined,
+          },
+          servings: 1,
+          mealType,
+          loggedDate: date,
+        };
+      }
+
+      const response = await fetch("/api/log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -79,6 +128,11 @@ export default function DailyLogManager({ date, initialSummary }: DailyLogManage
       setSelectedFoodId("");
       setServings("1");
       setMealType("snack");
+      setQuickProtein("");
+      setQuickCarbs("");
+      setQuickFat("");
+      setQuickName("");
+      setEntryMode("food");
       await refreshSummary();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to add entry");
@@ -189,57 +243,164 @@ export default function DailyLogManager({ date, initialSummary }: DailyLogManage
           <form onSubmit={handleAddEntry} class="space-y-4">
             <h3 class="text-lg font-medium text-gray-900">Add Food to Log</h3>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Select Food</label>
-              <select
-                value={selectedFoodId}
-                onChange={(e) => setSelectedFoodId((e.target as HTMLSelectElement).value)}
-                required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            {/* Entry Mode Toggle */}
+            <div class="flex rounded-md shadow-sm">
+              <button
+                type="button"
+                onClick={() => setEntryMode("food")}
+                class={`flex-1 px-4 py-2 text-sm font-medium rounded-l-md border ${
+                  entryMode === "food"
+                    ? "bg-primary-600 text-white border-primary-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
               >
-                <option value="">Choose a food...</option>
-                {foods.map((food) => (
-                  <option key={food.id} value={food.id}>
-                    {food.name} ({food.calories} cal per serving)
-                  </option>
-                ))}
-              </select>
-              {foods.length === 0 && (
-                <p class="mt-2 text-sm text-gray-500">
-                  No saved foods.{" "}
-                  <a href="/foods/new" class="text-primary-600 hover:underline">
-                    Add a food first
-                  </a>
-                </p>
-              )}
+                Select Food
+              </button>
+              <button
+                type="button"
+                onClick={() => setEntryMode("quick")}
+                class={`flex-1 px-4 py-2 text-sm font-medium rounded-r-md border-t border-r border-b ${
+                  entryMode === "quick"
+                    ? "bg-primary-600 text-white border-primary-600"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                Quick Macros
+              </button>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Servings</label>
-                <input
-                  type="number"
-                  step="0.25"
-                  min="0.25"
-                  value={servings}
-                  onInput={(e) => setServings((e.target as HTMLInputElement).value)}
-                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700">Meal</label>
-                <select
-                  value={mealType}
-                  onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
-                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                >
-                  <option value="breakfast">Breakfast</option>
-                  <option value="lunch">Lunch</option>
-                  <option value="dinner">Dinner</option>
-                  <option value="snack">Snack</option>
-                </select>
-              </div>
-            </div>
+            {entryMode === "food" ? (
+              /* Food Selection Mode */
+              <>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Select Food</label>
+                  <select
+                    value={selectedFoodId}
+                    onChange={(e) => setSelectedFoodId((e.target as HTMLSelectElement).value)}
+                    required
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="">Choose a food...</option>
+                    {foods.map((food) => (
+                      <option key={food.id} value={food.id}>
+                        {food.name} ({food.calories} cal per serving)
+                      </option>
+                    ))}
+                  </select>
+                  {foods.length === 0 && (
+                    <p class="mt-2 text-sm text-gray-500">
+                      No saved foods.{" "}
+                      <a href="/foods/new" class="text-primary-600 hover:underline">
+                        Add a food first
+                      </a>
+                    </p>
+                  )}
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Servings</label>
+                    <input
+                      type="number"
+                      step="0.25"
+                      min="0.25"
+                      value={servings}
+                      onInput={(e) => setServings((e.target as HTMLInputElement).value)}
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">Meal</label>
+                    <select
+                      value={mealType}
+                      onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    >
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                      <option value="snack">Snack</option>
+                    </select>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Quick Macros Entry Mode */
+              <>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Name (optional)</label>
+                  <input
+                    type="text"
+                    value={quickName}
+                    onInput={(e) => setQuickName((e.target as HTMLInputElement).value)}
+                    placeholder="Quick Entry"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  />
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-sm font-medium text-red-600">Protein (g)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={quickProtein}
+                      onInput={(e) => setQuickProtein((e.target as HTMLInputElement).value)}
+                      placeholder="0"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-yellow-600">Carbs (g)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={quickCarbs}
+                      onInput={(e) => setQuickCarbs((e.target as HTMLInputElement).value)}
+                      placeholder="0"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-blue-600">Fat (g)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={quickFat}
+                      onInput={(e) => setQuickFat((e.target as HTMLInputElement).value)}
+                      placeholder="0"
+                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Calculated Calories Display */}
+                <div class="bg-gray-50 rounded-lg p-3 text-center">
+                  <p class="text-sm text-gray-500">Calculated Calories</p>
+                  <p class="text-2xl font-bold text-gray-900">{quickCalories}</p>
+                  <p class="text-xs text-gray-400 mt-1">
+                    P×4 + C×4 + F×9
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">Meal</label>
+                  <select
+                    value={mealType}
+                    onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                  >
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+              </>
+            )}
 
             <div class="flex gap-3">
               <button
@@ -251,7 +412,7 @@ export default function DailyLogManager({ date, initialSummary }: DailyLogManage
               </button>
               <button
                 type="submit"
-                disabled={loading || !selectedFoodId}
+                disabled={loading || (entryMode === "food" && !selectedFoodId)}
                 class="flex-1 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add to Log"}
