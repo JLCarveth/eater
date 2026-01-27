@@ -4,14 +4,28 @@ import type { MealType } from "@nutrition-llama/shared";
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 
+interface FoodNutrition {
+  calories: number;
+  protein: number | null;
+  carbohydrates: number | null;
+  totalFat: number | null;
+  fiber: number | null;
+  sugars: number | null;
+  sodium: number | null;
+  cholesterol: number | null;
+  servingSizeValue: number;
+  servingSizeUnit: string;
+}
+
 interface FoodLogFormProps {
   mode: "create" | "log";
   foodId?: string;
   foodName?: string;
   initialUpc?: string | null;
+  foodNutrition?: FoodNutrition;
 }
 
-export default function FoodLogForm({ mode, foodId, foodName, initialUpc }: FoodLogFormProps) {
+export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNutrition }: FoodLogFormProps) {
   // Form state for creating new food
   const [name, setName] = useState("");
   const [servingSizeValue, setServingSizeValue] = useState("100");
@@ -105,11 +119,59 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc }: Food
   };
 
   if (mode === "log") {
+    const s = parseFloat(servings) || 0;
+
     return (
       <form onSubmit={handleLogFood} class="space-y-4">
         {error && (
           <div class="rounded-md bg-red-50 p-4">
             <p class="text-sm text-red-700">{error}</p>
+          </div>
+        )}
+
+        {foodNutrition && (
+          <div class="border border-gray-300 rounded-lg p-4">
+            <h4 class="text-base font-bold text-gray-900 border-b-8 border-gray-900 pb-1 mb-2">
+              Nutrition Facts
+            </h4>
+            <p class="text-sm text-gray-500 border-b border-gray-300 pb-2 mb-2">
+              {s !== 1 ? `${servings} servings` : "1 serving"}{" "}
+              ({Math.round(s * foodNutrition.servingSizeValue)}{foodNutrition.servingSizeUnit})
+            </p>
+            <div class="text-sm space-y-1">
+              <div class="flex justify-between font-bold border-b-4 border-gray-900 pb-1">
+                <span>Calories</span>
+                <span>{Math.round(foodNutrition.calories * s)}</span>
+              </div>
+              <div class="flex justify-between border-b border-gray-200 py-0.5">
+                <span class="font-semibold">Total Fat</span>
+                <span>{Math.round((foodNutrition.totalFat || 0) * s)}g</span>
+              </div>
+              <div class="flex justify-between border-b border-gray-200 py-0.5">
+                <span class="font-semibold">Cholesterol</span>
+                <span>{Math.round((foodNutrition.cholesterol || 0) * s)}mg</span>
+              </div>
+              <div class="flex justify-between border-b border-gray-200 py-0.5">
+                <span class="font-semibold">Sodium</span>
+                <span>{Math.round((foodNutrition.sodium || 0) * s)}mg</span>
+              </div>
+              <div class="flex justify-between border-b border-gray-200 py-0.5">
+                <span class="font-semibold">Total Carbohydrates</span>
+                <span>{Math.round((foodNutrition.carbohydrates || 0) * s)}g</span>
+              </div>
+              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
+                <span>Fiber</span>
+                <span>{Math.round((foodNutrition.fiber || 0) * s)}g</span>
+              </div>
+              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
+                <span>Sugars</span>
+                <span>{Math.round((foodNutrition.sugars || 0) * s)}g</span>
+              </div>
+              <div class="flex justify-between border-b-4 border-gray-900 py-0.5">
+                <span class="font-semibold">Protein</span>
+                <span>{Math.round((foodNutrition.protein || 0) * s)}g</span>
+              </div>
+            </div>
           </div>
         )}
 

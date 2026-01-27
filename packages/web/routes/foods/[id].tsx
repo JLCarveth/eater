@@ -59,44 +59,6 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
           </p>
         </div>
 
-        <div class="bg-white shadow rounded-lg p-6 mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Nutrition Facts</h2>
-          <dl class="grid grid-cols-2 gap-4">
-            <div>
-              <dt class="text-sm text-gray-500">Calories</dt>
-              <dd class="text-lg font-medium">{food.calories}</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Protein</dt>
-              <dd class="text-lg font-medium">{food.protein || 0}g</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Carbohydrates</dt>
-              <dd class="text-lg font-medium">{food.carbohydrates || 0}g</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Total Fat</dt>
-              <dd class="text-lg font-medium">{food.totalFat || 0}g</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Fiber</dt>
-              <dd class="text-lg font-medium">{food.fiber || 0}g</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Sugars</dt>
-              <dd class="text-lg font-medium">{food.sugars || 0}g</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Sodium</dt>
-              <dd class="text-lg font-medium">{food.sodium || 0}mg</dd>
-            </div>
-            <div>
-              <dt class="text-sm text-gray-500">Cholesterol</dt>
-              <dd class="text-lg font-medium">{food.cholesterol || 0}mg</dd>
-            </div>
-          </dl>
-        </div>
-
         {!food.isSystem && (
           <div class="bg-white shadow rounded-lg p-6 mb-6">
             <div class="flex gap-3">
@@ -112,7 +74,23 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
 
         <div class="bg-white shadow rounded-lg p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Log This Food</h2>
-          <FoodLogForm mode="log" foodId={food.id} foodName={food.name} />
+          <FoodLogForm
+            mode="log"
+            foodId={food.id}
+            foodName={food.name}
+            foodNutrition={{
+              calories: food.calories,
+              protein: food.protein,
+              carbohydrates: food.carbohydrates,
+              totalFat: food.totalFat,
+              fiber: food.fiber,
+              sugars: food.sugars,
+              sodium: food.sodium,
+              cholesterol: food.cholesterol,
+              servingSizeValue: food.servingSizeValue,
+              servingSizeUnit: food.servingSizeUnit,
+            }}
+          />
         </div>
       </div>
     </>
