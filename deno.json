@@ -22,5 +22,6 @@
   "compilerOptions": {
     "strict": true,
     "lib": ["deno.window"]
-  }
+  },
+  "allowScripts": ["npm:fsevents@2.3.3", "npm:node-llama-cpp@2.8.16", "npm:sharp@0.33.5", "npm:tesseract.js@5.1.1"]
 }

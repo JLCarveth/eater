@@ -43,7 +43,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">
+          <h1 class="text-3xl font-bold text-gray-900">
             Welcome back, {user.displayName || user.email.split("@")[0]}
           </h1>
           <p class="text-gray-600">{today}</p>
@@ -62,7 +62,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900">Scan Label</h3>
+              <h3 class="text-lg font-medium text-gray-900">Scan Label</h3>
               <p class="text-sm text-gray-500">Capture nutrition info</p>
             </div>
           </a>
@@ -77,7 +77,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900">My Foods</h3>
+              <h3 class="text-lg font-medium text-gray-900">My Foods</h3>
               <p class="text-sm text-gray-500">View saved foods</p>
             </div>
           </a>
@@ -92,22 +92,22 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900">Food Log</h3>
+              <h3 class="text-lg font-medium text-gray-900">Food Log</h3>
               <p class="text-sm text-gray-500">Track daily meals</p>
             </div>
           </a>
 
           <a
             href="/upc"
-            class="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors"
+            class="flex items-center p-4 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100 transition-colors"
           >
-            <div class="flex items-center justify-center h-10 w-10 rounded-full bg-green-100 text-green-600 mr-4">
+            <div class="flex items-center justify-center h-10 w-10 rounded-full bg-amber-100 text-amber-600 mr-4">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
               </svg>
             </div>
             <div>
-              <h3 class="font-medium text-gray-900">Quick Add</h3>
+              <h3 class="text-lg font-medium text-gray-900">Quick Add</h3>
               <p class="text-sm text-gray-500">Scan barcode</p>
             </div>
           </a>
@@ -115,7 +115,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
 
         {/* Daily Summary */}
         <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-4">Today's Summary</h2>
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Today's Summary</h2>
 
           {summary && summary.entries.length > 0 ? (
             <>
@@ -132,8 +132,8 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
                   <p class="text-2xl font-bold text-yellow-600">{Math.round(summary.totalCarbohydrates)}g</p>
                   <p class="text-sm text-gray-500">Carbs</p>
                 </div>
-                <div class="bg-blue-50 rounded-lg p-4 text-center">
-                  <p class="text-2xl font-bold text-blue-600">{Math.round(summary.totalFat)}g</p>
+                <div class="bg-teal-50 rounded-lg p-4 text-center">
+                  <p class="text-2xl font-bold text-teal-600">{Math.round(summary.totalFat)}g</p>
                   <p class="text-sm text-gray-500">Fat</p>
                 </div>
               </div>
