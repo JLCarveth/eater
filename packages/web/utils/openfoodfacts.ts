@@ -6,7 +6,7 @@
 import type { CreateNutritionRecordInput } from "@nutrition-llama/shared";
 
 const OFF_API_BASE = "https://world.openfoodfacts.org/api/v2/product";
-const OFF_SEARCH_BASE = "https://world.openfoodfacts.org/api/v2/search";
+const OFF_SEARCH_BASE = "https://world.openfoodfacts.org/cgi/search.pl";
 const USER_AGENT = "NutritionLlama/1.0 (https://github.com/nutrition-llama)";
 
 // Simple in-memory rate limiter: 10 requests per minute (barcode lookups)
@@ -174,6 +174,9 @@ export async function searchOffProducts(
   try {
     const params = new URLSearchParams({
       search_terms: query,
+      search_simple: "1",
+      action: "process",
+      json: "1",
       page_size: String(limit),
       fields: "code,product_name,product_name_en,nutriments,serving_quantity,serving_quantity_unit,image_url",
     });
