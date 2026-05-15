@@ -110,8 +110,11 @@ export default function TrendsView({ initialWeightLog, initialTrends }: TrendsVi
 
   // Render charts when data changes
   useEffect(() => {
-    const Chart = (globalThis as Record<string, unknown>).Chart;
-    if (!Chart) return;
+    let cancelled = false;
+
+    (async () => {
+      const { Chart } = await import("https://esm.sh/chart.js@4.4.7/auto");
+      if (cancelled) return;
 
     // Weight chart
     if (weightChartRef.current) {
@@ -127,7 +130,7 @@ export default function TrendsView({ initialWeightLog, initialTrends }: TrendsVi
         weightUnit === "lbs" ? +(e.weightKg * KG_TO_LBS).toFixed(1) : e.weightKg
       );
 
-      weightChartInstance.current = new (Chart as new (...args: unknown[]) => unknown)(
+      weightChartInstance.current = new Chart(
         weightChartRef.current,
         {
           type: "line",
@@ -173,7 +176,7 @@ export default function TrendsView({ initialWeightLog, initialTrends }: TrendsVi
       });
       const data = trends.calorieTrend.map((e) => e.totalCalories);
 
-      calorieChartInstance.current = new (Chart as new (...args: unknown[]) => unknown)(
+      calorieChartInstance.current = new Chart(
         calorieChartRef.current,
         {
           type: "bar",
@@ -205,12 +208,17 @@ export default function TrendsView({ initialWeightLog, initialTrends }: TrendsVi
       );
     }
 
+    })();
+
     return () => {
+      cancelled = true;
       if (weightChartInstance.current) {
         (weightChartInstance.current as { destroy: () => void }).destroy();
+        weightChartInstance.current = null;
       }
       if (calorieChartInstance.current) {
         (calorieChartInstance.current as { destroy: () => void }).destroy();
+        calorieChartInstance.current = null;
       }
     };
   }, [weightLog, trends, weightUnit]);

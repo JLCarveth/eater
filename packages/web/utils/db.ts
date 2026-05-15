@@ -704,7 +704,7 @@ export async function createFoodLogEntry(
     userId: row.user_id,
     nutritionRecordId: row.nutrition_record_id,
     servings: row.servings,
-    loggedDate: row.logged_date,
+    loggedDate: row.logged_date instanceof Date ? row.logged_date.toISOString().split("T")[0] : String(row.logged_date),
     mealType: row.meal_type as MealType,
     createdAt: row.created_at,
   };
@@ -725,7 +725,7 @@ export async function getFoodLogEntry(
     userId: row.user_id,
     nutritionRecordId: row.nutrition_record_id,
     servings: row.servings,
-    loggedDate: row.logged_date,
+    loggedDate: row.logged_date instanceof Date ? row.logged_date.toISOString().split("T")[0] : String(row.logged_date),
     mealType: row.meal_type as MealType,
     createdAt: row.created_at,
   };
@@ -758,7 +758,7 @@ export async function updateFoodLogEntry(
     userId: row.user_id,
     nutritionRecordId: row.nutrition_record_id,
     servings: row.servings,
-    loggedDate: row.logged_date,
+    loggedDate: row.logged_date instanceof Date ? row.logged_date.toISOString().split("T")[0] : String(row.logged_date),
     mealType: row.meal_type as MealType,
     createdAt: row.created_at,
   };
@@ -808,7 +808,7 @@ export async function getDailySummary(
     userId: row.user_id as string,
     nutritionRecordId: row.nutrition_record_id as string,
     servings: row.servings as number,
-    loggedDate: row.logged_date as string,
+    loggedDate: row.logged_date instanceof Date ? row.logged_date.toISOString().split("T")[0] : String(row.logged_date),
     mealType: row.meal_type as MealType,
     createdAt: row.created_at as Date,
     nutritionRecord: {
@@ -891,7 +891,9 @@ export async function createWeightLogEntry(
   return {
     id: row.id,
     userId: row.user_id,
-    loggedDate: row.logged_date,
+    loggedDate: row.logged_date instanceof Date
+      ? row.logged_date.toISOString().split("T")[0]
+      : String(row.logged_date),
     weightKg: Number(row.weight_kg),
     bodyFatPct: row.body_fat_pct != null ? Number(row.body_fat_pct) : null,
     createdAt: row.created_at,
@@ -914,7 +916,9 @@ export async function getWeightLog(
   return rows.map((row) => ({
     id: row.id,
     userId: row.user_id,
-    loggedDate: row.logged_date,
+    loggedDate: row.logged_date instanceof Date
+      ? row.logged_date.toISOString().split("T")[0]
+      : String(row.logged_date),
     weightKg: Number(row.weight_kg),
     bodyFatPct: row.body_fat_pct != null ? Number(row.body_fat_pct) : null,
     createdAt: row.created_at,
@@ -952,7 +956,7 @@ export async function getCalorieTrend(
   `;
 
   return rows.map((row) => ({
-    date: row.date,
+    date: row.date instanceof Date ? row.date.toISOString().split("T")[0] : String(row.date),
     totalCalories: Number(row.total_calories),
   }));
 }

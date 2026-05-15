@@ -2554,6 +2554,7 @@
     }
   },
   "redirects": {
+    "https://esm.sh/@kurkle/color@^0.3.0?target=denonext": "https://esm.sh/@kurkle/color@0.3.4?target=denonext",
     "https://esm.sh/@types/babel__helper-validator-identifier@~7.15.2/index.d.ts": "https://esm.sh/@types/babel__helper-validator-identifier@7.15.2/index.d.ts"
   },
   "remote": {
@@ -3029,6 +3030,12 @@
     "https://esm.sh/*preact-render-to-string@6.3.1/denonext/preact-render-to-string.mjs": "859e9f3dc137a53c17542bbed4cf8accdca81a2895d7a52d1fca38e6c5c00c90",
     "https://esm.sh/@babel/helper-validator-identifier@7.22.20": "3b0b7d94b8ac689175ecb7e72183b07c6a771cc7680a7c9916091add73bd7f88",
     "https://esm.sh/@babel/helper-validator-identifier@7.22.20/denonext/helper-validator-identifier.mjs": "f765fd69eb4fd81b839b76bf60f227caac4fe4d41b4c646cc08aa7b8d948fe17",
+    "https://esm.sh/@kurkle/color@0.3.4/denonext/color.mjs": "38c242a4379368af5ba7eeb039ec0b363f19c6bf10125c41cbbeca4e434712b7",
+    "https://esm.sh/@kurkle/color@0.3.4?target=denonext": "756f17db2e10b8626b07ffac559769636bfc6ae67fb3a54f33e49ac14521f49d",
+    "https://esm.sh/chart.js@4.4.7/auto": "a093022fae8507c517fec7c28acb97cbc152a8677bf113c3c830443984da7170",
+    "https://esm.sh/chart.js@4.4.7/denonext/auto.mjs": "9e5d0dbf3178f52303c90f2bddee2fc1a6a6b54aec89c9734b7a83fcc28ee8d6",
+    "https://esm.sh/chart.js@4.4.7/denonext/chart.mjs": "0e982e7dd2a0b1e24c39ff735a6636b37a781becf70dd2aebf9d40c2517d37b2",
+    "https://esm.sh/chart.js@4.4.7/denonext/dist/chunks/helpers.segment.mjs": "808d2f8f0cdb3d6084c9fafcc9a76ff108412357886e7a28fe672c91a10df67e",
     "https://esm.sh/node/async_hooks.mjs": "b7862dbfba8bbbca956f19e4e08280b529e4b27468779775a9093aef8c92dc1d",
     "https://esm.sh/node/events.mjs": "4c6150b88c1444aa1fe9331013e3f37eda9836206f629f7f3ae8f3743dd90fa8",
     "https://esm.sh/node/process.mjs": "79e7646e87709989f575ea4ce02e0877bc9303081567b1c0d412527917ae9e91",

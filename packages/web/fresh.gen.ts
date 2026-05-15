@@ -13,15 +13,22 @@ import * as $api_auth_refresh from "./routes/api/auth/refresh.ts";
 import * as $api_auth_register from "./routes/api/auth/register.ts";
 import * as $api_event from "./routes/api/event.ts";
 import * as $api_foods_id_ from "./routes/api/foods/[id].ts";
+import * as $api_foods_community from "./routes/api/foods/community.ts";
 import * as $api_foods_index from "./routes/api/foods/index.ts";
+import * as $api_foods_off_search from "./routes/api/foods/off-search.ts";
 import * as $api_foods_search from "./routes/api/foods/search.ts";
 import * as $api_foods_upc_code_ from "./routes/api/foods/upc/[code].ts";
 import * as $api_goals from "./routes/api/goals.ts";
 import * as $api_log_id_ from "./routes/api/log/[id].ts";
 import * as $api_log_daily from "./routes/api/log/daily.ts";
 import * as $api_log_index from "./routes/api/log/index.ts";
+import * as $api_recipes_id_ from "./routes/api/recipes/[id].ts";
+import * as $api_recipes_index from "./routes/api/recipes/index.ts";
+import * as $api_trends from "./routes/api/trends.ts";
+import * as $api_weight from "./routes/api/weight.ts";
 import * as $dashboard from "./routes/dashboard.tsx";
 import * as $foods_id_ from "./routes/foods/[id].tsx";
+import * as $foods_id_edit from "./routes/foods/[id]/edit.tsx";
 import * as $foods_index from "./routes/foods/index.tsx";
 import * as $foods_new from "./routes/foods/new.tsx";
 import * as $goals from "./routes/goals.tsx";
@@ -31,12 +38,18 @@ import * as $log_date_ from "./routes/log/[date].tsx";
 import * as $log_index from "./routes/log/index.tsx";
 import * as $login from "./routes/login.tsx";
 import * as $privacy from "./routes/privacy.tsx";
+import * as $recipes_id_ from "./routes/recipes/[id].tsx";
+import * as $recipes_id_edit from "./routes/recipes/[id]/edit.tsx";
+import * as $recipes_index from "./routes/recipes/index.tsx";
+import * as $recipes_new from "./routes/recipes/new.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $scan from "./routes/scan.tsx";
+import * as $trends from "./routes/trends.tsx";
 import * as $upc from "./routes/upc.tsx";
 import * as $BarcodeScanner from "./islands/BarcodeScanner.tsx";
 import * as $CameraCapture from "./islands/CameraCapture.tsx";
 import * as $DailyLogManager from "./islands/DailyLogManager.tsx";
+import * as $DeleteButton from "./islands/DeleteButton.tsx";
 import * as $FoodBrowser from "./islands/FoodBrowser.tsx";
 import * as $FoodLogForm from "./islands/FoodLogForm.tsx";
 import * as $FoodSearch from "./islands/FoodSearch.tsx";
@@ -44,7 +57,10 @@ import * as $GoalSetup from "./islands/GoalSetup.tsx";
 import * as $ImageCropper from "./islands/ImageCropper.tsx";
 import * as $LoginForm from "./islands/LoginForm.tsx";
 import * as $MacroProgressBar from "./islands/MacroProgressBar.tsx";
+import * as $RecipeBrowser from "./islands/RecipeBrowser.tsx";
+import * as $RecipeForm from "./islands/RecipeForm.tsx";
 import * as $RegisterForm from "./islands/RegisterForm.tsx";
+import * as $TrendsView from "./islands/TrendsView.tsx";
 import * as $UpcLookup from "./islands/UpcLookup.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -61,15 +77,22 @@ const manifest = {
     "./routes/api/auth/register.ts": $api_auth_register,
     "./routes/api/event.ts": $api_event,
     "./routes/api/foods/[id].ts": $api_foods_id_,
+    "./routes/api/foods/community.ts": $api_foods_community,
     "./routes/api/foods/index.ts": $api_foods_index,
+    "./routes/api/foods/off-search.ts": $api_foods_off_search,
     "./routes/api/foods/search.ts": $api_foods_search,
     "./routes/api/foods/upc/[code].ts": $api_foods_upc_code_,
     "./routes/api/goals.ts": $api_goals,
     "./routes/api/log/[id].ts": $api_log_id_,
     "./routes/api/log/daily.ts": $api_log_daily,
     "./routes/api/log/index.ts": $api_log_index,
+    "./routes/api/recipes/[id].ts": $api_recipes_id_,
+    "./routes/api/recipes/index.ts": $api_recipes_index,
+    "./routes/api/trends.ts": $api_trends,
+    "./routes/api/weight.ts": $api_weight,
     "./routes/dashboard.tsx": $dashboard,
     "./routes/foods/[id].tsx": $foods_id_,
+    "./routes/foods/[id]/edit.tsx": $foods_id_edit,
     "./routes/foods/index.tsx": $foods_index,
     "./routes/foods/new.tsx": $foods_new,
     "./routes/goals.tsx": $goals,
@@ -79,14 +102,20 @@ const manifest = {
     "./routes/log/index.tsx": $log_index,
     "./routes/login.tsx": $login,
     "./routes/privacy.tsx": $privacy,
+    "./routes/recipes/[id].tsx": $recipes_id_,
+    "./routes/recipes/[id]/edit.tsx": $recipes_id_edit,
+    "./routes/recipes/index.tsx": $recipes_index,
+    "./routes/recipes/new.tsx": $recipes_new,
     "./routes/register.tsx": $register,
     "./routes/scan.tsx": $scan,
+    "./routes/trends.tsx": $trends,
     "./routes/upc.tsx": $upc,
   },
   islands: {
     "./islands/BarcodeScanner.tsx": $BarcodeScanner,
     "./islands/CameraCapture.tsx": $CameraCapture,
     "./islands/DailyLogManager.tsx": $DailyLogManager,
+    "./islands/DeleteButton.tsx": $DeleteButton,
     "./islands/FoodBrowser.tsx": $FoodBrowser,
     "./islands/FoodLogForm.tsx": $FoodLogForm,
     "./islands/FoodSearch.tsx": $FoodSearch,
@@ -94,7 +123,10 @@ const manifest = {
     "./islands/ImageCropper.tsx": $ImageCropper,
     "./islands/LoginForm.tsx": $LoginForm,
     "./islands/MacroProgressBar.tsx": $MacroProgressBar,
+    "./islands/RecipeBrowser.tsx": $RecipeBrowser,
+    "./islands/RecipeForm.tsx": $RecipeForm,
     "./islands/RegisterForm.tsx": $RegisterForm,
+    "./islands/TrendsView.tsx": $TrendsView,
     "./islands/UpcLookup.tsx": $UpcLookup,
   },
   baseUrl: import.meta.url,
