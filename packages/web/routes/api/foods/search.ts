@@ -1,6 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { getAuthPayload } from "../../../utils/auth.ts";
 import { searchFoods, countFoods, getUserFoods, searchCommunityFoods, countCommunityFoods } from "../../../utils/db.ts";
+import { searchOffProducts } from "../../../utils/openfoodfacts.ts";
 
 export const handler: Handlers = {
   // GET /api/foods/search?q=chicken&source=all&limit=20
@@ -11,20 +12,46 @@ export const handler: Handlers = {
     try {
       const url = new URL(req.url);
       const q = url.searchParams.get("q")?.trim() || "";
-      const source = (url.searchParams.get("source") || "all") as "all" | "user" | "system" | "community";
+      const source = (url.searchParams.get("source") || "all") as "all" | "user" | "system" | "community" | "off";
       const limit = Math.min(Math.max(parseInt(url.searchParams.get("limit") || "20"), 1), 50);
 
       // Validate source parameter
-      if (!["all", "user", "system", "community"].includes(source)) {
+      if (!["all", "user", "system", "community", "off"].includes(source)) {
         return new Response(
-          JSON.stringify({ error: "source must be 'all', 'user', 'system', or 'community'" }),
+          JSON.stringify({ error: "source must be 'all', 'user', 'system', 'community', or 'off'" }),
           { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }
 
       let results;
 
-      if (source === "community") {
+      if (source === "off") {
+        if (q.length < 2) {
+          results = [];
+        } else {
+          const offResults = await searchOffProducts(q, limit);
+          results = offResults.map((r) => ({
+            id: r.barcode,
+            userId: null,
+            name: r.food.name,
+            servingSizeValue: r.food.servingSizeValue,
+            servingSizeUnit: r.food.servingSizeUnit,
+            calories: r.food.calories,
+            totalFat: r.food.totalFat ?? null,
+            carbohydrates: r.food.carbohydrates ?? null,
+            fiber: r.food.fiber ?? null,
+            sugars: r.food.sugars ?? null,
+            protein: r.food.protein ?? null,
+            cholesterol: r.food.cholesterol ?? null,
+            sodium: r.food.sodium ?? null,
+            upcCode: r.barcode,
+            source: "openfoodfacts",
+            createdAt: new Date(),
+            isSystem: false,
+            isOff: true,
+          }));
+        }
+      } else if (source === "community") {
         if (q.length < 2) {
           results = [];
         } else {

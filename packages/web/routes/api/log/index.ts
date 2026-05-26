@@ -17,16 +17,19 @@ export const handler: Handlers = {
     try {
       const body = await req.json();
 
-      // Validate that either nutritionRecordId or quickMacros is provided
+      // Validate that either nutritionRecordId, quickMacros, or offFoodData is provided
       const hasNutritionRecordId = !!body.nutritionRecordId;
       const hasQuickMacros = body.quickMacros &&
         typeof body.quickMacros.protein === "number" &&
         typeof body.quickMacros.carbs === "number" &&
         typeof body.quickMacros.fat === "number";
+      const hasOffFoodData = !!body.offFoodData &&
+        typeof body.offFoodData.name === "string" &&
+        typeof body.offFoodData.calories === "number";
 
-      if (!hasNutritionRecordId && !hasQuickMacros) {
+      if (!hasNutritionRecordId && !hasQuickMacros && !hasOffFoodData) {
         return new Response(
-          JSON.stringify({ error: "Either nutritionRecordId or quickMacros (protein, carbs, fat) is required" }),
+          JSON.stringify({ error: "Either nutritionRecordId, quickMacros (protein, carbs, fat), or offFoodData is required" }),
           { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }
@@ -48,6 +51,12 @@ export const handler: Handlers = {
       }
 
       let nutritionRecordId = body.nutritionRecordId;
+
+      // If OFF food data provided, create a nutrition record first
+      if (hasOffFoodData) {
+        const nutritionRecord = await createNutritionRecord(auth.userId, body.offFoodData as CreateNutritionRecordInput);
+        nutritionRecordId = nutritionRecord.id;
+      }
 
       // If quick macros provided, create a nutrition record first
       if (hasQuickMacros) {

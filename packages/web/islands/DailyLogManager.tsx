@@ -57,7 +57,7 @@ const MEAL_CONFIG = {
 export default function DailyLogManager({ date, initialSummary, goals }: DailyLogManagerProps) {
   const [summary, setSummary] = useState<DailySummary | null>(initialSummary);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [selectedFood, setSelectedFood] = useState<NutritionRecordWithSource | null>(null);
+  const [selectedFood, setSelectedFood] = useState<(NutritionRecordWithSource & { isOff?: boolean }) | null>(null);
   const [servings, setServings] = useState("1");
   const [amountUnit, setAmountUnit] = useState<"servings" | "g" | "ml">("servings");
   const [mealType, setMealType] = useState<MealType>("snack");
@@ -141,7 +141,28 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
     try {
       let body: Record<string, unknown>;
 
-      if (entryMode === "food") {
+      if (entryMode === "food" && selectedFood!.isOff) {
+        body = {
+          offFoodData: {
+            name: selectedFood!.name,
+            servingSizeValue: selectedFood!.servingSizeValue,
+            servingSizeUnit: selectedFood!.servingSizeUnit,
+            calories: selectedFood!.calories,
+            totalFat: selectedFood!.totalFat ?? undefined,
+            carbohydrates: selectedFood!.carbohydrates ?? undefined,
+            fiber: selectedFood!.fiber ?? undefined,
+            sugars: selectedFood!.sugars ?? undefined,
+            protein: selectedFood!.protein ?? undefined,
+            cholesterol: selectedFood!.cholesterol ?? undefined,
+            sodium: selectedFood!.sodium ?? undefined,
+            upcCode: selectedFood!.upcCode ?? undefined,
+            source: "openfoodfacts",
+          },
+          servings: calculateServings(),
+          mealType,
+          loggedDate: date,
+        };
+      } else if (entryMode === "food") {
         body = {
           nutritionRecordId: selectedFood!.id,
           servings: calculateServings(),
@@ -547,6 +568,11 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                           {selectedFood.source === "recipe" && (
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-100 text-indigo-700">
                               Recipe
+                            </span>
+                          )}
+                          {selectedFood.isOff && (
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-orange-100 text-orange-700">
+                              OFF
                             </span>
                           )}
                         </div>

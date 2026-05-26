@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import type { NutritionRecordWithSource } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
 
-type Source = "all" | "user" | "system";
+type Source = "all" | "user" | "system" | "off";
 
 interface FoodSearchProps {
   onSelect: (food: NutritionRecordWithSource) => void;
@@ -144,6 +144,9 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
         <button type="button" onClick={() => handleSourceChange("system")} class={tabClass("system")}>
           USDA Foods{counts.system > 0 ? ` (${counts.system})` : ""}
         </button>
+        <button type="button" onClick={() => handleSourceChange("off")} class={tabClass("off")}>
+          OpenFoodFacts
+        </button>
       </div>
 
       {/* Search Input */}
@@ -159,7 +162,7 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={source === "system" ? "Type to search USDA foods..." : placeholder}
+          placeholder={source === "system" ? "Type to search USDA foods..." : source === "off" ? "Type to search OpenFoodFacts..." : placeholder}
           class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm"
         />
         {loading && (
@@ -196,6 +199,11 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
                           Recipe
                         </span>
                       )}
+                      {(food as NutritionRecordWithSource & { isOff?: boolean }).isOff && (
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-orange-100 text-orange-700 flex-shrink-0">
+                          OFF
+                        </span>
+                      )}
                     </div>
                   </div>
                   <span class="text-xs text-gray-500 ml-2 flex-shrink-0">
@@ -210,8 +218,8 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
             <div class="px-3 py-4 text-sm text-gray-500 text-center">
               {loading
                 ? "Searching..."
-                : source === "system" && query.length < 2
-                ? "Type at least 2 characters to search USDA foods"
+                : (source === "system" || source === "off") && query.length < 2
+                ? `Type at least 2 characters to search ${source === "off" ? "OpenFoodFacts" : "USDA foods"}`
                 : "No foods found"}
             </div>
           )}
