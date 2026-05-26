@@ -32,7 +32,7 @@ export default function RecipesPage({ data }: PageProps<RecipesData>) {
   return (
     <>
       <Head>
-        <title>Recipes - Nutrition Llama</title>
+        <title>Recipes - MacroScope</title>
       </Head>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

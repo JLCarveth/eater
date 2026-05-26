@@ -1,4 +1,4 @@
-# Nutrition Llama
+# MacroScope
 
 A full-stack nutrition tracking application that uses vision LLMs to analyze nutrition labels from photos.
 

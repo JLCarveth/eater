@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Nutrition Llama - A full-stack nutrition tracking application with:
+MacroScope - A full-stack nutrition tracking application with:
 - **Backend API** (`packages/api`) - Node.js nutrition analyzer using vision LLM via OpenAI-compatible API
 - **Frontend** (`packages/web`) - Deno Fresh 2.0 web application
 - **Shared Types** (`packages/shared`) - Common TypeScript types

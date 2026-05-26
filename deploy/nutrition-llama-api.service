@@ -1,5 +1,5 @@
 [Unit]
-Description=Nutrition Llama API
+Description=MacroScope API
 Documentation=https://github.com/jlcarveth/nutrition-llama
 After=network.target
 

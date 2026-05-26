@@ -7,7 +7,7 @@ import type { CreateNutritionRecordInput } from "@nutrition-llama/shared";
 
 const OFF_API_BASE = "https://world.openfoodfacts.org/api/v2/product";
 const OFF_SEARCH_BASE = "https://world.openfoodfacts.org/cgi/search.pl";
-const USER_AGENT = "NutritionLlama/1.0 (https://github.com/nutrition-llama)";
+const USER_AGENT = "MacroScope/1.0 (https://github.com/nutrition-llama)";
 
 // Simple in-memory rate limiter: 10 requests per minute (barcode lookups)
 const rateLimitWindow = 60_000;

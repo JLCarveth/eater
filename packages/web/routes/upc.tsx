@@ -31,7 +31,7 @@ export default function UpcPage({ data }: PageProps<UpcData>) {
   return (
     <>
       <Head>
-        <title>Quick Add - Nutrition Llama</title>
+        <title>Quick Add - MacroScope</title>
       </Head>
 
       <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

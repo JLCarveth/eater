@@ -31,7 +31,7 @@ export default function ScanPage({ data }: PageProps<ScanData>) {
   return (
     <>
       <Head>
-        <title>Scan Nutrition Label - Nutrition Llama</title>
+        <title>Scan Nutrition Label - MacroScope</title>
       </Head>
 
       <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

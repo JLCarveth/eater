@@ -18,108 +18,216 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Nutrition Llama - AI-Powered Nutrition Tracking</title>
+        <title>MacroScope — Know What You're Eating</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,400i;9..144,700i&family=DM+Sans:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`
+          :root {
+            --ink: #1a1a16;
+            --warm-bg: #fafaf5;
+          }
+          .font-display { font-family: 'Fraunces', Georgia, serif; }
+          .font-body { font-family: 'DM Sans', system-ui, sans-serif; }
+          .text-ink { color: var(--ink); }
+          .bg-warm { background-color: var(--warm-bg); }
+          .step-num {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #dcfce7;
+            user-select: none;
+          }
+          @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+          .fade-up-1 { animation: fadeUp 0.65s cubic-bezier(.22,1,.36,1) 0.05s both; }
+          .fade-up-2 { animation: fadeUp 0.65s cubic-bezier(.22,1,.36,1) 0.18s both; }
+          .fade-up-3 { animation: fadeUp 0.65s cubic-bezier(.22,1,.36,1) 0.32s both; }
+          .fade-up-4 { animation: fadeUp 0.65s cubic-bezier(.22,1,.36,1) 0.46s both; }
+          .card-rotated { transform: rotate(2.5deg); }
+          .card-badge { transform: rotate(-6deg); }
+          .pill-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.875rem 1.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: background-color 0.15s, color 0.15s;
+          }
+        `}</style>
       </Head>
 
-      <div class="relative overflow-hidden">
-        {/* Hero Section */}
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div class="text-center">
-            <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-              <span class="block">Track Nutrition</span>
-              <span class="block text-primary-600">With AI</span>
-            </h1>
-            <p class="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-              Snap a photo of any nutrition label and let AI extract the data for you.
-              Track your daily intake, monitor macros, and reach your health goals.
-            </p>
-            <div class="mt-10 flex justify-center gap-4">
-              <a
-                href="/register"
-                class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 shadow-sm"
+      <div class="bg-warm font-body" style="color: var(--ink);">
+
+        {/* ── Hero ─────────────────────────────────────────────── */}
+        <section class="max-w-7xl mx-auto px-6 lg:px-8 pt-20 pb-24 lg:pt-32 lg:pb-36">
+          <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+            {/* Left: copy */}
+            <div class="lg:col-span-7">
+              <span class="fade-up-1 inline-block text-xs font-medium tracking-widest text-primary-600 uppercase mb-7">
+                Nutrition Tracking
+              </span>
+
+              <h1
+                class="font-display fade-up-2 text-ink"
+                style="font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:clamp(2.75rem,6vw,5rem); line-height:1.08; margin-bottom:1.5rem;"
               >
-                Get Started Free
-              </a>
-              <a
-                href="/login"
-                class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 shadow-sm"
+                Know what<br />
+                you're eating.<br />
+                <em style="font-style:italic; color:#16a34a;">Every time.</em>
+              </h1>
+
+              <p
+                class="text-gray-500 leading-relaxed max-w-md fade-up-3"
+                style="font-size:1.125rem; margin-bottom:2.5rem;"
               >
-                Sign In
-              </a>
+                Point your camera at any nutrition label — MacroScope reads
+                every value on it and saves it to your food library. Log meals in
+                seconds, track macros without a spreadsheet.
+              </p>
+
+              <div class="flex flex-wrap items-center gap-4 fade-up-4">
+                <a
+                  href="/register"
+                  class="pill-btn bg-primary-600 text-white hover:bg-primary-700 shadow-sm"
+                >
+                  Get started free
+                </a>
+                <a
+                  href="/login"
+                  class="text-gray-600 font-medium hover:text-primary-600 transition-colors"
+                  style="text-decoration:underline; text-decoration-color:#d1d5db; text-underline-offset:4px;"
+                >
+                  Sign in
+                </a>
+              </div>
+            </div>
+
+            {/* Right: mock snapshot card */}
+            <div class="hidden lg:flex lg:col-span-5 justify-center items-center">
+              <div class="relative">
+                <div
+                  class="card-rotated w-64 bg-white border border-gray-100 rounded-3xl p-8 shadow-md flex flex-col gap-6"
+                >
+                  <div
+                    class="text-xs font-medium tracking-widest text-gray-400 uppercase"
+                  >
+                    Today's snapshot
+                  </div>
+                  <div>
+                    <div
+                      class="font-display text-ink"
+                      style="font-family:'Fraunces',Georgia,serif; font-size:3.25rem; font-weight:700; line-height:1; margin-bottom:0.25rem;"
+                    >
+                      2,140
+                    </div>
+                    <div class="text-sm text-gray-400">calories logged</div>
+                  </div>
+                  <div class="flex gap-5 border-t border-gray-50 pt-5">
+                    <div>
+                      <div class="font-semibold text-ink">142g</div>
+                      <div class="text-xs text-gray-400 mt-0.5">protein</div>
+                    </div>
+                    <div>
+                      <div class="font-semibold text-ink">210g</div>
+                      <div class="text-xs text-gray-400 mt-0.5">carbs</div>
+                    </div>
+                    <div>
+                      <div class="font-semibold text-ink">68g</div>
+                      <div class="text-xs text-gray-400 mt-0.5">fat</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* floating badge */}
+                <div
+                  class="card-badge absolute -top-3 -right-6 bg-primary-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg whitespace-nowrap"
+                >
+                  3 labels scanned today 🦙
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ── How it works ─────────────────────────────────────── */}
+        <section class="border-t border-gray-100 bg-white">
+          <div class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+            <div class="mb-14">
+              <span class="text-xs font-medium tracking-widest text-primary-600 uppercase">
+                How it works
+              </span>
+            </div>
+
+            <div class="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+
+              <div class="py-8 md:py-0 md:pr-12">
+                <div class="step-num mb-5">01</div>
+                <h3 class="font-semibold text-ink text-lg mb-2">Scan the label</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                  Photograph any nutrition facts panel with your phone — packaged
+                  foods, supplements, restaurant nutrition cards. If it has a label,
+                  it works.
+                </p>
+              </div>
+
+              <div class="py-8 md:py-0 md:px-12">
+                <div class="step-num mb-5">02</div>
+                <h3 class="font-semibold text-ink text-lg mb-2">We read it</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                  Calories, protein, carbs, fat, serving size — all of it, pulled
+                  straight from the label and saved to your personal food library.
+                  No manual entry.
+                </p>
+              </div>
+
+              <div class="py-8 md:py-0 md:pl-12">
+                <div class="step-num mb-5">03</div>
+                <h3 class="font-semibold text-ink text-lg mb-2">Log your day</h3>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                  Add saved foods to your daily log, adjust servings, and watch your
+                  macros tally up. Check your trends over time. That's the whole
+                  thing.
+                </p>
+              </div>
+
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Features Section */}
-        <div class="bg-white py-16">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-              <h2 class="text-3xl font-extrabold text-gray-900">
-                Everything you need to track nutrition
-              </h2>
-            </div>
-
-            <div class="mt-16 grid gap-8 md:grid-cols-3">
-              {/* Feature 1 */}
-              <div class="text-center">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-100 text-primary-600 mx-auto">
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Scan Labels</h3>
-                <p class="mt-2 text-gray-500">
-                  Use your camera to scan nutrition labels. Our AI extracts all the data automatically.
-                </p>
-              </div>
-
-              {/* Feature 2 */}
-              <div class="text-center">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-100 text-primary-600 mx-auto">
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Track Macros</h3>
-                <p class="mt-2 text-gray-500">
-                  Monitor your daily calories, protein, carbs, and fat intake with detailed breakdowns.
-                </p>
-              </div>
-
-              {/* Feature 3 */}
-              <div class="text-center">
-                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-100 text-primary-600 mx-auto">
-                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 class="mt-4 text-lg font-medium text-gray-900">Daily Logs</h3>
-                <p class="mt-2 text-gray-500">
-                  Log meals by time of day and review your nutrition history anytime.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div class="bg-primary-600 py-16">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-extrabold text-white">
-              Ready to start tracking?
-            </h2>
-            <p class="mt-4 text-xl text-primary-100">
-              Create a free account and start scanning nutrition labels today.
+        {/* ── Minimal CTA ──────────────────────────────────────── */}
+        <section class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+            <p
+              class="font-display text-ink"
+              style="font-family:'Fraunces',Georgia,serif; font-size:1.75rem; font-weight:600; line-height:1.3;"
+            >
+              Start tracking today.<br />
+              <span class="text-gray-400 font-normal" style="font-size:1.375rem;">
+                Free account, no credit card, no spreadsheets.
+              </span>
             </p>
             <a
               href="/register"
-              class="mt-8 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 shadow-sm"
+              class="pill-btn bg-primary-600 text-white hover:bg-primary-700 shadow-sm shrink-0"
             >
-              Sign Up Free
+              Create free account →
             </a>
           </div>
-        </div>
+        </section>
+
       </div>
     </>
   );

@@ -1,8 +1,8 @@
-# Nutrition Llama Brand Guidelines
+# MacroScope Brand Guidelines
 
 ## Brand Overview
 
-**Nutrition Llama** is an AI-powered nutrition tracking application that simplifies healthy living through intelligent automation. Our brand represents the intersection of cutting-edge technology and personal wellness, making nutrition tracking accessible, accurate, and effortless.
+**MacroScope** is an AI-powered nutrition tracking application that simplifies healthy living through intelligent automation. Our brand represents the intersection of cutting-edge technology and personal wellness, making nutrition tracking accessible, accurate, and effortless.
 
 ### Mission
 To empower individuals to make informed nutritional decisions by removing friction from food tracking through AI-powered automation.
@@ -154,7 +154,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
 ## Logo & Iconography
 
 ### Logo Usage
-**Primary Logo**: "Nutrition Llama"
+**Primary Logo**: "MacroScope"
 - Color: `primary-600` (#16a34a)
 - Font weight: 700 (bold)
 - Size: 20px–24px (xl–2xl)
@@ -532,6 +532,6 @@ As the brand evolves, consider:
 
 **Version**: 1.0
 **Last Updated**: January 2026
-**Maintained by**: Nutrition Llama Design Team
+**Maintained by**: MacroScope Design Team
 
 For questions or updates to these guidelines, please open an issue or submit a pull request.

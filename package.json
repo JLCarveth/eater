@@ -1,5 +1,5 @@
 {
-  "name": "nutrition-llama",
+  "name": "macroscope",
   "version": "0.1.1",
   "description": "Full-stack nutrition facts analyzer with OCR and LLM-based structured data extraction",
   "private": true,

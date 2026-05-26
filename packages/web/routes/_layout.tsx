@@ -10,7 +10,7 @@ export default function Layout({ Component, state }: PageProps) {
           <div class="flex justify-between h-16">
             <div class="flex items-center">
               <a href="/" class="flex items-center">
-                <span class="text-xl font-bold text-primary-600">Nutrition Llama</span>
+                <span class="text-xl font-bold text-primary-600">MacroScope</span>
               </a>
               {user && (
                 <div class="hidden sm:ml-8 sm:flex sm:space-x-4">
@@ -176,7 +176,7 @@ export default function Layout({ Component, state }: PageProps) {
       <footer class="bg-white border-t border-gray-200 py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p class="text-sm text-gray-500">
-            Nutrition Llama - Track your nutrition with AI
+            MacroScope - Track your nutrition with AI
           </p>
           <a
             href="/privacy"

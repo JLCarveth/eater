@@ -32,7 +32,7 @@ export default function FoodsPage({ data }: PageProps<FoodsData>) {
   return (
     <>
       <Head>
-        <title>My Foods - Nutrition Llama</title>
+        <title>My Foods - MacroScope</title>
       </Head>
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

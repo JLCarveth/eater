@@ -4,7 +4,7 @@ export default function Privacy() {
   return (
     <>
       <Head>
-        <title>Privacy Policy - Nutrition Llama</title>
+        <title>Privacy Policy - MacroScope</title>
       </Head>
 
       <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -15,7 +15,7 @@ export default function Privacy() {
           <section>
             <h2 class="text-xl font-semibold text-gray-900">1. Introduction</h2>
             <p class="mt-2">
-              Nutrition Llama ("we", "us", or "our") is operated from Canada. We
+              MacroScope ("we", "us", or "our") is operated from Canada. We
               are committed to protecting your privacy and handling your personal
               information in accordance with Canada's{" "}
               <em>Personal Information Protection and Electronic Documents Act</em>

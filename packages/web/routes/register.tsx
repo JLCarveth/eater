@@ -5,7 +5,7 @@ export default function RegisterPage() {
   return (
     <>
       <Head>
-        <title>Sign Up - Nutrition Llama</title>
+        <title>Sign Up - MacroScope</title>
       </Head>
 
       <div class="min-h-[calc(100vh-8rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

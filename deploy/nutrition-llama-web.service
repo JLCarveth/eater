@@ -1,5 +1,5 @@
 [Unit]
-Description=Nutrition Llama Web Frontend
+Description=MacroScope Web Frontend
 After=network.target postgresql.service
 
 [Service]

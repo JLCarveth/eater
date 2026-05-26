@@ -37,7 +37,7 @@ export default function EditFoodPage({ data }: PageProps<EditFoodData>) {
   return (
     <>
       <Head>
-        <title>Edit {food.name} - Nutrition Llama</title>
+        <title>Edit {food.name} - MacroScope</title>
       </Head>
 
       <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

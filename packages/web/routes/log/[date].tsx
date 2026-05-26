@@ -65,7 +65,7 @@ export default function LogDatePage({ data }: PageProps<LogData>) {
   return (
     <>
       <Head>
-        <title>Food Log - {displayDate} - Nutrition Llama</title>
+        <title>Food Log - {displayDate} - MacroScope</title>
       </Head>
 
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

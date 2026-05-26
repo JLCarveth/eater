@@ -1,6 +1,6 @@
 # Deployment
 
-Production deployment files for Nutrition Llama.
+Production deployment files for MacroScope.
 
 ## Prerequisites
 

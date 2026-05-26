@@ -36,7 +36,7 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
   return (
     <>
       <Head>
-        <title>{recipe.name} - Nutrition Llama</title>
+        <title>{recipe.name} - MacroScope</title>
       </Head>
 
       <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

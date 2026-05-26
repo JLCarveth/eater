@@ -22,7 +22,7 @@ export default function LogIndex() {
   return (
     <>
       <Head>
-        <title>Food Log - Nutrition Llama</title>
+        <title>Food Log - MacroScope</title>
       </Head>
       <div class="flex items-center justify-center min-h-screen">
         <p class="text-gray-500">Redirecting...</p>
