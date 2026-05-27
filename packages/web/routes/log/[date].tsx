@@ -4,6 +4,7 @@ import { requireAuth } from "../../utils/auth.ts";
 import type { User, DailySummary, UserGoals } from "@nutrition-llama/shared";
 import { getDailySummary, getUserGoals } from "../../utils/db.ts";
 import DailyLogManager from "../../islands/DailyLogManager.tsx";
+import PageShell from "../../components/PageShell.tsx";
 
 interface LogData {
   user: User;
@@ -68,7 +69,7 @@ export default function LogDatePage({ data }: PageProps<LogData>) {
         <title>Food Log - {displayDate} - MacroScope</title>
       </Head>
 
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageShell maxWidth="4xl">
         {/* Date Navigation */}
         <div class="flex items-center justify-between mb-8">
           <a
@@ -94,7 +95,7 @@ export default function LogDatePage({ data }: PageProps<LogData>) {
         </div>
 
         <DailyLogManager date={date} initialSummary={summary} goals={data.goals} />
-      </div>
+      </PageShell>
     </>
   );
 }

@@ -5,6 +5,8 @@ import type { User, RecipeWithIngredients } from "@nutrition-llama/shared";
 import { getRecipeById } from "../../utils/db.ts";
 import FoodLogForm from "../../islands/FoodLogForm.tsx";
 import DeleteButton from "../../islands/DeleteButton.tsx";
+import PageShell from "../../components/PageShell.tsx";
+import BackLink from "../../components/BackLink.tsx";
 
 interface RecipeDetailData {
   user: User;
@@ -39,11 +41,9 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
         <title>{recipe.name} - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageShell>
         <div class="mb-6">
-          <a href="/recipes" class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; Back to Recipes
-          </a>
+          <BackLink href="/recipes">Back to Recipes</BackLink>
           <div class="flex items-center gap-3 mt-2">
             <h1 class="text-2xl font-bold text-gray-900">{recipe.name}</h1>
             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
@@ -159,7 +159,7 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
             }}
           />
         </div>
-      </div>
+      </PageShell>
     </>
   );
 }

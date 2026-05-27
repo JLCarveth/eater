@@ -3,6 +3,8 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../../utils/auth.ts";
 import type { User } from "@nutrition-llama/shared";
 import RecipeForm from "../../islands/RecipeForm.tsx";
+import PageShell from "../../components/PageShell.tsx";
+import PageHeader from "../../components/PageHeader.tsx";
 
 interface NewRecipeData {
   user: User;
@@ -26,16 +28,14 @@ export default function NewRecipePage({ data: _data }: PageProps<NewRecipeData>)
         <title>New Recipe - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-6">
-          <a href="/recipes" class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; Back to Recipes
-          </a>
-          <h1 class="text-2xl font-bold text-gray-900 mt-2">New Recipe</h1>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title="New Recipe"
+          back={{ href: "/recipes", label: "Back to Recipes" }}
+          spacing="mb-6"
+        />
         <RecipeForm mode="create" />
-      </div>
+      </PageShell>
     </>
   );
 }

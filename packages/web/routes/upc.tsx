@@ -3,6 +3,8 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../utils/auth.ts";
 import type { User } from "@nutrition-llama/shared";
 import UpcLookup from "../islands/UpcLookup.tsx";
+import PageShell from "../components/PageShell.tsx";
+import PageHeader from "../components/PageHeader.tsx";
 
 interface UpcData {
   user: User;
@@ -34,16 +36,13 @@ export default function UpcPage({ data }: PageProps<UpcData>) {
         <title>Quick Add - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">Quick Add by Barcode</h1>
-          <p class="text-gray-600">
-            Scan a barcode to quickly log foods you've already saved.
-          </p>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title="Quick Add by Barcode"
+          subtitle="Scan a barcode to quickly log foods you've already saved."
+        />
         <UpcLookup initialCode={data.initialCode} />
-      </div>
+      </PageShell>
     </>
   );
 }

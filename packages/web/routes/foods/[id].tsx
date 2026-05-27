@@ -5,6 +5,8 @@ import type { User, NutritionRecordWithSource } from "@nutrition-llama/shared";
 import { getFoodByIdAllowSystem } from "../../utils/db.ts";
 import FoodLogForm from "../../islands/FoodLogForm.tsx";
 import DeleteButton from "../../islands/DeleteButton.tsx";
+import PageShell from "../../components/PageShell.tsx";
+import BackLink from "../../components/BackLink.tsx";
 
 interface FoodDetailData {
   user: User;
@@ -41,11 +43,11 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
         <title>{food.name} - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <PageShell>
         <div class="mb-8">
-          <a href="/foods" class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; {food.isSystem ? "Back to Foods" : "Back to My Foods"}
-          </a>
+          <BackLink href="/foods">
+            {food.isSystem ? "Back to Foods" : "Back to My Foods"}
+          </BackLink>
           <div class="flex items-center gap-3 mt-2">
             <h1 class="text-2xl font-bold text-gray-900">{food.name}</h1>
             {food.isSystem && (
@@ -94,7 +96,7 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
             }}
           />
         </div>
-      </div>
+      </PageShell>
     </>
   );
 }

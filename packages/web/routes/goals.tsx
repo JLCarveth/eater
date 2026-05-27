@@ -4,6 +4,8 @@ import { requireAuth } from "../utils/auth.ts";
 import type { User, UserGoals } from "@nutrition-llama/shared";
 import { getUserGoals } from "../utils/db.ts";
 import GoalSetup from "../islands/GoalSetup.tsx";
+import PageShell from "../components/PageShell.tsx";
+import PageHeader from "../components/PageHeader.tsx";
 
 interface GoalsData {
   user: User;
@@ -35,18 +37,16 @@ export default function GoalsPage({ data }: PageProps<GoalsData>) {
         <title>Goals - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">Nutrition Goals</h1>
-          <p class="text-gray-600 mt-1">
-            Set your daily calorie and macro targets to track your progress.
-          </p>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title="Nutrition Goals"
+          titleSize="3xl"
+          subtitle="Set your daily calorie and macro targets to track your progress."
+        />
         <div class="bg-white shadow rounded-lg p-6">
           <GoalSetup existingGoals={goals} />
         </div>
-      </div>
+      </PageShell>
     </>
   );
 }

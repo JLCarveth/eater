@@ -4,6 +4,8 @@ import { requireAuth } from "../utils/auth.ts";
 import type { User, WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
 import { getWeightLog, getCalorieTrend, getLoggingStreak } from "../utils/db.ts";
 import TrendsView from "../islands/TrendsView.tsx";
+import PageShell from "../components/PageShell.tsx";
+import PageHeader from "../components/PageHeader.tsx";
 
 interface TrendsPageData {
   user: User;
@@ -51,19 +53,17 @@ export default function TrendsPage({ data }: PageProps<TrendsPageData>) {
         <title>Trends - MacroScope</title>
       </Head>
 
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">Trends</h1>
-          <p class="text-gray-600 mt-1">
-            Track your weight, calorie intake, and logging streaks over time.
-          </p>
-        </div>
-
+      <PageShell maxWidth="4xl">
+        <PageHeader
+          title="Trends"
+          titleSize="3xl"
+          subtitle="Track your weight, calorie intake, and logging streaks over time."
+        />
         <TrendsView
           initialWeightLog={data.weightLog}
           initialTrends={data.trends}
         />
-      </div>
+      </PageShell>
     </>
   );
 }

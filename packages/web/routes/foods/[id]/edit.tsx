@@ -4,6 +4,8 @@ import { requireAuth } from "../../../utils/auth.ts";
 import { getFoodById } from "../../../utils/db.ts";
 import type { User, NutritionRecord } from "@nutrition-llama/shared";
 import FoodLogForm from "../../../islands/FoodLogForm.tsx";
+import PageShell from "../../../components/PageShell.tsx";
+import PageHeader from "../../../components/PageHeader.tsx";
 
 interface EditFoodData {
   user: User;
@@ -40,15 +42,12 @@ export default function EditFoodPage({ data }: PageProps<EditFoodData>) {
         <title>Edit {food.name} - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <a href={`/foods/${food.id}`} class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; Back to {food.name}
-          </a>
-          <h1 class="text-2xl font-bold text-gray-900 mt-2">Edit Food</h1>
-          <p class="text-gray-600">Update nutrition information for {food.name}.</p>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title="Edit Food"
+          subtitle={`Update nutrition information for ${food.name}.`}
+          back={{ href: `/foods/${food.id}`, label: `Back to ${food.name}` }}
+        />
         <FoodLogForm
           mode="edit"
           foodId={food.id}
@@ -67,7 +66,7 @@ export default function EditFoodPage({ data }: PageProps<EditFoodData>) {
             upcCode: food.upcCode,
           }}
         />
-      </div>
+      </PageShell>
     </>
   );
 }

@@ -4,6 +4,8 @@ import { requireAuth } from "../utils/auth.ts";
 import type { User, DailySummary, UserGoals } from "@nutrition-llama/shared";
 import { getDailySummary, getUserGoals } from "../utils/db.ts";
 import MacroProgressBar from "../islands/MacroProgressBar.tsx";
+import PageShell from "../components/PageShell.tsx";
+import PageHeader from "../components/PageHeader.tsx";
 
 interface DashboardData {
   user: User;
@@ -47,13 +49,12 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
         <title>Dashboard - MacroScope</title>
       </Head>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">
-            Welcome back, {user.displayName || user.email.split("@")[0]}
-          </h1>
-          <p class="text-gray-600">{today}</p>
-        </div>
+      <PageShell maxWidth="7xl">
+        <PageHeader
+          title={`Welcome back, ${user.displayName || user.email.split("@")[0]}`}
+          titleSize="3xl"
+          subtitle={today}
+        />
 
         {/* Quick Actions */}
         <div class="grid gap-4 md:grid-cols-4 mb-8">
@@ -229,7 +230,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
             </div>
           )}
         </div>
-      </div>
+      </PageShell>
     </>
   );
 }

@@ -3,6 +3,8 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../utils/auth.ts";
 import type { User } from "@nutrition-llama/shared";
 import CameraCapture from "../islands/CameraCapture.tsx";
+import PageShell from "../components/PageShell.tsx";
+import PageHeader from "../components/PageHeader.tsx";
 
 interface ScanData {
   user: User;
@@ -34,16 +36,13 @@ export default function ScanPage({ data }: PageProps<ScanData>) {
         <title>Scan Nutrition Label - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-900">Scan Nutrition Label</h1>
-          <p class="text-gray-600">
-            Take a photo or upload an image of a nutrition label to extract the information automatically.
-          </p>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title="Scan Nutrition Label"
+          subtitle="Take a photo or upload an image of a nutrition label to extract the information automatically."
+        />
         <CameraCapture initialUpc={data.initialUpc} />
-      </div>
+      </PageShell>
     </>
   );
 }

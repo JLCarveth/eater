@@ -4,6 +4,8 @@ import { requireAuth } from "../../../utils/auth.ts";
 import type { User, RecipeWithIngredients } from "@nutrition-llama/shared";
 import { getRecipeById } from "../../../utils/db.ts";
 import RecipeForm from "../../../islands/RecipeForm.tsx";
+import PageShell from "../../../components/PageShell.tsx";
+import PageHeader from "../../../components/PageHeader.tsx";
 
 interface EditRecipeData {
   user: User;
@@ -37,14 +39,12 @@ export default function EditRecipePage({ data }: PageProps<EditRecipeData>) {
         <title>Edit {recipe.name} - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-6">
-          <a href={`/recipes/${recipe.id}`} class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; Back to Recipe
-          </a>
-          <h1 class="text-2xl font-bold text-gray-900 mt-2">Edit {recipe.name}</h1>
-        </div>
-
+      <PageShell>
+        <PageHeader
+          title={`Edit ${recipe.name}`}
+          back={{ href: `/recipes/${recipe.id}`, label: "Back to Recipe" }}
+          spacing="mb-6"
+        />
         <RecipeForm
           mode="edit"
           recipeId={recipe.id}
@@ -65,7 +65,7 @@ export default function EditRecipePage({ data }: PageProps<EditRecipeData>) {
             })),
           }}
         />
-      </div>
+      </PageShell>
     </>
   );
 }

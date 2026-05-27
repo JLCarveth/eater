@@ -3,6 +3,8 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../../utils/auth.ts";
 import type { User } from "@nutrition-llama/shared";
 import FoodLogForm from "../../islands/FoodLogForm.tsx";
+import PageShell from "../../components/PageShell.tsx";
+import PageHeader from "../../components/PageHeader.tsx";
 
 interface NewFoodData {
   user: User;
@@ -34,14 +36,12 @@ export default function NewFoodPage({ data }: PageProps<NewFoodData>) {
         <title>Add Food - MacroScope</title>
       </Head>
 
-      <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-8">
-          <a href="/foods" class="text-primary-600 hover:text-primary-500 text-sm">
-            &larr; Back to My Foods
-          </a>
-          <h1 class="text-2xl font-bold text-gray-900 mt-2">Add New Food</h1>
-          <p class="text-gray-600">Enter nutrition information manually.</p>
-        </div>
+      <PageShell>
+        <PageHeader
+          title="Add New Food"
+          subtitle="Enter nutrition information manually."
+          back={{ href: "/foods", label: "Back to My Foods" }}
+        />
 
         {!data.initialUpc && (
           <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
@@ -61,7 +61,7 @@ export default function NewFoodPage({ data }: PageProps<NewFoodData>) {
         )}
 
         <FoodLogForm mode="create" initialUpc={data.initialUpc} />
-      </div>
+      </PageShell>
     </>
   );
 }
