@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { trackEvent } from "../utils/analytics.ts";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -38,11 +39,7 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} class="mt-8 space-y-6">
-      {error && (
-        <div class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-700">{error}</p>
-        </div>
-      )}
+      <ErrorAlert error={error} />
 
       <div class="space-y-4">
         <div>

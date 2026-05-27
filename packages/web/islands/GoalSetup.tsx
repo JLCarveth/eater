@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { UserGoals } from "@nutrition-llama/shared";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 interface GoalSetupProps {
   existingGoals: UserGoals | null;
@@ -158,11 +159,7 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
 
   return (
     <div class="space-y-6">
-      {error && (
-        <div class="rounded-lg bg-red-50 border border-red-200 p-4">
-          <p class="text-sm font-medium text-red-800">{error}</p>
-        </div>
-      )}
+      <ErrorAlert error={error} />
 
       {/* Mode Toggle */}
       <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">

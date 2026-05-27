@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense } from "preact/compat";
 import type { MealType } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -211,11 +212,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
 
     return (
       <form onSubmit={handleLogFood} class="space-y-4">
-        {error && (
-          <div class="rounded-md bg-red-50 p-4">
-            <p class="text-sm text-red-700">{error}</p>
-          </div>
-        )}
+        <ErrorAlert error={error} />
 
         {foodNutrition && (
           <div class="border border-gray-300 rounded-lg p-4">
@@ -336,11 +333,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
   if (mode === "edit") {
     return (
       <form onSubmit={handleEditFood} class="space-y-6">
-        {error && (
-          <div class="rounded-md bg-red-50 p-4">
-            <p class="text-sm text-red-700">{error}</p>
-          </div>
-        )}
+        <ErrorAlert error={error} />
 
         <div class="bg-white shadow rounded-lg p-6 space-y-4">
           <h3 class="text-lg font-medium text-gray-900">Basic Info</h3>
@@ -512,11 +505,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
   // Create mode
   return (
     <form onSubmit={handleCreateFood} class="space-y-6">
-      {error && (
-        <div class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-700">{error}</p>
-        </div>
-      )}
+      <ErrorAlert error={error} />
 
       <div class="bg-white shadow rounded-lg p-6 space-y-4">
         <h3 class="text-lg font-medium text-gray-900">Basic Info</h3>

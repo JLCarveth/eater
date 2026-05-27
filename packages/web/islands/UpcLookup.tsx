@@ -1,6 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from "preact/compat";
 import type { NutritionRecord } from "@nutrition-llama/shared";
 import FoodLogForm from "./FoodLogForm.tsx";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -219,11 +220,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
 
   return (
     <div class="space-y-6">
-      {error && (
-        <div class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-700">{error}</p>
-        </div>
-      )}
+      <ErrorAlert error={error} />
 
       {/* Idle State */}
       {state === "idle" && (

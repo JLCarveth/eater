@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import type { NutritionRecordWithSource, ServingSizeUnit } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
+import ErrorAlert from "../components/ErrorAlert.tsx";
 
 interface IngredientLine {
   nutritionRecordId: string;
@@ -192,11 +193,7 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
 
   return (
     <form onSubmit={handleSubmit} class="space-y-6">
-      {error && (
-        <div class="rounded-md bg-red-50 p-4">
-          <p class="text-sm text-red-700">{error}</p>
-        </div>
-      )}
+      <ErrorAlert error={error} />
 
       {/* Basic info */}
       <div class="bg-white shadow rounded-lg p-6 space-y-4">
