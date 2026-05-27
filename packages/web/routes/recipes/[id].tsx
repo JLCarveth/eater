@@ -7,6 +7,7 @@ import FoodLogForm from "../../islands/FoodLogForm.tsx";
 import DeleteButton from "../../islands/DeleteButton.tsx";
 import PageShell from "../../components/PageShell.tsx";
 import BackLink from "../../components/BackLink.tsx";
+import NutritionFactsPanel from "../../components/NutritionFactsPanel.tsx";
 
 interface RecipeDetailData {
   user: User;
@@ -96,46 +97,16 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
         {/* Per-serving nutrition */}
         <div class="bg-white shadow rounded-lg p-6 mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Nutrition Facts (per serving)</h2>
-          <div class="border border-gray-300 rounded-lg p-4">
-            <h4 class="text-base font-bold text-gray-900 border-b-8 border-gray-900 pb-1 mb-2">
-              Nutrition Facts
-            </h4>
-            <p class="text-sm text-gray-500 border-b border-gray-300 pb-2 mb-2">1 serving</p>
-            <div class="text-sm space-y-1">
-              <div class="flex justify-between font-bold border-b-4 border-gray-900 pb-1">
-                <span>Calories</span>
-                <span>{Math.round(nr.calories)}</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Total Fat</span>
-                <span>{Math.round(nr.totalFat ?? 0)}g</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Cholesterol</span>
-                <span>{Math.round(nr.cholesterol ?? 0)}mg</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Sodium</span>
-                <span>{Math.round(nr.sodium ?? 0)}mg</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Total Carbohydrates</span>
-                <span>{Math.round(nr.carbohydrates ?? 0)}g</span>
-              </div>
-              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
-                <span>Fiber</span>
-                <span>{Math.round(nr.fiber ?? 0)}g</span>
-              </div>
-              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
-                <span>Sugars</span>
-                <span>{Math.round(nr.sugars ?? 0)}g</span>
-              </div>
-              <div class="flex justify-between border-b-4 border-gray-900 py-0.5">
-                <span class="font-semibold">Protein</span>
-                <span>{Math.round(nr.protein ?? 0)}g</span>
-              </div>
-            </div>
-          </div>
+          <NutritionFactsPanel
+            calories={nr.calories}
+            totalFat={nr.totalFat}
+            cholesterol={nr.cholesterol}
+            sodium={nr.sodium}
+            carbohydrates={nr.carbohydrates}
+            fiber={nr.fiber}
+            sugars={nr.sugars}
+            protein={nr.protein}
+          />
         </div>
 
         {/* Log this recipe */}

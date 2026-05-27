@@ -3,6 +3,7 @@ import type { MealType } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
 import ErrorAlert from "../components/ErrorAlert.tsx";
 import FoodFields from "../components/FoodFields.tsx";
+import NutritionFactsPanel from "../components/NutritionFactsPanel.tsx";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -216,49 +217,18 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
         <ErrorAlert error={error} />
 
         {foodNutrition && (
-          <div class="border border-gray-300 rounded-lg p-4">
-            <h4 class="text-base font-bold text-gray-900 border-b-8 border-gray-900 pb-1 mb-2">
-              Nutrition Facts
-            </h4>
-            <p class="text-sm text-gray-500 border-b border-gray-300 pb-2 mb-2">
-              {s !== 1 ? `${s.toFixed(2)} servings` : "1 serving"}{" "}
-              ({Math.round(s * foodNutrition.servingSizeValue)}{foodNutrition.servingSizeUnit})
-            </p>
-            <div class="text-sm space-y-1">
-              <div class="flex justify-between font-bold border-b-4 border-gray-900 pb-1">
-                <span>Calories</span>
-                <span>{Math.round(foodNutrition.calories * s)}</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Total Fat</span>
-                <span>{Math.round((foodNutrition.totalFat || 0) * s)}g</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Cholesterol</span>
-                <span>{Math.round((foodNutrition.cholesterol || 0) * s)}mg</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Sodium</span>
-                <span>{Math.round((foodNutrition.sodium || 0) * s)}mg</span>
-              </div>
-              <div class="flex justify-between border-b border-gray-200 py-0.5">
-                <span class="font-semibold">Total Carbohydrates</span>
-                <span>{Math.round((foodNutrition.carbohydrates || 0) * s)}g</span>
-              </div>
-              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
-                <span>Fiber</span>
-                <span>{Math.round((foodNutrition.fiber || 0) * s)}g</span>
-              </div>
-              <div class="flex justify-between pl-4 border-b border-gray-200 py-0.5">
-                <span>Sugars</span>
-                <span>{Math.round((foodNutrition.sugars || 0) * s)}g</span>
-              </div>
-              <div class="flex justify-between border-b-4 border-gray-900 py-0.5">
-                <span class="font-semibold">Protein</span>
-                <span>{Math.round((foodNutrition.protein || 0) * s)}g</span>
-              </div>
-            </div>
-          </div>
+          <NutritionFactsPanel
+            calories={foodNutrition.calories}
+            totalFat={foodNutrition.totalFat}
+            cholesterol={foodNutrition.cholesterol}
+            sodium={foodNutrition.sodium}
+            carbohydrates={foodNutrition.carbohydrates}
+            fiber={foodNutrition.fiber}
+            sugars={foodNutrition.sugars}
+            protein={foodNutrition.protein}
+            multiplier={s}
+            servingLabel={`${s !== 1 ? `${s.toFixed(2)} servings` : "1 serving"} (${Math.round(s * foodNutrition.servingSizeValue)}${foodNutrition.servingSizeUnit})`}
+          />
         )}
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
