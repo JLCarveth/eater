@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "preact/hooks";
 import type { NutritionRecord, NutritionRecordWithSource } from "@nutrition-llama/shared";
 import type { OffSearchResult } from "../utils/openfoodfacts.ts";
+import FoodResultRow from "../components/FoodResultRow.tsx";
+import SourceBadge from "../components/SourceBadge.tsx";
 
 type Tab = "user" | "system" | "community" | "off";
 
@@ -253,26 +255,17 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
             <ul class="divide-y divide-gray-200">
               {filteredUserFoods.map((food) => (
                 <li key={food.id}>
-                  <a
+                  <FoodResultRow
+                    name={food.name}
+                    calories={food.calories}
+                    protein={food.protein}
+                    carbohydrates={food.carbohydrates}
+                    totalFat={food.totalFat}
+                    servingSizeValue={food.servingSizeValue}
+                    servingSizeUnit={food.servingSizeUnit}
+                    upcCode={food.upcCode}
                     href={`/foods/${food.id}`}
-                    class="block hover:bg-gray-50 px-6 py-4"
-                  >
-                    <div class="flex items-center justify-between">
-                      <div>
-                        <h3 class="text-lg font-medium text-gray-900">{food.name}</h3>
-                        <p class="text-sm text-gray-500">
-                          {food.servingSizeValue}{food.servingSizeUnit} per serving
-                          {food.upcCode && ` | UPC: ${food.upcCode}`}
-                        </p>
-                      </div>
-                      <div class="text-right">
-                        <p class="text-lg font-semibold text-gray-900">{food.calories} cal</p>
-                        <p class="text-sm text-gray-500">
-                          P: {food.protein || 0}g | C: {food.carbohydrates || 0}g | F: {food.totalFat || 0}g
-                        </p>
-                      </div>
-                    </div>
-                  </a>
+                  />
                 </li>
               ))}
             </ul>
@@ -298,30 +291,17 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               <ul class="divide-y divide-gray-200">
                 {systemResults.map((food) => (
                   <li key={food.id}>
-                    <a
+                    <FoodResultRow
+                      name={food.name}
+                      calories={food.calories}
+                      protein={food.protein}
+                      carbohydrates={food.carbohydrates}
+                      totalFat={food.totalFat}
+                      servingSizeValue={food.servingSizeValue}
+                      servingSizeUnit={food.servingSizeUnit}
+                      badge={<SourceBadge label="USDA" />}
                       href={`/foods/${food.id}`}
-                      class="block hover:bg-gray-50 px-6 py-4"
-                    >
-                      <div class="flex items-center justify-between">
-                        <div>
-                          <div class="flex items-center gap-2">
-                            <h3 class="text-lg font-medium text-gray-900">{food.name}</h3>
-                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-700">
-                              USDA
-                            </span>
-                          </div>
-                          <p class="text-sm text-gray-500">
-                            {food.servingSizeValue}{food.servingSizeUnit} per serving
-                          </p>
-                        </div>
-                        <div class="text-right">
-                          <p class="text-lg font-semibold text-gray-900">{food.calories} cal</p>
-                          <p class="text-sm text-gray-500">
-                            P: {food.protein || 0}g | C: {food.carbohydrates || 0}g | F: {food.totalFat || 0}g
-                          </p>
-                        </div>
-                      </div>
-                    </a>
+                    />
                   </li>
                 ))}
               </ul>
@@ -348,32 +328,18 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               <ul class="divide-y divide-gray-200">
                 {communityResults.map((food) => (
                   <li key={food.id}>
-                    <button
-                      type="button"
+                    <FoodResultRow
+                      name={food.name}
+                      calories={food.calories}
+                      protein={food.protein}
+                      carbohydrates={food.carbohydrates}
+                      totalFat={food.totalFat}
+                      servingSizeValue={food.servingSizeValue}
+                      servingSizeUnit={food.servingSizeUnit}
+                      upcCode={food.upcCode}
+                      badge={<SourceBadge label="Community" />}
                       onClick={() => saveCommunityFood(food)}
-                      class="block w-full text-left hover:bg-gray-50 px-6 py-4"
-                    >
-                      <div class="flex items-center justify-between">
-                        <div>
-                          <div class="flex items-center gap-2">
-                            <h3 class="text-lg font-medium text-gray-900">{food.name}</h3>
-                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-100 text-purple-700">
-                              Community
-                            </span>
-                          </div>
-                          <p class="text-sm text-gray-500">
-                            {food.servingSizeValue}{food.servingSizeUnit} per serving
-                            {food.upcCode && ` | UPC: ${food.upcCode}`}
-                          </p>
-                        </div>
-                        <div class="text-right">
-                          <p class="text-lg font-semibold text-gray-900">{food.calories} cal</p>
-                          <p class="text-sm text-gray-500">
-                            P: {food.protein || 0}g | C: {food.carbohydrates || 0}g | F: {food.totalFat || 0}g
-                          </p>
-                        </div>
-                      </div>
-                    </button>
+                    />
                   </li>
                 ))}
               </ul>
@@ -400,26 +366,17 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               <ul class="divide-y divide-gray-200">
                 {offResults.map((result) => (
                   <li key={result.barcode}>
-                    <div class="flex items-center justify-between hover:bg-gray-50 px-6 py-4">
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <h3 class="text-lg font-medium text-gray-900 truncate">{result.productName}</h3>
-                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-orange-100 text-orange-700 shrink-0">
-                            Open Food Facts
-                          </span>
-                        </div>
-                        <p class="text-sm text-gray-500">
-                          {result.food.servingSizeValue}{result.food.servingSizeUnit} per serving
-                          {result.barcode && ` | UPC: ${result.barcode}`}
-                        </p>
-                      </div>
-                      <div class="flex items-center gap-4 ml-4 shrink-0">
-                        <div class="text-right">
-                          <p class="text-lg font-semibold text-gray-900">{result.food.calories} cal</p>
-                          <p class="text-sm text-gray-500">
-                            P: {result.food.protein || 0}g | C: {result.food.carbohydrates || 0}g | F: {result.food.totalFat || 0}g
-                          </p>
-                        </div>
+                    <FoodResultRow
+                      name={result.productName}
+                      calories={result.food.calories}
+                      protein={result.food.protein}
+                      carbohydrates={result.food.carbohydrates}
+                      totalFat={result.food.totalFat}
+                      servingSizeValue={result.food.servingSizeValue}
+                      servingSizeUnit={result.food.servingSizeUnit}
+                      upcCode={result.barcode}
+                      badge={<SourceBadge label="Open Food Facts" />}
+                      action={
                         <button
                           type="button"
                           onClick={() => saveOffFood(result)}
@@ -428,8 +385,8 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                         >
                           {savingBarcode === result.barcode ? "Saving..." : "Save"}
                         </button>
-                      </div>
-                    </div>
+                      }
+                    />
                   </li>
                 ))}
               </ul>

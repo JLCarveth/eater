@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import type { NutritionRecordWithSource } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
+import SourceBadge from "../components/SourceBadge.tsx";
 
 type Source = "all" | "user" | "system" | "off";
 
@@ -189,21 +190,9 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5">
                       <span class="text-sm font-medium text-gray-900 truncate">{food.name}</span>
-                      {food.isSystem && (
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-700 flex-shrink-0">
-                          USDA
-                        </span>
-                      )}
-                      {food.source === "recipe" && (
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-100 text-indigo-700 flex-shrink-0">
-                          Recipe
-                        </span>
-                      )}
-                      {(food as NutritionRecordWithSource & { isOff?: boolean }).isOff && (
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-orange-100 text-orange-700 flex-shrink-0">
-                          OFF
-                        </span>
-                      )}
+                      {food.isSystem && <SourceBadge label="USDA" shrink />}
+                      {food.source === "recipe" && <SourceBadge label="Recipe" shrink />}
+                      {(food as NutritionRecordWithSource & { isOff?: boolean }).isOff && <SourceBadge label="OFF" shrink />}
                     </div>
                   </div>
                   <span class="text-xs text-gray-500 ml-2 flex-shrink-0">
