@@ -68,7 +68,7 @@ export default function Layout({ Component, state }: PageProps) {
                   >
                     {user.displayName || user.email}
                   </a>
-                  <form action="/api/auth/logout" method="POST">
+                  <form action="/api/auth/logout" method="POST" class="flex items-center">
                     <button
                       type="submit"
                       class="text-sm font-medium text-gray-700 hover:text-primary-600"
