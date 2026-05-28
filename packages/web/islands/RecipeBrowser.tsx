@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import type { RecipeWithIngredients } from "@nutrition-llama/shared";
+import { Card } from "../components/ui/index.ts";
 
 interface Props {
   initialRecipes: RecipeWithIngredients[];
@@ -47,7 +48,7 @@ export default function RecipeBrowser({ initialRecipes }: Props) {
       {filtered.length === 0 ? (
         <p class="text-center text-gray-500 py-8">No recipes match your search.</p>
       ) : (
-        <div class="bg-white shadow rounded-lg divide-y divide-gray-200">
+        <Card padding="none" class="divide-y divide-gray-200">
           {filtered.map((recipe) => (
             <a
               key={recipe.id}
@@ -87,7 +88,7 @@ export default function RecipeBrowser({ initialRecipes }: Props) {
               </div>
             </a>
           ))}
-        </div>
+        </Card>
       )}
     </div>
   );

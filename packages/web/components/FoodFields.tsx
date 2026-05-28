@@ -1,4 +1,4 @@
-import { Button } from "./ui/index.ts";
+import { Button, Card } from "./ui/index.ts";
 
 interface FoodFieldsProps {
   name: string;
@@ -47,7 +47,7 @@ export default function FoodFields({
 }: FoodFieldsProps) {
   return (
     <>
-      <div class="bg-white shadow rounded-lg p-6 space-y-4">
+      <Card class="space-y-4">
         <h3 class="text-lg font-medium text-gray-900">Basic Info</h3>
 
         <div>
@@ -121,9 +121,9 @@ export default function FoodFields({
             />
           )}
         </div>
-      </div>
+      </Card>
 
-      <div class="bg-white shadow rounded-lg p-6 space-y-4">
+      <Card class="space-y-4">
         <h3 class="text-lg font-medium text-gray-900">Nutrition Facts</h3>
 
         <div>
@@ -225,7 +225,7 @@ export default function FoodFields({
             class={inputClass}
           />
         </div>
-      </div>
+      </Card>
     </>
   );
 }

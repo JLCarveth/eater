@@ -6,6 +6,7 @@ import { getDailySummary, getUserGoals } from "../utils/db.ts";
 import MacroProgressBar from "../islands/MacroProgressBar.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
+import { Card } from "../components/ui/index.ts";
 
 interface DashboardData {
   user: User;
@@ -122,7 +123,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
 
         {/* Goals Progress */}
         {goals ? (
-          <div class="bg-white shadow rounded-lg p-6 mb-8">
+          <Card class="mb-8">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-semibold text-gray-900">Daily Progress</h2>
               <a href="/goals" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
@@ -156,7 +157,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
                 color="blue"
               />
             </div>
-          </div>
+          </Card>
         ) : (
           <div class="bg-primary-50 border border-primary-200 rounded-lg p-6 mb-8">
             <div class="flex items-center justify-between">
@@ -177,7 +178,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
         )}
 
         {/* Daily Summary */}
-        <div class="bg-white shadow rounded-lg p-6">
+        <Card>
           <h2 class="text-xl font-semibold text-gray-900 mb-4">Today's Summary</h2>
 
           {summary && summary.entries.length > 0 ? (
@@ -229,7 +230,7 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
               </a>
             </div>
           )}
-        </div>
+        </Card>
       </PageShell>
     </>
   );

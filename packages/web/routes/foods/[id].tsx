@@ -7,6 +7,7 @@ import FoodLogForm from "../../islands/FoodLogForm.tsx";
 import DeleteButton from "../../islands/DeleteButton.tsx";
 import PageShell from "../../components/PageShell.tsx";
 import BackLink from "../../components/BackLink.tsx";
+import { Card } from "../../components/ui/index.ts";
 
 interface FoodDetailData {
   user: User;
@@ -63,7 +64,7 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
         </div>
 
         {!food.isSystem && (
-          <div class="bg-white shadow rounded-lg p-6 mb-6">
+          <Card class="mb-6">
             <div class="flex gap-3">
               <a
                 href={`/foods/${food.id}/edit`}
@@ -73,10 +74,10 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
               </a>
               <DeleteButton itemId={String(food.id)} itemName={food.name} apiPath="/api/foods" redirectTo="/foods" label="Food" />
             </div>
-          </div>
+          </Card>
         )}
 
-        <div class="bg-white shadow rounded-lg p-6">
+        <Card>
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Log This Food</h2>
           <FoodLogForm
             mode="log"
@@ -95,7 +96,7 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
               servingSizeUnit: food.servingSizeUnit,
             }}
           />
-        </div>
+        </Card>
       </PageShell>
     </>
   );

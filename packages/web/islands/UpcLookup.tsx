@@ -2,7 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "preact/compat";
 import type { NutritionRecord } from "@nutrition-llama/shared";
 import FoodLogForm from "./FoodLogForm.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, Card } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -244,7 +244,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
           </div>
 
           {/* Manual Entry */}
-          <div class="bg-white shadow rounded-lg p-6">
+          <Card>
             <h3 class="text-sm font-medium text-gray-700 mb-3">Or enter UPC manually</h3>
             <div class="flex gap-3">
               <input
@@ -263,7 +263,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                 Look Up
               </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 
@@ -297,7 +297,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
       {state === "found" && food && (
         <div class="space-y-6">
           {/* Food Card */}
-          <div class="bg-white shadow rounded-lg p-6">
+          <Card>
             <div class="flex items-start justify-between mb-4">
               <div>
                 <h3 class="text-lg font-semibold text-gray-900">{food.name}</h3>
@@ -331,11 +331,11 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
             {food.upcCode && (
               <p class="text-xs text-gray-400">UPC: {food.upcCode}</p>
             )}
-          </div>
+          </Card>
 
           {/* Save to My Foods (for community/OFF results) */}
           {isUnsaved && (
-            <div class="bg-white shadow rounded-lg p-6 space-y-4">
+            <Card class="space-y-4">
               <h3 class="text-lg font-medium text-gray-900">Save This Food</h3>
               <p class="text-sm text-gray-500">
                 Save this food to your collection so you can quickly log it in the future.
@@ -361,12 +361,12 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
               >
                 Save to My Foods
               </Button>
-            </div>
+            </Card>
           )}
 
           {/* Log Form (only when food is saved / has an id) */}
           {!isUnsaved && food.id && (
-            <div class="bg-white shadow rounded-lg p-6">
+            <Card>
               <h3 class="text-lg font-semibold text-gray-900 mb-4">Log This Food</h3>
               <FoodLogForm
                 mode="log"
@@ -385,7 +385,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                   servingSizeUnit: food.servingSizeUnit,
                 }}
               />
-            </div>
+            </Card>
           )}
 
           {/* Try Another */}
@@ -412,7 +412,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
             </p>
           </div>
 
-          <div class="bg-white shadow rounded-lg p-6 space-y-4">
+          <Card class="space-y-4">
             <h3 class="text-lg font-medium text-gray-900">What would you like to do?</h3>
 
             <a
@@ -461,7 +461,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                 <p class="text-sm text-gray-500">Scan or enter a different code</p>
               </div>
             </Button>
-          </div>
+          </Card>
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import type { NutritionRecord, NutritionRecordWithSource } from "@nutrition-llam
 import type { OffSearchResult } from "../utils/openfoodfacts.ts";
 import FoodResultRow from "../components/FoodResultRow.tsx";
 import SourceBadge from "../components/SourceBadge.tsx";
-import { Alert, Button } from "../components/ui/index.ts";
+import { Alert, Button, Card } from "../components/ui/index.ts";
 
 type Tab = "user" | "system" | "community" | "off";
 
@@ -246,7 +246,7 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
       {/* Results */}
       {tab === "user" ? (
         filteredUserFoods.length > 0 ? (
-          <div class="bg-white shadow rounded-lg overflow-hidden">
+          <Card padding="none" class="overflow-hidden">
             <ul class="divide-y divide-gray-200">
               {filteredUserFoods.map((food) => (
                 <li key={food.id}>
@@ -264,25 +264,25 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         ) : (
-          <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+          <Card padding="lg" class="text-center text-gray-500">
             {searchQuery ? "No matching foods found" : "No foods saved yet"}
-          </div>
+          </Card>
         )
       ) : tab === "system" ? (
         /* System / USDA tab */
         <>
           {searchQuery.length < 2 ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Type at least 2 characters to search USDA Foundation Foods
-            </div>
+            </Card>
           ) : systemLoading ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Searching...
-            </div>
+            </Card>
           ) : systemResults.length > 0 ? (
-            <div class="bg-white shadow rounded-lg overflow-hidden">
+            <Card padding="none" class="overflow-hidden">
               <ul class="divide-y divide-gray-200">
                 {systemResults.map((food) => (
                   <li key={food.id}>
@@ -300,26 +300,26 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Card>
           ) : (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               No USDA foods found for "{searchQuery}"
-            </div>
+            </Card>
           )}
         </>
       ) : tab === "community" ? (
         /* Community tab */
         <>
           {searchQuery.length < 2 ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Type at least 2 characters to search community foods
-            </div>
+            </Card>
           ) : communityLoading ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Searching...
-            </div>
+            </Card>
           ) : communityResults.length > 0 ? (
-            <div class="bg-white shadow rounded-lg overflow-hidden">
+            <Card padding="none" class="overflow-hidden">
               <ul class="divide-y divide-gray-200">
                 {communityResults.map((food) => (
                   <li key={food.id}>
@@ -338,26 +338,26 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Card>
           ) : (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               No community foods found for "{searchQuery}"
-            </div>
+            </Card>
           )}
         </>
       ) : (
         /* Open Food Facts tab */
         <>
           {searchQuery.length < 2 ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Type at least 2 characters to search Open Food Facts
-            </div>
+            </Card>
           ) : offLoading ? (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               Searching...
-            </div>
+            </Card>
           ) : offResults.length > 0 ? (
-            <div class="bg-white shadow rounded-lg overflow-hidden">
+            <Card padding="none" class="overflow-hidden">
               <ul class="divide-y divide-gray-200">
                 {offResults.map((result) => (
                   <li key={result.barcode}>
@@ -387,11 +387,11 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                   </li>
                 ))}
               </ul>
-            </div>
+            </Card>
           ) : (
-            <div class="bg-white shadow rounded-lg p-8 text-center text-gray-500">
+            <Card padding="lg" class="text-center text-gray-500">
               No results found for "{searchQuery}"
-            </div>
+            </Card>
           )}
         </>
       )}

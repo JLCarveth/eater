@@ -8,6 +8,7 @@ import DeleteButton from "../../islands/DeleteButton.tsx";
 import PageShell from "../../components/PageShell.tsx";
 import BackLink from "../../components/BackLink.tsx";
 import NutritionFactsPanel from "../../components/NutritionFactsPanel.tsx";
+import { Card } from "../../components/ui/index.ts";
 
 interface RecipeDetailData {
   user: User;
@@ -60,7 +61,7 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
         </div>
 
         {/* Actions */}
-        <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <Card class="mb-6">
           <div class="flex gap-3">
             <a
               href={`/recipes/${recipe.id}/edit`}
@@ -70,10 +71,10 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
             </a>
             <DeleteButton itemId={recipe.id} itemName={recipe.name} apiPath="/api/recipes" redirectTo="/recipes" label="Recipe" />
           </div>
-        </div>
+        </Card>
 
         {/* Ingredients */}
-        <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <Card class="mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">
             Ingredients ({recipe.ingredients.length})
           </h2>
@@ -92,10 +93,10 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
 
         {/* Per-serving nutrition */}
-        <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <Card class="mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Nutrition Facts (per serving)</h2>
           <NutritionFactsPanel
             calories={nr.calories}
@@ -107,10 +108,10 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
             sugars={nr.sugars}
             protein={nr.protein}
           />
-        </div>
+        </Card>
 
         {/* Log this recipe */}
-        <div class="bg-white shadow rounded-lg p-6">
+        <Card>
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Log This Recipe</h2>
           <FoodLogForm
             mode="log"
@@ -129,7 +130,7 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
               servingSizeUnit: "serving",
             }}
           />
-        </div>
+        </Card>
       </PageShell>
     </>
   );

@@ -3,7 +3,7 @@ import type { NutritionData } from "@nutrition-llama/shared";
 import ImageCropper from "./ImageCropper.tsx";
 import { trackEvent } from "../utils/analytics.ts";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, Card } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -271,7 +271,7 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
       {/* Results State */}
       {state === "results" && analysisResult && (
         <div class="space-y-6">
-          <div class="bg-white shadow rounded-lg p-6">
+          <Card>
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-semibold text-gray-900">Extracted Nutrition Data</h3>
               <span class="text-xs text-gray-500">Click any value to edit</span>
@@ -488,9 +488,9 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
 
-          <div class="bg-white shadow rounded-lg p-6 space-y-4">
+          <Card class="space-y-4">
             <h3 class="text-lg font-semibold text-gray-900">Save This Food</h3>
 
             <div>
@@ -552,7 +552,7 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
                 {saving ? "Saving..." : "Save Food"}
               </Button>
             </div>
-          </div>
+          </Card>
         </div>
       )}
 

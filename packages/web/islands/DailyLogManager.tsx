@@ -3,7 +3,7 @@ import type { DailySummary, MealType, NutritionRecordWithSource, FoodLogEntryWit
 import FoodSearch from "./FoodSearch.tsx";
 
 import MacroProgressBar from "./MacroProgressBar.tsx";
-import { Alert, Button } from "../components/ui/index.ts";
+import { Alert, Button, Card } from "../components/ui/index.ts";
 
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 import { trackEvent } from "../utils/analytics.ts";
@@ -316,7 +316,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
       {/* Summary Cards */}
       {summary && (
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white shadow-sm rounded-lg p-5 border border-gray-200 hover:shadow-md transition-shadow">
+          <Card padding="none" class="p-5 border border-gray-200 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-2">
               <p class="text-sm font-medium text-gray-600">Calories</p>
               <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -324,7 +324,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               </svg>
             </div>
             <p class="text-3xl font-bold text-gray-900">{Math.round(summary.totalCalories || 0)}</p>
-          </div>
+          </Card>
           <div class="bg-gradient-to-br from-red-50 to-red-100 shadow-sm rounded-lg p-5 border border-red-200 hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between mb-2">
               <p class="text-sm font-medium text-red-700">Protein</p>
@@ -357,7 +357,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
 
       {/* Goals Progress Bars */}
       {goals && summary && (
-        <div class="bg-white shadow-sm rounded-lg border border-gray-200 p-6">
+        <Card class="border border-gray-200">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-semibold text-gray-900">Goal Progress</h3>
             <a href="/goals" class="text-sm text-primary-600 hover:text-primary-700 font-medium">
@@ -391,12 +391,12 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               color="blue"
             />
           </div>
-        </div>
+        </Card>
       )}
 
       {/* Detailed Nutrient Breakdown - Collapsible */}
       {summary && (
-        <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        <Card padding="none" class="border border-gray-200 overflow-hidden">
           <Button
             variant="bare"
             onClick={() => setShowNutrientDetails(!showNutrientDetails)}
@@ -467,11 +467,11 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               </div>
             </div>
           )}
-        </div>
+        </Card>
       )}
 
       {/* Add Entry Button / Form */}
-      <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+      <Card padding="none" class="border border-gray-200 overflow-hidden">
         {!showAddForm ? (
           <Button
             variant="bare"
@@ -762,7 +762,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
             </Button>
           </form>
         )}
-      </div>
+      </Card>
 
       {/* Barcode Scanner Modal */}
       {showBarcodeScanner && (
@@ -790,7 +790,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
           );
 
           return (
-            <div key={mealType} class={`bg-white shadow-sm rounded-lg border-l-4 ${config.borderColor} overflow-hidden`}>
+            <Card padding="none" key={mealType} class={`border-l-4 ${config.borderColor} overflow-hidden`}>
               {/* Meal Header */}
               <div class={`${config.bgColor} px-6 py-3 border-b ${config.borderColor}`}>
                 <div class="flex items-center justify-between">
@@ -935,7 +935,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                   </Button>
                 </div>
               )}
-            </div>
+            </Card>
           );
         })}
       </div>

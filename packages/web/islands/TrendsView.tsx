@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import type { WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
-import { Alert, Button } from "../components/ui/index.ts";
+import { Alert, Button, Card } from "../components/ui/index.ts";
 
 type Period = "week" | "month" | "3month";
 type WeightUnit = "kg" | "lbs";
@@ -40,16 +40,16 @@ function PeriodSelector({ period, onChange }: { period: Period; onChange: (p: Pe
 function StreakDisplay({ currentStreak, longestStreak }: { currentStreak: number; longestStreak: number }) {
   return (
     <div class="grid grid-cols-2 gap-4 max-w-md">
-      <div class="bg-white shadow rounded-lg p-5 text-center">
+      <Card padding="none" class="p-5 text-center">
         <p class="text-3xl font-bold text-primary-600">{currentStreak}</p>
         <p class="text-sm text-gray-500 mt-1">Current Streak</p>
         <p class="text-xs text-gray-400">consecutive days</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-5 text-center">
+      </Card>
+      <Card padding="none" class="p-5 text-center">
         <p class="text-3xl font-bold text-yellow-500">{longestStreak}</p>
         <p class="text-sm text-gray-500 mt-1">Longest Streak</p>
         <p class="text-xs text-gray-400">consecutive days</p>
-      </div>
+      </Card>
     </div>
   );
 }
@@ -107,7 +107,7 @@ function CalorieChart({ calorieTrend, loading }: { calorieTrend: TrendsData["cal
   }, [calorieTrend]);
 
   return (
-    <div class="bg-white shadow rounded-lg p-6">
+    <Card>
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Daily Calories</h2>
       {loading ? (
         <div class="h-64 flex items-center justify-center text-gray-400">Loading...</div>
@@ -120,7 +120,7 @@ function CalorieChart({ calorieTrend, loading }: { calorieTrend: TrendsData["cal
           <canvas ref={canvasRef} />
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -192,7 +192,7 @@ function WeightChart({
   }, [weightLog, weightUnit]);
 
   return (
-    <div class="bg-white shadow rounded-lg p-6">
+    <Card>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-900">Weight</h2>
         <select
@@ -215,7 +215,7 @@ function WeightChart({
           <canvas ref={canvasRef} />
         </div>
       )}
-    </div>
+    </Card>
   );
 }
 
@@ -264,7 +264,7 @@ function WeightEntryForm({
   };
 
   return (
-    <div class="bg-white shadow rounded-lg p-6">
+    <Card>
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Log Weight</h2>
 
       {error && <Alert variant="error" message={error} />}
@@ -327,7 +327,7 @@ function WeightEntryForm({
           {saving ? "Saving..." : "Log Weight"}
         </Button>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -343,7 +343,7 @@ function WeightHistoryTable({
   if (weightLog.length === 0) return null;
 
   return (
-    <div class="bg-white shadow rounded-lg p-6">
+    <Card>
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Weight History</h2>
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
@@ -388,7 +388,7 @@ function WeightHistoryTable({
           </tbody>
         </table>
       </div>
-    </div>
+    </Card>
   );
 }
 

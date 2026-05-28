@@ -6,6 +6,7 @@ import { getUserGoals } from "../utils/db.ts";
 import GoalSetup from "../islands/GoalSetup.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
+import { Card } from "../components/ui/index.ts";
 
 interface GoalsData {
   user: User;
@@ -43,9 +44,9 @@ export default function GoalsPage({ data }: PageProps<GoalsData>) {
           titleSize="3xl"
           subtitle="Set your daily calorie and macro targets to track your progress."
         />
-        <div class="bg-white shadow rounded-lg p-6">
+        <Card>
           <GoalSetup existingGoals={goals} />
-        </div>
+        </Card>
       </PageShell>
     </>
   );

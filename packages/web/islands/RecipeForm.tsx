@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import type { NutritionRecordWithSource, ServingSizeUnit } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, Card } from "../components/ui/index.ts";
 
 interface IngredientLine {
   nutritionRecordId: string;
@@ -197,7 +197,7 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
       <ErrorAlert error={error} />
 
       {/* Basic info */}
-      <div class="bg-white shadow rounded-lg p-6 space-y-4">
+      <Card class="space-y-4">
         <h3 class="text-lg font-medium text-gray-900">Recipe Details</h3>
 
         <div>
@@ -238,10 +238,10 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
             class="mt-1 block w-full sm:w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
           />
         </div>
-      </div>
+      </Card>
 
       {/* Ingredients */}
-      <div class="bg-white shadow rounded-lg p-6 space-y-4">
+      <Card class="space-y-4">
         <h3 class="text-lg font-medium text-gray-900">Ingredients</h3>
 
         <div>
@@ -320,11 +320,11 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
             No ingredients added yet. Search for foods above.
           </p>
         )}
-      </div>
+      </Card>
 
       {/* Live nutrition preview */}
       {ingredients.length > 0 && (
-        <div class="bg-white shadow rounded-lg p-6">
+        <Card>
           <h3 class="text-lg font-medium text-gray-900 mb-4">
             Nutrition Preview
             <span class="font-normal text-gray-500 text-sm ml-2">per serving</span>
@@ -347,7 +347,7 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
               <p class="text-xs text-blue-500 mt-1">Fat</p>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       <Button
