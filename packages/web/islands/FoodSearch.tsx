@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import type { NutritionRecordWithSource } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
 import SourceBadge from "../components/SourceBadge.tsx";
+import { Button } from "../components/ui/index.ts";
 
 type Source = "all" | "user" | "system" | "off";
 
@@ -136,18 +137,18 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
     <div ref={containerRef} class="relative">
       {/* Source Tabs */}
       <div class="flex gap-1 mb-2 bg-gray-50 rounded-lg p-1">
-        <button type="button" onClick={() => handleSourceChange("all")} class={tabClass("all")}>
+        <Button variant="bare" type="button" onClick={() => handleSourceChange("all")} class={tabClass("all")}>
           All
-        </button>
-        <button type="button" onClick={() => handleSourceChange("user")} class={tabClass("user")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => handleSourceChange("user")} class={tabClass("user")}>
           My Foods{counts.user > 0 ? ` (${counts.user})` : ""}
-        </button>
-        <button type="button" onClick={() => handleSourceChange("system")} class={tabClass("system")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => handleSourceChange("system")} class={tabClass("system")}>
           USDA Foods{counts.system > 0 ? ` (${counts.system})` : ""}
-        </button>
-        <button type="button" onClick={() => handleSourceChange("off")} class={tabClass("off")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => handleSourceChange("off")} class={tabClass("off")}>
           OpenFoodFacts
-        </button>
+        </Button>
       </div>
 
       {/* Search Input */}

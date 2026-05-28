@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import type { NutritionRecordWithSource, ServingSizeUnit } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
+import { Button } from "../components/ui/index.ts";
 
 interface IngredientLine {
   nutritionRecordId: string;
@@ -297,16 +298,17 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
                       ) : (
                         <span class="text-xs text-gray-500 whitespace-nowrap">servings</span>
                       )}
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleRemoveIngredient(idx)}
-                        class="p-1 text-gray-400 hover:text-red-600 rounded"
                         title="Remove"
                       >
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </li>
@@ -348,13 +350,15 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
         </div>
       )}
 
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        loading={loading}
         disabled={loading}
-        class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full"
       >
         {loading ? "Saving..." : mode === "create" ? "Create Recipe" : "Save Changes"}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -3,6 +3,7 @@ import type { NutritionRecord, NutritionRecordWithSource } from "@nutrition-llam
 import type { OffSearchResult } from "../utils/openfoodfacts.ts";
 import FoodResultRow from "../components/FoodResultRow.tsx";
 import SourceBadge from "../components/SourceBadge.tsx";
+import { Button } from "../components/ui/index.ts";
 
 type Tab = "user" | "system" | "community" | "off";
 
@@ -215,18 +216,18 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
     <div>
       {/* Tabs */}
       <div class="flex gap-1 border-b border-gray-200 mb-4 flex-wrap">
-        <button type="button" onClick={() => setTab("user")} class={tabClass("user")}>
+        <Button variant="bare" type="button" onClick={() => setTab("user")} class={tabClass("user")}>
           My Foods ({initialFoods.length})
-        </button>
-        <button type="button" onClick={() => setTab("system")} class={tabClass("system")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => setTab("system")} class={tabClass("system")}>
           USDA Foods{systemCount > 0 ? ` (${systemCount})` : ""}
-        </button>
-        <button type="button" onClick={() => setTab("community")} class={tabClass("community")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => setTab("community")} class={tabClass("community")}>
           Community{communityCount > 0 ? ` (${communityCount})` : ""}
-        </button>
-        <button type="button" onClick={() => setTab("off")} class={tabClass("off")}>
+        </Button>
+        <Button variant="bare" type="button" onClick={() => setTab("off")} class={tabClass("off")}>
           Open Food Facts
-        </button>
+        </Button>
       </div>
 
       {/* Search */}
@@ -244,7 +245,7 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
       {saveError && (
         <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm flex justify-between">
           <span>{saveError}</span>
-          <button type="button" onClick={() => setSaveError(null)} class="ml-2 font-medium">✕</button>
+          <Button type="button" variant="ghost" size="sm" onClick={() => setSaveError(null)} class="ml-2">✕</Button>
         </div>
       )}
 
@@ -377,14 +378,16 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                       upcCode={result.barcode}
                       badge={<SourceBadge label="Open Food Facts" />}
                       action={
-                        <button
+                        <Button
                           type="button"
+                          variant="primary"
+                          size="sm"
                           onClick={() => saveOffFood(result)}
+                          loading={savingBarcode === result.barcode}
                           disabled={savingBarcode === result.barcode}
-                          class="px-3 py-1.5 text-sm font-medium rounded-md bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           {savingBarcode === result.barcode ? "Saving..." : "Save"}
-                        </button>
+                        </Button>
                       }
                     />
                   </li>

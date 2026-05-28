@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { detectBarcodesFromVideo } from "../utils/barcode.ts";
 import { trackEvent } from "../utils/analytics.ts";
+import { Button } from "../components/ui/index.ts";
 
 interface BarcodeScannerProps {
   onScan: (code: string) => void;
@@ -113,15 +114,17 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
         {/* Header */}
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-medium text-white">Scan Barcode</h3>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={handleClose}
-            class="p-2 text-white hover:text-gray-300"
             aria-label="Close scanner"
           >
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Camera View */}
@@ -180,12 +183,14 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
         </p>
 
         {/* Cancel button */}
-        <button
+        <Button
+          type="button"
+          variant="secondary"
           onClick={handleClose}
-          class="mt-4 w-full px-4 py-2 border border-gray-600 text-sm font-medium rounded-md text-gray-300 bg-gray-800 hover:bg-gray-700"
+          class="mt-4 w-full"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

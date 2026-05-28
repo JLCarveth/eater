@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { Button } from "./ui/index.ts";
 
 interface FoodResultRowProps {
   name: string;
@@ -57,9 +58,9 @@ export default function FoodResultRow({
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} class="block w-full text-left hover:bg-gray-50 px-6 py-4">
+      <Button variant="bare" type="button" onClick={onClick} class="block w-full text-left hover:bg-gray-50 px-6 py-4">
         <div class="flex items-center justify-between">{left}{right}</div>
-      </button>
+      </Button>
     );
   }
 

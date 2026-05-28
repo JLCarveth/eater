@@ -1,6 +1,7 @@
 import { useState } from "preact/hooks";
 import type { UserGoals } from "@nutrition-llama/shared";
 import ErrorAlert from "../components/ErrorAlert.tsx";
+import { Button } from "../components/ui/index.ts";
 
 interface GoalSetupProps {
   existingGoals: UserGoals | null;
@@ -163,7 +164,8 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
 
       {/* Mode Toggle */}
       <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
-        <button
+        <Button
+          variant="bare"
           type="button"
           onClick={() => { setMode("calculator"); setCalculated(false); }}
           class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md transition-all ${
@@ -173,8 +175,9 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
           }`}
         >
           TDEE Calculator
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="bare"
           type="button"
           onClick={() => setMode("manual")}
           class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md transition-all ${
@@ -184,7 +187,7 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
           }`}
         >
           Manual Entry
-        </button>
+        </Button>
       </div>
 
       {mode === "calculator" && !calculated && (
@@ -194,8 +197,9 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
             <label class="block text-sm font-medium text-gray-700 mb-2">Sex</label>
             <div class="flex gap-3">
               {(["male", "female"] as Sex[]).map((s) => (
-                <button
+                <Button
                   key={s}
+                  variant="bare"
                   type="button"
                   onClick={() => setSex(s)}
                   class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md border transition-all ${
@@ -205,7 +209,7 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
                   }`}
                 >
                   {s.charAt(0).toUpperCase() + s.slice(1)}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -277,8 +281,9 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
             <label class="block text-sm font-medium text-gray-700 mb-2">Activity Level</label>
             <div class="space-y-2">
               {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map((level) => (
-                <button
+                <Button
                   key={level}
+                  variant="bare"
                   type="button"
                   onClick={() => setActivityLevel(level)}
                   class={`w-full text-left px-4 py-3 text-sm rounded-md border transition-all ${
@@ -288,18 +293,20 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
                   }`}
                 >
                   {ACTIVITY_LABELS[level]}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="lg"
             onClick={handleCalculate}
-            class="w-full px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition-colors shadow-sm"
+            class="w-full"
           >
             Calculate Goals
-          </button>
+          </Button>
         </div>
       )}
 
@@ -311,13 +318,15 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
               <p class="text-sm text-primary-800">
                 Based on your TDEE calculation. Adjust the values below if needed.
               </p>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => setCalculated(false)}
-                class="mt-2 text-sm font-medium text-primary-600 hover:text-primary-700"
+                class="mt-2"
               >
                 Recalculate
-              </button>
+              </Button>
             </div>
           )}
 
@@ -418,14 +427,17 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
             </div>
           )}
 
-          <button
+          <Button
             type="button"
+            variant="primary"
+            size="lg"
             onClick={handleSave}
+            loading={saving}
             disabled={saving}
-            class="w-full px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+            class="w-full"
           >
             {saving ? "Saving..." : existingGoals ? "Update Goals" : "Save Goals"}
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -4,6 +4,7 @@ import { trackEvent } from "../utils/analytics.ts";
 import ErrorAlert from "../components/ErrorAlert.tsx";
 import FoodFields from "../components/FoodFields.tsx";
 import NutritionFactsPanel from "../components/NutritionFactsPanel.tsx";
+import { Button } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -290,13 +291,15 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
           />
         </div>
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          loading={loading}
           disabled={loading}
-          class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full"
         >
           {loading ? "Logging..." : `Log ${foodName || "Food"}`}
-        </button>
+        </Button>
       </form>
     );
   }
@@ -319,13 +322,15 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
           sodium={sodium} setSodium={setSodium}
           cholesterol={cholesterol} setCholesterol={setCholesterol}
         />
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          loading={loading}
           disabled={loading}
-          class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full"
         >
           {loading ? "Saving..." : "Save Changes"}
-        </button>
+        </Button>
       </form>
     );
   }
@@ -349,13 +354,15 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
         cholesterol={cholesterol} setCholesterol={setCholesterol}
         onScanClick={() => setShowBarcodeScanner(true)}
       />
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        loading={loading}
         disabled={loading}
-        class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="w-full"
       >
         {loading ? "Saving..." : "Save Food"}
-      </button>
+      </Button>
 
       {showBarcodeScanner && (
         <Suspense fallback={<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80"><div class="text-white">Loading scanner...</div></div>}>

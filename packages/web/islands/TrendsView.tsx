@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import type { WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
+import { Button } from "../components/ui/index.ts";
 
 type Period = "week" | "month" | "3month";
 type WeightUnit = "kg" | "lbs";
@@ -18,8 +19,9 @@ function PeriodSelector({ period, onChange }: { period: Period; onChange: (p: Pe
   return (
     <div class="flex gap-2 p-1 bg-gray-100 rounded-lg max-w-md">
       {(["week", "month", "3month"] as Period[]).map((p) => (
-        <button
+        <Button
           key={p}
+          variant="bare"
           type="button"
           onClick={() => onChange(p)}
           class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md transition-all ${
@@ -29,7 +31,7 @@ function PeriodSelector({ period, onChange }: { period: Period; onChange: (p: Pe
           }`}
         >
           {periodLabels[p]}
-        </button>
+        </Button>
       ))}
     </div>
   );
@@ -319,14 +321,15 @@ function WeightEntryForm({
           </div>
         </div>
 
-        <button
+        <Button
           type="button"
-          onClick={handleSubmit}
+          variant="primary"
+          loading={saving}
           disabled={saving}
-          class="px-6 py-2.5 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+          onClick={handleSubmit}
         >
           {saving ? "Saving..." : "Log Weight"}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -375,13 +378,14 @@ function WeightHistoryTable({
                   {entry.bodyFatPct != null ? entry.bodyFatPct + "%" : "-"}
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <button
+                  <Button
                     type="button"
+                    variant="danger"
+                    size="sm"
                     onClick={() => onDelete(entry.id)}
-                    class="text-sm text-red-600 hover:text-red-800"
                   >
                     Delete
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}

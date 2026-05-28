@@ -1,13 +1,10 @@
-import { ComponentChildren } from "preact";
+import { ComponentChildren, JSX } from "preact";
 import { Spinner } from "./Spinner.tsx";
 
-interface ButtonProps {
-  variant?: "primary" | "secondary" | "danger" | "ghost";
+interface ButtonProps extends Omit<JSX.HTMLAttributes<HTMLButtonElement>, "size"> {
+  variant?: "primary" | "secondary" | "danger" | "ghost" | "bare";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
-  disabled?: boolean;
-  type?: "button" | "submit" | "reset";
-  onClick?: () => void;
   children: ComponentChildren;
   class?: string;
 }
@@ -17,6 +14,7 @@ const VARIANT_MAP = {
   secondary: "bg-white hover:bg-gray-50 text-gray-700 border border-gray-300",
   danger: "bg-red-600 hover:bg-red-700 text-white border border-transparent",
   ghost: "bg-transparent hover:bg-gray-100 text-gray-600 hover:text-gray-900 border border-transparent",
+  bare: "",
 };
 
 const SIZE_MAP = {
@@ -31,16 +29,20 @@ export function Button({
   loading = false,
   disabled = false,
   type = "button",
-  onClick,
   children,
   class: cls,
+  ...rest
 }: ButtonProps) {
+  const base = variant === "bare"
+    ? "inline-flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+    : `inline-flex items-center justify-center gap-2 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${VARIANT_MAP[variant]} ${SIZE_MAP[size]}`;
+
   return (
     <button
       type={type}
-      onClick={onClick}
       disabled={disabled || loading}
-      class={`inline-flex items-center justify-center gap-2 font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${VARIANT_MAP[variant]} ${SIZE_MAP[size]}${cls ? ` ${cls}` : ""}`}
+      class={`${base}${cls ? ` ${cls}` : ""}`}
+      {...rest}
     >
       {loading && <Spinner size="sm" />}
       {children}

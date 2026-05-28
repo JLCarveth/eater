@@ -1,4 +1,5 @@
 import { type PageProps } from "$fresh/server.ts";
+import { Button } from "../components/ui/index.ts";
 
 export default function Layout({ Component, state }: PageProps) {
   const user = state?.user;
@@ -69,12 +70,12 @@ export default function Layout({ Component, state }: PageProps) {
                     {user.displayName || user.email}
                   </a>
                   <form action="/api/auth/logout" method="POST" class="flex items-center">
-                    <button
+                    <Button
                       type="submit"
-                      class="text-sm font-medium text-gray-700 hover:text-primary-600"
+                      variant="ghost"
                     >
                       Logout
-                    </button>
+                    </Button>
                   </form>
                 </>
               ) : (

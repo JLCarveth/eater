@@ -3,6 +3,7 @@ import type { DailySummary, MealType, NutritionRecordWithSource, FoodLogEntryWit
 import FoodSearch from "./FoodSearch.tsx";
 
 import MacroProgressBar from "./MacroProgressBar.tsx";
+import { Button } from "../components/ui/index.ts";
 
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 import { trackEvent } from "../utils/analytics.ts";
@@ -318,15 +319,17 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
           <div class="flex-1">
             <p class="text-sm font-medium text-red-800">{error}</p>
           </div>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
             onClick={() => setError("")}
-            class="text-red-400 hover:text-red-600 transition-colors"
             title="Dismiss"
           >
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </Button>
         </div>
       )}
 
@@ -414,7 +417,8 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
       {/* Detailed Nutrient Breakdown - Collapsible */}
       {summary && (
         <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
-          <button
+          <Button
+            variant="bare"
             onClick={() => setShowNutrientDetails(!showNutrientDetails)}
             class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
@@ -432,7 +436,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
             >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
-          </button>
+          </Button>
 
           {showNutrientDetails && (
             <div class="px-6 pb-6 pt-2 border-t border-gray-100">
@@ -489,7 +493,8 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
       {/* Add Entry Button / Form */}
       <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         {!showAddForm ? (
-          <button
+          <Button
+            variant="bare"
             onClick={() => setShowAddForm(true)}
             class="w-full py-4 px-6 border-2 border-dashed border-gray-300 rounded-lg text-gray-700 hover:border-primary-500 hover:bg-primary-50 hover:text-primary-700 transition-all duration-200 font-medium flex items-center justify-center gap-2 group"
           >
@@ -497,26 +502,28 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
             Log Food
-          </button>
+          </Button>
         ) : (
           <form onSubmit={handleAddEntry} class="p-6 space-y-5">
             <div class="flex items-center justify-between">
               <h3 class="text-xl font-semibold text-gray-900">Log Food</h3>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowAddForm(false)}
-                class="text-gray-400 hover:text-gray-600 transition-colors"
                 title="Close"
               >
                 <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </button>
+              </Button>
             </div>
 
             {/* Entry Mode Toggle */}
             <div class="flex gap-2 p-1 bg-gray-100 rounded-lg">
-              <button
+              <Button
+                variant="bare"
                 type="button"
                 onClick={() => setEntryMode("food")}
                 class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md transition-all ${
@@ -531,8 +538,9 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                   </svg>
                   Select Food
                 </div>
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="bare"
                 type="button"
                 onClick={() => setEntryMode("quick")}
                 class={`flex-1 px-4 py-2.5 text-sm font-medium rounded-md transition-all ${
@@ -547,7 +555,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                   </svg>
                   Quick Macros
                 </div>
-              </button>
+              </Button>
             </div>
 
             {entryMode === "food" ? (
@@ -580,16 +588,17 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                           {selectedFood.calories || 0} cal per {selectedFood.servingSizeUnit === "serving" ? "serving" : `${selectedFood.servingSizeValue}${selectedFood.servingSizeUnit}`}
                         </span>
                       </div>
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setSelectedFood(null)}
-                        class="p-1 text-gray-400 hover:text-gray-600"
                         title="Clear selection"
                       >
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                      </button>
+                      </Button>
                     </div>
                   ) : (
                     <div class="space-y-2">
@@ -603,16 +612,17 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                           Looking up barcode...
                         </div>
                       ) : (
-                        <button
+                        <Button
                           type="button"
+                          variant="secondary"
                           onClick={() => setShowBarcodeScanner(true)}
-                          class="w-full flex items-center justify-center gap-2 px-3 py-2 border border-gray-200 rounded-md text-sm text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                          class="w-full"
                         >
                           <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
                           </svg>
                           Scan Barcode
-                        </button>
+                        </Button>
                       )}
                     </div>
                   )}
@@ -753,28 +763,23 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               </>
             )}
 
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="lg"
+              loading={loading}
               disabled={loading || (entryMode === "food" && !selectedFood)}
-              class="w-full px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm hover:shadow-md"
+              class="w-full"
             >
-              {loading ? (
-                <div class="flex items-center justify-center gap-2">
-                  <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Adding...
-                </div>
-              ) : (
-                <div class="flex items-center justify-center gap-2">
+              {loading ? "Adding..." : (
+                <>
                   <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                   </svg>
                   Add to Log
-                </div>
+                </>
               )}
-            </button>
+            </Button>
           </form>
         )}
       </div>
@@ -860,19 +865,22 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                             </div>
                           </div>
                           <div class="flex gap-2">
-                            <button
+                            <Button
+                              type="button"
+                              variant="secondary"
                               onClick={() => setEditingEntry(null)}
-                              class="px-4 py-2 text-sm font-medium border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                             >
                               Cancel
-                            </button>
-                            <button
-                              onClick={() => handleUpdateEntry(entry.id)}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="primary"
+                              loading={loading}
                               disabled={loading}
-                              class="px-4 py-2 text-sm font-medium bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 transition-colors"
+                              onClick={() => handleUpdateEntry(entry.id)}
                             >
                               {loading ? "Saving..." : "Save Changes"}
-                            </button>
+                            </Button>
                           </div>
                         </div>
                       ) : (
@@ -901,24 +909,28 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                               {Math.round((entry.nutritionRecord.calories || 0) * entry.servings)} cal
                             </p>
                             <div class="flex gap-1">
-                              <button
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => startEditEntry(entry)}
-                                class="p-2 text-gray-400 hover:text-primary-600 rounded-md hover:bg-primary-50 transition-colors"
                                 title="Edit entry"
                               >
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
-                              </button>
-                              <button
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
                                 onClick={() => handleDeleteEntry(entry.id)}
-                                class="p-2 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50 transition-colors"
                                 title="Remove entry"
                               >
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
-                              </button>
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -929,15 +941,18 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
               ) : (
                 <div class="px-6 py-8 text-center">
                   <p class="text-sm text-gray-500">No {config.label.toLowerCase()} logged yet</p>
-                  <button
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
                       setShowAddForm(true);
                       setMealType(mealType);
                     }}
-                    class={`mt-2 text-sm font-medium ${config.textColor} hover:underline`}
+                    class="mt-2"
                   >
                     Add {config.label.toLowerCase()}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>

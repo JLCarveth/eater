@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "preact/hooks";
+import { Button } from "../components/ui/index.ts";
 
 interface ImageCropperProps {
   imageSrc: string;
@@ -545,9 +546,10 @@ export default function ImageCropper({
       </div>
 
       <div class="flex justify-center items-center gap-4">
-        <button
+        <Button
+          type="button"
+          variant="secondary"
           onClick={handleRotate}
-          class="flex items-center gap-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           title="Rotate 90°"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -559,7 +561,7 @@ export default function ImageCropper({
             />
           </svg>
           Rotate
-        </button>
+        </Button>
         {zoom > 1.05 && (
           <span class="text-sm text-gray-600 bg-gray-100 px-2 py-1 rounded">
             {zoom.toFixed(1)}x zoom
@@ -572,18 +574,20 @@ export default function ImageCropper({
       </p>
 
       <div class="flex justify-center gap-4">
-        <button
+        <Button
+          type="button"
+          variant="secondary"
           onClick={onCancel}
-          class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
+          type="button"
+          variant="primary"
           onClick={handleApplyCrop}
-          class="px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
         >
           Apply Crop
-        </button>
+        </Button>
       </div>
     </div>
   );

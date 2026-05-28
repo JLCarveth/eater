@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "preact/compat";
 import type { NutritionRecord } from "@nutrition-llama/shared";
 import FoodLogForm from "./FoodLogForm.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
+import { Button } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -230,15 +231,16 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
             <p class="mt-4 text-gray-600">Scan or enter a barcode to find a saved food</p>
-            <button
+            <Button
+              variant="primary"
               onClick={() => setState("scanning")}
-              class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+              class="mt-4"
             >
               <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
               </svg>
               Scan Barcode
-            </button>
+            </Button>
           </div>
 
           {/* Manual Entry */}
@@ -253,13 +255,13 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder="Enter barcode number"
               />
-              <button
+              <Button
+                variant="primary"
                 onClick={() => lookupUpc(upcCode)}
                 disabled={!upcCode.trim()}
-                class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Look Up
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -352,12 +354,13 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                 </label>
               )}
 
-              <button
+              <Button
+                variant="primary"
                 onClick={saveToMyFoods}
-                class="w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                class="w-full"
               >
                 Save to My Foods
-              </button>
+              </Button>
             </div>
           )}
 
@@ -386,12 +389,13 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
           )}
 
           {/* Try Another */}
-          <button
+          <Button
+            variant="secondary"
             onClick={reset}
-            class="w-full px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            class="w-full"
           >
             Scan Another Barcode
-          </button>
+          </Button>
         </div>
       )}
 
@@ -442,7 +446,8 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
               </div>
             </a>
 
-            <button
+            <Button
+              variant="bare"
               onClick={reset}
               class="flex items-center w-full p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
@@ -455,7 +460,7 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                 <h4 class="font-medium text-gray-900">Try Another Barcode</h4>
                 <p class="text-sm text-gray-500">Scan or enter a different code</p>
               </div>
-            </button>
+            </Button>
           </div>
         </div>
       )}
