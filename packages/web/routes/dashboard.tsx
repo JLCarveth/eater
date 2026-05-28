@@ -6,7 +6,7 @@ import { getDailySummary, getUserGoals } from "../utils/db.ts";
 import MacroProgressBar from "../islands/MacroProgressBar.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
-import { Card } from "../components/ui/index.ts";
+import { Card, EmptyState } from "../components/ui/index.ts";
 
 interface DashboardData {
   user: User;
@@ -220,15 +220,17 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
               </ul>
             </>
           ) : (
-            <div class="text-center py-8">
-              <p class="text-gray-500 mb-4">No foods logged today</p>
-              <a
-                href="/foods"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-              >
-                Log Your First Meal
-              </a>
-            </div>
+            <EmptyState
+              title="No foods logged today"
+              action={
+                <a
+                  href="/foods"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+                >
+                  Log Your First Meal
+                </a>
+              }
+            />
           )}
         </Card>
       </PageShell>

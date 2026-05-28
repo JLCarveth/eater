@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import type { NutritionRecordWithSource } from "@nutrition-llama/shared";
 import { trackEvent } from "../utils/analytics.ts";
 import SourceBadge from "../components/SourceBadge.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, EmptyState } from "../components/ui/index.ts";
 
 type Source = "all" | "user" | "system" | "off";
 
@@ -205,13 +205,16 @@ export default function FoodSearch({ onSelect, placeholder = "Search foods..." }
               ))}
             </ul>
           ) : (
-            <div class="px-3 py-4 text-sm text-gray-500 text-center">
-              {loading
-                ? "Searching..."
-                : (source === "system" || source === "off") && query.length < 2
-                ? `Type at least 2 characters to search ${source === "off" ? "OpenFoodFacts" : "USDA foods"}`
-                : "No foods found"}
-            </div>
+            <EmptyState
+              size="sm"
+              title={
+                loading
+                  ? "Searching..."
+                  : (source === "system" || source === "off") && query.length < 2
+                  ? `Type at least 2 characters to search ${source === "off" ? "OpenFoodFacts" : "USDA foods"}`
+                  : "No foods found"
+              }
+            />
           )}
         </div>
       )}

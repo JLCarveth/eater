@@ -5,9 +5,18 @@ interface EmptyStateProps {
   description?: string;
   action?: ComponentChildren;
   icon?: ComponentChildren;
+  size?: "sm" | "md";
 }
 
-export function EmptyState({ title, description, action, icon }: EmptyStateProps) {
+export function EmptyState({ title, description, action, icon, size = "md" }: EmptyStateProps) {
+  if (size === "sm") {
+    return (
+      <div class="px-3 py-4 text-sm text-gray-500 text-center">
+        {title}
+      </div>
+    );
+  }
+
   return (
     <div class="text-center py-12">
       {icon && (

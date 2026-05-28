@@ -3,7 +3,7 @@ import type { NutritionRecord, NutritionRecordWithSource } from "@nutrition-llam
 import type { OffSearchResult } from "../utils/openfoodfacts.ts";
 import FoodResultRow from "../components/FoodResultRow.tsx";
 import SourceBadge from "../components/SourceBadge.tsx";
-import { Alert, Button, Card } from "../components/ui/index.ts";
+import { Alert, Button, Card, EmptyState } from "../components/ui/index.ts";
 
 type Tab = "user" | "system" | "community" | "off";
 
@@ -266,17 +266,15 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
             </ul>
           </Card>
         ) : (
-          <Card padding="lg" class="text-center text-gray-500">
-            {searchQuery ? "No matching foods found" : "No foods saved yet"}
-          </Card>
+          <EmptyState
+            title={searchQuery ? "No matching foods found" : "No foods saved yet"}
+          />
         )
       ) : tab === "system" ? (
         /* System / USDA tab */
         <>
           {searchQuery.length < 2 ? (
-            <Card padding="lg" class="text-center text-gray-500">
-              Type at least 2 characters to search USDA Foundation Foods
-            </Card>
+            <EmptyState title="Type at least 2 characters to search USDA Foundation Foods" />
           ) : systemLoading ? (
             <Card padding="lg" class="text-center text-gray-500">
               Searching...
@@ -302,18 +300,14 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               </ul>
             </Card>
           ) : (
-            <Card padding="lg" class="text-center text-gray-500">
-              No USDA foods found for "{searchQuery}"
-            </Card>
+            <EmptyState title={`No USDA foods found for "${searchQuery}"`} />
           )}
         </>
       ) : tab === "community" ? (
         /* Community tab */
         <>
           {searchQuery.length < 2 ? (
-            <Card padding="lg" class="text-center text-gray-500">
-              Type at least 2 characters to search community foods
-            </Card>
+            <EmptyState title="Type at least 2 characters to search community foods" />
           ) : communityLoading ? (
             <Card padding="lg" class="text-center text-gray-500">
               Searching...
@@ -340,18 +334,14 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               </ul>
             </Card>
           ) : (
-            <Card padding="lg" class="text-center text-gray-500">
-              No community foods found for "{searchQuery}"
-            </Card>
+            <EmptyState title={`No community foods found for "${searchQuery}"`} />
           )}
         </>
       ) : (
         /* Open Food Facts tab */
         <>
           {searchQuery.length < 2 ? (
-            <Card padding="lg" class="text-center text-gray-500">
-              Type at least 2 characters to search Open Food Facts
-            </Card>
+            <EmptyState title="Type at least 2 characters to search Open Food Facts" />
           ) : offLoading ? (
             <Card padding="lg" class="text-center text-gray-500">
               Searching...
@@ -389,9 +379,7 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
               </ul>
             </Card>
           ) : (
-            <Card padding="lg" class="text-center text-gray-500">
-              No results found for "{searchQuery}"
-            </Card>
+            <EmptyState title={`No results found for "${searchQuery}"`} />
           )}
         </>
       )}
