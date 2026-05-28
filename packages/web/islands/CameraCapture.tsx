@@ -3,7 +3,7 @@ import type { NutritionData } from "@nutrition-llama/shared";
 import ImageCropper from "./ImageCropper.tsx";
 import { trackEvent } from "../utils/analytics.ts";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button, Card } from "../components/ui/index.ts";
+import { Button, Card, SelectInput } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -295,7 +295,7 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
                     min="0"
                     step="any"
                   />
-                  <select
+                  <SelectInput
                     value={analysisResult.servingSize.unit}
                     onChange={(e) => {
                       const unit = (e.target as HTMLSelectElement).value as "g" | "ml";
@@ -304,11 +304,11 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
                         servingSize: { ...analysisResult.servingSize, unit }
                       });
                     }}
-                    class="px-2 py-1 text-lg font-medium border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="g">g</option>
-                    <option value="ml">ml</option>
-                  </select>
+                    options={[
+                      { value: "g", label: "g" },
+                      { value: "ml", label: "ml" },
+                    ]}
+                  />
                 </div>
               </div>
 

@@ -1,4 +1,4 @@
-import { Button, Card } from "./ui/index.ts";
+import { Button, Card, SelectInput } from "./ui/index.ts";
 
 interface FoodFieldsProps {
   name: string;
@@ -75,17 +75,15 @@ export default function FoodFields({
               class={inputClass}
             />
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Unit *</label>
-            <select
-              value={servingSizeUnit}
-              onChange={(e) => setServingSizeUnit((e.target as HTMLSelectElement).value as "g" | "ml")}
-              class={inputClass}
-            >
-              <option value="g">grams (g)</option>
-              <option value="ml">milliliters (ml)</option>
-            </select>
-          </div>
+          <SelectInput
+            label="Unit *"
+            value={servingSizeUnit}
+            onChange={(e) => setServingSizeUnit((e.target as HTMLSelectElement).value as "g" | "ml")}
+            options={[
+              { value: "g", label: "grams (g)" },
+              { value: "ml", label: "milliliters (ml)" },
+            ]}
+          />
         </div>
 
         <div>

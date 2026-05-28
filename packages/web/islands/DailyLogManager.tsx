@@ -3,7 +3,7 @@ import type { DailySummary, MealType, NutritionRecordWithSource, FoodLogEntryWit
 import FoodSearch from "./FoodSearch.tsx";
 
 import MacroProgressBar from "./MacroProgressBar.tsx";
-import { Alert, Button, Card } from "../components/ui/index.ts";
+import { Alert, Button, Card, SelectInput } from "../components/ui/index.ts";
 
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 import { trackEvent } from "../utils/analytics.ts";
@@ -626,38 +626,34 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                     )}
                   </div>
                   <div>
-                    <label class="block text-sm font-medium text-gray-700">Unit</label>
-                    <select
+                    <SelectInput
+                      label="Unit"
                       value={amountUnit}
                       onChange={(e) => handleUnitChange((e.target as HTMLSelectElement).value as "servings" | "g" | "ml")}
-                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    >
-                      <option value="servings">servings</option>
-                      {selectedFood && selectedFood.servingSizeValue > 0 && selectedFood.servingSizeUnit !== "serving" && (
-                        <option value={selectedFood.servingSizeUnit}>
-                          {selectedFood.servingSizeUnit === "g" ? "grams (g)" : "milliliters (ml)"}
-                        </option>
-                      )}
-                    </select>
+                      options={[
+                        { value: "servings", label: "servings" },
+                        ...(selectedFood && selectedFood.servingSizeValue > 0 && selectedFood.servingSizeUnit !== "serving"
+                          ? [{ value: selectedFood.servingSizeUnit, label: selectedFood.servingSizeUnit === "g" ? "grams (g)" : "milliliters (ml)" }]
+                          : []),
+                      ]}
+                    />
                     {selectedFood && (
                       <p class="text-xs text-gray-400 mt-1">
                         1 serving = {selectedFood.servingSizeValue}{selectedFood.servingSizeUnit}
                       </p>
                     )}
                   </div>
-                  <div>
-                    <label class="block text-sm font-medium text-gray-700">Meal</label>
-                    <select
-                      value={mealType}
-                      onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
-                      class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                    >
-                      <option value="breakfast">Breakfast</option>
-                      <option value="lunch">Lunch</option>
-                      <option value="dinner">Dinner</option>
-                      <option value="snack">Snack</option>
-                    </select>
-                  </div>
+                  <SelectInput
+                    label="Meal"
+                    value={mealType}
+                    onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
+                    options={[
+                      { value: "breakfast", label: "Breakfast" },
+                      { value: "lunch", label: "Lunch" },
+                      { value: "dinner", label: "Dinner" },
+                      { value: "snack", label: "Snack" },
+                    ]}
+                  />
                 </div>
               </>
             ) : (
@@ -727,19 +723,17 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                   </p>
                 </div>
 
-                <div>
-                  <label class="block text-sm font-medium text-gray-700">Meal</label>
-                  <select
-                    value={mealType}
-                    onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                  >
-                    <option value="breakfast">Breakfast</option>
-                    <option value="lunch">Lunch</option>
-                    <option value="dinner">Dinner</option>
-                    <option value="snack">Snack</option>
-                  </select>
-                </div>
+                <SelectInput
+                  label="Meal"
+                  value={mealType}
+                  onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
+                  options={[
+                    { value: "breakfast", label: "Breakfast" },
+                    { value: "lunch", label: "Lunch" },
+                    { value: "dinner", label: "Dinner" },
+                    { value: "snack", label: "Snack" },
+                  ]}
+                />
               </>
             )}
 
@@ -830,19 +824,17 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                                 class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
                               />
                             </div>
-                            <div>
-                              <label class="block text-xs font-medium text-gray-700 mb-1">Meal</label>
-                              <select
-                                value={editMealType}
-                                onChange={(e) => setEditMealType((e.target as HTMLSelectElement).value as MealType)}
-                                class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-                              >
-                                <option value="breakfast">Breakfast</option>
-                                <option value="lunch">Lunch</option>
-                                <option value="dinner">Dinner</option>
-                                <option value="snack">Snacks</option>
-                              </select>
-                            </div>
+                            <SelectInput
+                              label="Meal"
+                              value={editMealType}
+                              onChange={(e) => setEditMealType((e.target as HTMLSelectElement).value as MealType)}
+                              options={[
+                                { value: "breakfast", label: "Breakfast" },
+                                { value: "lunch", label: "Lunch" },
+                                { value: "dinner", label: "Dinner" },
+                                { value: "snack", label: "Snacks" },
+                              ]}
+                            />
                           </div>
                           <div class="flex gap-2">
                             <Button

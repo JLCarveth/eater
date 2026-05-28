@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import type { WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
-import { Alert, Button, Card } from "../components/ui/index.ts";
+import { Alert, Button, Card, SelectInput } from "../components/ui/index.ts";
 
 type Period = "week" | "month" | "3month";
 type WeightUnit = "kg" | "lbs";
@@ -195,14 +195,14 @@ function WeightChart({
     <Card>
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-900">Weight</h2>
-        <select
+        <SelectInput
           value={weightUnit}
           onChange={(e) => onUnitChange((e.target as HTMLSelectElement).value as WeightUnit)}
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-        >
-          <option value="lbs">lbs</option>
-          <option value="kg">kg</option>
-        </select>
+          options={[
+            { value: "lbs", label: "lbs" },
+            { value: "kg", label: "kg" },
+          ]}
+        />
       </div>
       {loading ? (
         <div class="h-64 flex items-center justify-center text-gray-400">Loading...</div>
@@ -292,14 +292,14 @@ function WeightEntryForm({
                 placeholder={weightUnit === "lbs" ? "150" : "68"}
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
-              <select
+              <SelectInput
                 value={weightUnit}
                 onChange={(e) => onUnitChange((e.target as HTMLSelectElement).value as WeightUnit)}
-                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="lbs">lbs</option>
-                <option value="kg">kg</option>
-              </select>
+                options={[
+                  { value: "lbs", label: "lbs" },
+                  { value: "kg", label: "kg" },
+                ]}
+              />
             </div>
           </div>
           <div>

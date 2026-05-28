@@ -4,7 +4,7 @@ import { trackEvent } from "../utils/analytics.ts";
 import ErrorAlert from "../components/ErrorAlert.tsx";
 import FoodFields from "../components/FoodFields.tsx";
 import NutritionFactsPanel from "../components/NutritionFactsPanel.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, SelectInput } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -250,35 +250,29 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
             )}
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Unit</label>
-            <select
-              value={amountUnit}
-              onChange={(e) => handleUnitChange((e.target as HTMLSelectElement).value as "servings" | "g" | "ml")}
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-            >
-              <option value="servings">servings</option>
-              {foodNutrition && foodNutrition.servingSizeValue > 0 && foodNutrition.servingSizeUnit !== "serving" && (
-                <option value={foodNutrition.servingSizeUnit}>
-                  {foodNutrition.servingSizeUnit === "g" ? "grams (g)" : "milliliters (ml)"}
-                </option>
-              )}
-            </select>
-          </div>
+          <SelectInput
+            label="Unit"
+            value={amountUnit}
+            onChange={(e) => handleUnitChange((e.target as HTMLSelectElement).value as "servings" | "g" | "ml")}
+            options={[
+              { value: "servings", label: "servings" },
+              ...(foodNutrition && foodNutrition.servingSizeValue > 0 && foodNutrition.servingSizeUnit !== "serving"
+                ? [{ value: foodNutrition.servingSizeUnit, label: foodNutrition.servingSizeUnit === "g" ? "grams (g)" : "milliliters (ml)" }]
+                : []),
+            ]}
+          />
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Meal</label>
-            <select
-              value={mealType}
-              onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-            >
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">Snack</option>
-            </select>
-          </div>
+          <SelectInput
+            label="Meal"
+            value={mealType}
+            onChange={(e) => setMealType((e.target as HTMLSelectElement).value as MealType)}
+            options={[
+              { value: "breakfast", label: "Breakfast" },
+              { value: "lunch", label: "Lunch" },
+              { value: "dinner", label: "Dinner" },
+              { value: "snack", label: "Snack" },
+            ]}
+          />
         </div>
 
         <div>

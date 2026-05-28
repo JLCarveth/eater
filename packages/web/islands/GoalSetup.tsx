@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import type { UserGoals } from "@nutrition-llama/shared";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Button, SelectInput } from "../components/ui/index.ts";
 
 interface GoalSetupProps {
   existingGoals: UserGoals | null;
@@ -241,14 +241,14 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
                 placeholder={weightUnit === "lbs" ? "150" : "68"}
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
-              <select
+              <SelectInput
                 value={weightUnit}
                 onChange={(e) => setWeightUnit((e.target as HTMLSelectElement).value as WeightUnit)}
-                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="lbs">lbs</option>
-                <option value="kg">kg</option>
-              </select>
+                options={[
+                  { value: "lbs", label: "lbs" },
+                  { value: "kg", label: "kg" },
+                ]}
+              />
             </div>
           </div>
 
@@ -265,14 +265,14 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
                 placeholder={heightUnit === "in" ? "68" : "173"}
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
-              <select
+              <SelectInput
                 value={heightUnit}
                 onChange={(e) => setHeightUnit((e.target as HTMLSelectElement).value as HeightUnit)}
-                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="in">in</option>
-                <option value="cm">cm</option>
-              </select>
+                options={[
+                  { value: "in", label: "in" },
+                  { value: "cm", label: "cm" },
+                ]}
+              />
             </div>
           </div>
 
@@ -391,14 +391,14 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
                 placeholder={goalWeightUnit === "lbs" ? "150" : "68"}
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               />
-              <select
+              <SelectInput
                 value={goalWeightUnit}
                 onChange={(e) => handleGoalWeightUnitChange((e.target as HTMLSelectElement).value as WeightUnit)}
-                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="lbs">lbs</option>
-                <option value="kg">kg</option>
-              </select>
+                options={[
+                  { value: "lbs", label: "lbs" },
+                  { value: "kg", label: "kg" },
+                ]}
+              />
             </div>
           </div>
 

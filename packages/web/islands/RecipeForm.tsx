@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import type { NutritionRecordWithSource, ServingSizeUnit } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button, Card } from "../components/ui/index.ts";
+import { Button, Card, SelectInput } from "../components/ui/index.ts";
 
 interface IngredientLine {
   nutritionRecordId: string;
@@ -282,7 +282,7 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
                         title={canSwitchUnit ? `Amount in ${ing.inputUnit}` : "Amount in servings"}
                       />
                       {canSwitchUnit ? (
-                        <select
+                        <SelectInput
                           value={ing.inputUnit}
                           onChange={(e) =>
                             handleUnitChange(
@@ -290,11 +290,11 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
                               (e.target as HTMLSelectElement).value as "servings" | "g" | "ml"
                             )
                           }
-                          class="text-sm border border-gray-300 rounded-md px-1 py-1 focus:ring-primary-500 focus:border-primary-500 bg-white"
-                        >
-                          <option value="servings">servings</option>
-                          <option value={ing.servingSizeUnit}>{ing.servingSizeUnit}</option>
-                        </select>
+                          options={[
+                            { value: "servings", label: "servings" },
+                            { value: ing.servingSizeUnit, label: ing.servingSizeUnit },
+                          ]}
+                        />
                       ) : (
                         <span class="text-xs text-gray-500 whitespace-nowrap">servings</span>
                       )}
