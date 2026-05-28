@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
 import type { UserGoals } from "@nutrition-llama/shared";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button, SelectInput } from "../components/ui/index.ts";
+import { Button, MacroSummaryGrid, SelectInput } from "../components/ui/index.ts";
 
 interface GoalSetupProps {
   existingGoals: UserGoals | null;
@@ -406,24 +406,16 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
           {calories && proteinG && carbsG && fatG && (
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <h4 class="text-sm font-medium text-gray-700 mb-3">Goal Preview</h4>
-              <div class="grid grid-cols-4 gap-3 text-center">
-                <div>
-                  <p class="text-xl font-bold text-gray-900">{calories}</p>
-                  <p class="text-xs text-gray-500">Calories</p>
-                </div>
-                <div>
-                  <p class="text-xl font-bold text-red-600">{proteinG}g</p>
-                  <p class="text-xs text-gray-500">Protein</p>
-                </div>
-                <div>
-                  <p class="text-xl font-bold text-yellow-600">{carbsG}g</p>
-                  <p class="text-xs text-gray-500">Carbs</p>
-                </div>
-                <div>
-                  <p class="text-xl font-bold text-blue-600">{fatG}g</p>
-                  <p class="text-xs text-gray-500">Fat</p>
-                </div>
-              </div>
+              <MacroSummaryGrid
+                calories={calories}
+                protein={proteinG}
+                carbs={carbsG}
+                fat={fatG}
+                variant="minimal"
+                size="sm"
+                cols="4"
+                gap="3"
+              />
             </div>
           )}
 

@@ -2,7 +2,7 @@ import { useState, useEffect, lazy, Suspense } from "preact/compat";
 import type { NutritionRecord } from "@nutrition-llama/shared";
 import FoodLogForm from "./FoodLogForm.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button, Card } from "../components/ui/index.ts";
+import { Button, Card, MacroSummaryGrid } from "../components/ui/index.ts";
 
 // Lazy load BarcodeScanner to prevent zxing-wasm from blocking hydration
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
@@ -309,24 +309,15 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
             </div>
 
             {/* Nutrition Summary */}
-            <div class="grid grid-cols-4 gap-4 mb-4">
-              <div class="text-center p-2 bg-gray-50 rounded">
-                <p class="text-lg font-bold text-gray-900">{food.calories}</p>
-                <p class="text-xs text-gray-500">Calories</p>
-              </div>
-              <div class="text-center p-2 bg-red-50 rounded">
-                <p class="text-lg font-bold text-red-600">{food.protein ?? 0}g</p>
-                <p class="text-xs text-gray-500">Protein</p>
-              </div>
-              <div class="text-center p-2 bg-yellow-50 rounded">
-                <p class="text-lg font-bold text-yellow-600">{food.carbohydrates ?? 0}g</p>
-                <p class="text-xs text-gray-500">Carbs</p>
-              </div>
-              <div class="text-center p-2 bg-blue-50 rounded">
-                <p class="text-lg font-bold text-blue-600">{food.totalFat ?? 0}g</p>
-                <p class="text-xs text-gray-500">Fat</p>
-              </div>
-            </div>
+            <MacroSummaryGrid
+              calories={food.calories}
+              protein={food.protein ?? 0}
+              carbs={food.carbohydrates ?? 0}
+              fat={food.totalFat ?? 0}
+              size="sm"
+              cols="4"
+              class="mb-4"
+            />
 
             {food.upcCode && (
               <p class="text-xs text-gray-400">UPC: {food.upcCode}</p>

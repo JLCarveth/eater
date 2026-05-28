@@ -6,7 +6,7 @@ import { getDailySummary, getUserGoals } from "../utils/db.ts";
 import MacroProgressBar from "../islands/MacroProgressBar.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
-import { Card, EmptyState } from "../components/ui/index.ts";
+import { Card, EmptyState, MacroSummaryGrid } from "../components/ui/index.ts";
 
 interface DashboardData {
   user: User;
@@ -183,24 +183,13 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
 
           {summary && summary.entries.length > 0 ? (
             <>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-gray-50 rounded-lg p-4 text-center">
-                  <p class="text-2xl font-bold text-gray-900">{Math.round(summary.totalCalories)}</p>
-                  <p class="text-sm text-gray-500">Calories</p>
-                </div>
-                <div class="bg-red-50 rounded-lg p-4 text-center">
-                  <p class="text-2xl font-bold text-red-600">{Math.round(summary.totalProtein)}g</p>
-                  <p class="text-sm text-gray-500">Protein</p>
-                </div>
-                <div class="bg-yellow-50 rounded-lg p-4 text-center">
-                  <p class="text-2xl font-bold text-yellow-600">{Math.round(summary.totalCarbohydrates)}g</p>
-                  <p class="text-sm text-gray-500">Carbs</p>
-                </div>
-                <div class="bg-teal-50 rounded-lg p-4 text-center">
-                  <p class="text-2xl font-bold text-teal-600">{Math.round(summary.totalFat)}g</p>
-                  <p class="text-sm text-gray-500">Fat</p>
-                </div>
-              </div>
+              <MacroSummaryGrid
+                calories={summary.totalCalories}
+                protein={summary.totalProtein}
+                carbs={summary.totalCarbohydrates}
+                fat={summary.totalFat}
+                class="mb-6"
+              />
 
               <h3 class="text-sm font-medium text-gray-700 mb-2">Logged Items</h3>
               <ul class="divide-y divide-gray-200">

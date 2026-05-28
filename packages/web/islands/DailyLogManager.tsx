@@ -3,7 +3,7 @@ import type { DailySummary, MealType, NutritionRecordWithSource, FoodLogEntryWit
 import FoodSearch from "./FoodSearch.tsx";
 
 import MacroProgressBar from "./MacroProgressBar.tsx";
-import { Alert, Button, Card, SelectInput } from "../components/ui/index.ts";
+import { Alert, Button, Card, MacroSummaryGrid, SelectInput } from "../components/ui/index.ts";
 
 const BarcodeScanner = lazy(() => import("./BarcodeScanner.tsx"));
 import { trackEvent } from "../utils/analytics.ts";
@@ -315,44 +315,14 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
 
       {/* Summary Cards */}
       {summary && (
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card padding="none" class="p-5 border border-gray-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-medium text-gray-600">Calories</p>
-              <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <p class="text-3xl font-bold text-gray-900">{Math.round(summary.totalCalories || 0)}</p>
-          </Card>
-          <div class="bg-gradient-to-br from-red-50 to-red-100 shadow-sm rounded-lg p-5 border border-red-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-medium text-red-700">Protein</p>
-              <svg class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-              </svg>
-            </div>
-            <p class="text-3xl font-bold text-red-600">{Math.round(summary.totalProtein || 0)}g</p>
-          </div>
-          <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 shadow-sm rounded-lg p-5 border border-yellow-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-medium text-yellow-700">Carbs</p>
-              <svg class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-              </svg>
-            </div>
-            <p class="text-3xl font-bold text-yellow-600">{Math.round(summary.totalCarbohydrates || 0)}g</p>
-          </div>
-          <div class="bg-gradient-to-br from-blue-50 to-blue-100 shadow-sm rounded-lg p-5 border border-blue-200 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-2">
-              <p class="text-sm font-medium text-blue-700">Fat</p>
-              <svg class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <p class="text-3xl font-bold text-blue-600">{Math.round(summary.totalFat || 0)}g</p>
-          </div>
-        </div>
+        <MacroSummaryGrid
+          calories={summary.totalCalories || 0}
+          protein={summary.totalProtein || 0}
+          carbs={summary.totalCarbohydrates || 0}
+          fat={summary.totalFat || 0}
+          variant="card"
+          size="lg"
+        />
       )}
 
       {/* Goals Progress Bars */}

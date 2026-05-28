@@ -2,7 +2,7 @@ import { useState } from "preact/hooks";
 import type { NutritionRecordWithSource, ServingSizeUnit } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
 import ErrorAlert from "../components/ErrorAlert.tsx";
-import { Button, Card, SelectInput } from "../components/ui/index.ts";
+import { Button, Card, MacroSummaryGrid, SelectInput } from "../components/ui/index.ts";
 
 interface IngredientLine {
   nutritionRecordId: string;
@@ -329,24 +329,13 @@ export default function RecipeForm({ mode, recipeId, initialData }: Props) {
             Nutrition Preview
             <span class="font-normal text-gray-500 text-sm ml-2">per serving</span>
           </h3>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="text-center p-3 bg-gray-50 rounded-lg">
-              <p class="text-2xl font-bold text-gray-900">{preview.calories}</p>
-              <p class="text-xs text-gray-500 mt-1">Calories</p>
-            </div>
-            <div class="text-center p-3 bg-red-50 rounded-lg">
-              <p class="text-2xl font-bold text-red-600">{preview.protein}g</p>
-              <p class="text-xs text-red-500 mt-1">Protein</p>
-            </div>
-            <div class="text-center p-3 bg-yellow-50 rounded-lg">
-              <p class="text-2xl font-bold text-yellow-600">{preview.carbs}g</p>
-              <p class="text-xs text-yellow-500 mt-1">Carbs</p>
-            </div>
-            <div class="text-center p-3 bg-blue-50 rounded-lg">
-              <p class="text-2xl font-bold text-blue-600">{preview.fat}g</p>
-              <p class="text-xs text-blue-500 mt-1">Fat</p>
-            </div>
-          </div>
+          <MacroSummaryGrid
+            calories={preview.calories}
+            protein={preview.protein}
+            carbs={preview.carbs}
+            fat={preview.fat}
+            cols="2sm4"
+          />
         </Card>
       )}
 
