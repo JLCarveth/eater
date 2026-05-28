@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { detectBarcodesFromVideo } from "../utils/barcode.ts";
 import { trackEvent } from "../utils/analytics.ts";
-import { Button } from "../components/ui/index.ts";
+import { Alert, Button } from "../components/ui/index.ts";
 
 interface BarcodeScannerProps {
   onScan: (code: string) => void;
@@ -170,12 +170,7 @@ export default function BarcodeScanner({ onScan, onClose }: BarcodeScannerProps)
           )}
         </div>
 
-        {/* Error message */}
-        {error && (
-          <div class="mt-4 p-3 bg-red-500/20 rounded-lg">
-            <p class="text-sm text-red-300">{error}</p>
-          </div>
-        )}
+        {error && <Alert variant="error" message={error} />}
 
         {/* Instructions */}
         <p class="mt-4 text-sm text-gray-400 text-center">

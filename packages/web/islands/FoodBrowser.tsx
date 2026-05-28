@@ -3,7 +3,7 @@ import type { NutritionRecord, NutritionRecordWithSource } from "@nutrition-llam
 import type { OffSearchResult } from "../utils/openfoodfacts.ts";
 import FoodResultRow from "../components/FoodResultRow.tsx";
 import SourceBadge from "../components/SourceBadge.tsx";
-import { Button } from "../components/ui/index.ts";
+import { Alert, Button } from "../components/ui/index.ts";
 
 type Tab = "user" | "system" | "community" | "off";
 
@@ -241,13 +241,7 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
         />
       </div>
 
-      {/* Save error toast */}
-      {saveError && (
-        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-md text-sm flex justify-between">
-          <span>{saveError}</span>
-          <Button type="button" variant="ghost" size="sm" onClick={() => setSaveError(null)} class="ml-2">✕</Button>
-        </div>
-      )}
+      {saveError && <Alert variant="error" message={saveError} onDismiss={() => setSaveError(null)} />}
 
       {/* Results */}
       {tab === "user" ? (

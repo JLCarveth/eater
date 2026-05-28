@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import type { WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
-import { Button } from "../components/ui/index.ts";
+import { Alert, Button } from "../components/ui/index.ts";
 
 type Period = "week" | "month" | "3month";
 type WeightUnit = "kg" | "lbs";
@@ -267,11 +267,7 @@ function WeightEntryForm({
     <div class="bg-white shadow rounded-lg p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Log Weight</h2>
 
-      {error && (
-        <div class="rounded-lg bg-red-50 border border-red-200 p-3 mb-4">
-          <p class="text-sm font-medium text-red-800">{error}</p>
-        </div>
-      )}
+      {error && <Alert variant="error" message={error} />}
 
       <div class="space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
