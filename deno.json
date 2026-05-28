@@ -8,7 +8,8 @@
     "dev:api": "cd packages/api && deno task dev",
     "dev:web": "cd packages/web && deno task dev",
     "dev": "deno task dev:api & deno task dev:web",
-    "migrate": "deno run --allow-net --allow-read --allow-env scripts/migrate.ts"
+    "migrate": "deno run --allow-net --allow-read --allow-env scripts/migrate.ts",
+    "lc": "./scripts/loc.ts"
   },
   "nodeModulesDir": "auto",
   "imports": {
