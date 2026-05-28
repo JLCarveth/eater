@@ -58,7 +58,7 @@ const MACROS = {
     border: "border-gray-200",
     cardLabelColor: "text-gray-600",
     iconColor: "text-gray-400",
-    iconPath: "M13 10V3L4 14h7v7l9-11h-7z",
+    iconPath: "M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z",
   },
   protein: {
     label: "Protein",
@@ -69,8 +69,7 @@ const MACROS = {
     border: "border-red-200",
     cardLabelColor: "text-red-700",
     iconColor: "text-red-500",
-    iconPath:
-      "M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z",
+    iconPath: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
   },
   carbs: {
     label: "Carbs",
@@ -81,8 +80,7 @@ const MACROS = {
     border: "border-yellow-200",
     cardLabelColor: "text-yellow-700",
     iconColor: "text-yellow-500",
-    iconPath:
-      "M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3",
+    iconPath: "M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4",
   },
   fat: {
     label: "Fat",
@@ -93,8 +91,7 @@ const MACROS = {
     border: "border-blue-200",
     cardLabelColor: "text-blue-700",
     iconColor: "text-blue-500",
-    iconPath:
-      "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    iconPath: "M12 2c0 0-7 8.5-7 13a7 7 0 0014 0c0-4.5-7-13-7-13z",
   },
 } satisfies Record<string, MacroConfig>;
 
