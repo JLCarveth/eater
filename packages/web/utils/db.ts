@@ -220,6 +220,8 @@ function mapNutritionRecord(row: Record<string, unknown>): NutritionRecord {
     upcCode: row.upc_code as string | null,
     source: row.source as FoodSource,
     createdAt: row.created_at as Date,
+    unitName: row.unit_name as string | null ?? null,
+    unitWeightGrams: row.unit_weight_grams as number | null ?? null,
   };
 }
 

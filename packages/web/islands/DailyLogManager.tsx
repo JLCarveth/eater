@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "preact/compat";
+import { useState, useEffect, useRef, lazy, Suspense } from "preact/compat";
 import type { DailySummary, MealType, NutritionRecordWithSource, FoodLogEntryWithNutrition, UserGoals } from "@nutrition-llama/shared";
 import FoodSearch from "./FoodSearch.tsx";
 
@@ -74,6 +74,8 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
   // Barcode scan state
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
   const [barcodeLoading, setBarcodeLoading] = useState(false);
+
+  const addFormRef = useRef<HTMLDivElement>(null);
 
   // Quick entry mode state
   const [entryMode, setEntryMode] = useState<"food" | "quick">("food");
@@ -441,6 +443,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
       )}
 
       {/* Add Entry Button / Form */}
+      <div ref={addFormRef}>
       <Card padding="none" class="border border-gray-200 overflow-hidden">
         {!showAddForm ? (
           <Button
@@ -727,6 +730,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
           </form>
         )}
       </Card>
+      </div>
 
       {/* Barcode Scanner Modal */}
       {showBarcodeScanner && (
@@ -890,6 +894,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                     onClick={() => {
                       setShowAddForm(true);
                       setMealType(mealType);
+                      setTimeout(() => addFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
                     }}
                     class="mt-2"
                   >

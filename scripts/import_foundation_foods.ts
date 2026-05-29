@@ -44,12 +44,24 @@ async function main() {
     console.log(`Processing ${data.FoundationFoods.length} foods...`);
     let count = 0;
 
+    // Unit names that represent volume/weight measures rather than countable items
+    const SKIP_UNIT_NAMES = new Set(["oz", "g", "kg", "lb", "ml", "l", "fl oz", "RACC", "cup", "tbsp", "tsp", "tablespoon", "teaspoon", "pint", "quart", "gallon"]);
+
     for (const food of data.FoundationFoods) {
       const name = food.description;
-      
+
       // Default to 100g as FDC data is per 100g
       const servingSizeValue = 100;
       const servingSizeUnit = "g";
+
+      // Find the best named countable portion (e.g., "egg", "slice", "piece")
+      const bestPortion = (food.foodPortions ?? []).find((p) => {
+        const abbr = p.measureUnit?.abbreviation ?? "";
+        const unitName = p.measureUnit?.name ?? "";
+        return !SKIP_UNIT_NAMES.has(abbr) && !SKIP_UNIT_NAMES.has(unitName) && p.gramWeight > 0;
+      });
+      const unitName = bestPortion ? bestPortion.measureUnit?.name ?? null : null;
+      const unitWeightGrams = bestPortion ? bestPortion.gramWeight : null;
 
       // Nutrients
       // Map based on nutrient number
@@ -75,10 +87,12 @@ async function main() {
       }
 
       await client.query(
-        `INSERT INTO nutrition_records 
-        (user_id, name, serving_size_value, serving_size_unit, calories, 
-         protein, total_fat, carbohydrates, fiber, sugars, sodium, cholesterol, source)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'api')`,
+        `INSERT INTO nutrition_records
+        (user_id, name, serving_size_value, serving_size_unit, calories,
+         protein, total_fat, carbohydrates, fiber, sugars, sodium, cholesterol, source,
+         unit_name, unit_weight_grams)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'api', $13, $14)
+         ON CONFLICT DO NOTHING`,
         [
           userId,
           name,
@@ -91,7 +105,9 @@ async function main() {
           fiber || 0,
           sugars || 0,
           sodium || 0,
-          cholesterol || 0
+          cholesterol || 0,
+          unitName,
+          unitWeightGrams,
         ]
       );
       count++;

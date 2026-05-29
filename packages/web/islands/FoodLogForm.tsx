@@ -20,6 +20,8 @@ interface FoodNutrition {
   cholesterol: number | null;
   servingSizeValue: number;
   servingSizeUnit: string;
+  unitName: string | null;
+  unitWeightGrams: number | null;
 }
 
 interface InitialFoodData {
@@ -63,7 +65,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
 
   // Log form state
   const [servings, setServings] = useState("1");
-  const [amountUnit, setAmountUnit] = useState<"servings" | "g" | "ml">("servings");
+  const [amountUnit, setAmountUnit] = useState<"servings" | "g" | "ml" | "unit">("servings");
   const [mealType, setMealType] = useState<MealType>("snack");
   const [loggedDate, setLoggedDate] = useState(new Date().toISOString().split("T")[0]);
 
@@ -71,31 +73,42 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
   const [loading, setLoading] = useState(false);
   const [showBarcodeScanner, setShowBarcodeScanner] = useState(false);
 
-  // Helper function to calculate servings based on selected unit
+  // Returns the gram-weight of one named unit (e.g., one egg = 50.3g)
+  const unitWeightGrams = foodNutrition?.unitWeightGrams ?? null;
+
+  // Converts current input to a servings multiplier for nutrition calculation
   const calculateServings = (): number => {
     const amount = parseFloat(servings) || 0;
-    if (amountUnit === "servings") {
-      return amount;
+    if (amountUnit === "servings") return amount;
+    if (amountUnit === "unit" && unitWeightGrams && foodNutrition?.servingSizeValue) {
+      return (amount * unitWeightGrams) / foodNutrition.servingSizeValue;
     }
-    // Convert weight to servings
-    if (!foodNutrition?.servingSizeValue || foodNutrition.servingSizeValue === 0) {
-      return amount; // Fallback
-    }
+    if (!foodNutrition?.servingSizeValue || foodNutrition.servingSizeValue === 0) return amount;
     return amount / foodNutrition.servingSizeValue;
   };
 
   // Handle unit change with value conversion for better UX
-  const handleUnitChange = (newUnit: "servings" | "g" | "ml") => {
+  const handleUnitChange = (newUnit: "servings" | "g" | "ml" | "unit") => {
     const currentAmount = parseFloat(servings) || 1;
-    const currentServings = amountUnit === "servings"
-      ? currentAmount
-      : currentAmount / (foodNutrition?.servingSizeValue || 1);
+    const servingSizeValue = foodNutrition?.servingSizeValue || 1;
+
+    // Convert current input to grams first
+    let currentGrams: number;
+    if (amountUnit === "servings") {
+      currentGrams = currentAmount * servingSizeValue;
+    } else if (amountUnit === "unit" && unitWeightGrams) {
+      currentGrams = currentAmount * unitWeightGrams;
+    } else {
+      currentGrams = currentAmount;
+    }
 
     let newAmount: number;
     if (newUnit === "servings") {
-      newAmount = currentServings;
+      newAmount = currentGrams / servingSizeValue;
+    } else if (newUnit === "unit" && unitWeightGrams) {
+      newAmount = currentGrams / unitWeightGrams;
     } else {
-      newAmount = currentServings * (foodNutrition?.servingSizeValue || 1);
+      newAmount = currentGrams;
     }
 
     setServings(newAmount.toFixed(2));
@@ -228,7 +241,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
             sugars={foodNutrition.sugars}
             protein={foodNutrition.protein}
             multiplier={s}
-            servingLabel={`${s !== 1 ? `${s.toFixed(2)} servings` : "1 serving"} (${Math.round(s * foodNutrition.servingSizeValue)}${foodNutrition.servingSizeUnit})`}
+            servingLabel={`${s !== 1 ? `${s.toFixed(2)} servings` : "1 serving"} (${Math.round(s * foodNutrition.servingSizeValue)}${foodNutrition.servingSizeUnit})${foodNutrition.unitName && unitWeightGrams ? ` · ${(s * foodNutrition.servingSizeValue / unitWeightGrams).toFixed(1)} ${foodNutrition.unitName}` : ""}`}
           />
         )}
 
@@ -246,6 +259,9 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
             {amountUnit !== "servings" && (
               <p class="text-xs text-gray-500 mt-1">
                 = {calculateServings().toFixed(2)} servings
+                {amountUnit === "unit" && unitWeightGrams && (
+                  <span> ({Math.round((parseFloat(servings) || 0) * unitWeightGrams)}g)</span>
+                )}
               </p>
             )}
           </div>
@@ -253,9 +269,12 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
           <SelectInput
             label="Unit"
             value={amountUnit}
-            onChange={(e) => handleUnitChange((e.target as HTMLSelectElement).value as "servings" | "g" | "ml")}
+            onChange={(e) => handleUnitChange((e.target as HTMLSelectElement).value as "servings" | "g" | "ml" | "unit")}
             options={[
               { value: "servings", label: "servings" },
+              ...(foodNutrition?.unitName && unitWeightGrams
+                ? [{ value: "unit", label: `${foodNutrition.unitName} (${unitWeightGrams}g each)` }]
+                : []),
               ...(foodNutrition && foodNutrition.servingSizeValue > 0 && foodNutrition.servingSizeUnit !== "serving"
                 ? [{ value: foodNutrition.servingSizeUnit, label: foodNutrition.servingSizeUnit === "g" ? "grams (g)" : "milliliters (ml)" }]
                 : []),

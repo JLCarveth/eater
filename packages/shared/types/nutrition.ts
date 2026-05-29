@@ -56,6 +56,8 @@ export interface NutritionRecord {
   upcCode: string | null;
   source: FoodSource;
   createdAt: Date;
+  unitName: string | null;
+  unitWeightGrams: number | null;
 }
 
 /**

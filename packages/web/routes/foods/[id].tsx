@@ -94,6 +94,8 @@ export default function FoodDetailPage({ data }: PageProps<FoodDetailData>) {
               cholesterol: food.cholesterol,
               servingSizeValue: food.servingSizeValue,
               servingSizeUnit: food.servingSizeUnit,
+              unitName: food.unitName ?? null,
+              unitWeightGrams: food.unitWeightGrams ?? null,
             }}
           />
         </Card>
