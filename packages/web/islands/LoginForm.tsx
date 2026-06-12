@@ -30,7 +30,7 @@ export default function LoginForm() {
 
       // Redirect to dashboard on success
       trackEvent("Login");
-      window.location.href = "/dashboard";
+      globalThis.location.href = "/dashboard";
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {
@@ -61,9 +61,17 @@ export default function LoginForm() {
         </div>
 
         <div>
-          <label htmlFor="password" class="block text-sm font-medium text-gray-700">
-            Password
-          </label>
+          <div class="flex items-center justify-between">
+            <label htmlFor="password" class="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <a
+              href="/forgot-password"
+              class="text-sm font-medium text-primary-600 hover:text-primary-500"
+            >
+              Forgot password?
+            </a>
+          </div>
           <input
             id="password"
             name="password"

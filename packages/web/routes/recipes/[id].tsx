@@ -128,6 +128,8 @@ export default function RecipeDetailPage({ data }: PageProps<RecipeDetailData>) 
               cholesterol: nr.cholesterol,
               servingSizeValue: 1,
               servingSizeUnit: "serving",
+              unitName: null,
+              unitWeightGrams: null,
             }}
           />
         </Card>

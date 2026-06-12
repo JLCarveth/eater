@@ -11,7 +11,7 @@ export function trackEvent(
   name: string,
   props?: Record<string, string | number | boolean>,
 ): void {
-  if (typeof window !== "undefined" && window.plausible) {
-    window.plausible(name, props ? { props } : undefined);
+  if (typeof window !== "undefined" && globalThis.plausible) {
+    globalThis.plausible(name, props ? { props } : undefined);
   }
 }

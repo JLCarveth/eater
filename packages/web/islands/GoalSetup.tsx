@@ -150,7 +150,7 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
         throw new Error(data.error || "Failed to save goals");
       }
 
-      window.location.href = "/dashboard";
+      globalThis.location.href = "/dashboard";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save goals");
     } finally {
@@ -407,10 +407,10 @@ export default function GoalSetup({ existingGoals }: GoalSetupProps) {
             <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <h4 class="text-sm font-medium text-gray-700 mb-3">Goal Preview</h4>
               <MacroSummaryGrid
-                calories={calories}
-                protein={proteinG}
-                carbs={carbsG}
-                fat={fatG}
+                calories={Number(calories)}
+                protein={Number(proteinG)}
+                carbs={Number(carbsG)}
+                fat={Number(fatG)}
                 variant="minimal"
                 size="sm"
                 cols="4"

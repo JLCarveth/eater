@@ -374,6 +374,8 @@ export default function UpcLookup({ initialCode }: UpcLookupProps) {
                   cholesterol: food.cholesterol,
                   servingSizeValue: food.servingSizeValue,
                   servingSizeUnit: food.servingSizeUnit,
+                  unitName: null,
+                  unitWeightGrams: null,
                 }}
               />
             </Card>

@@ -12,10 +12,16 @@ import {
   createRefreshToken,
   getRefreshToken,
   revokeRefreshToken,
+  revokeAllUserTokens,
+  createPasswordResetToken,
+  getPasswordResetToken,
+  markPasswordResetTokenUsed,
+  updateUserPassword,
 } from "./db.ts";
 
 const ACCESS_TOKEN_EXPIRY = 15 * 60; // 15 minutes in seconds
 const REFRESH_TOKEN_EXPIRY = 7 * 24 * 60 * 60; // 7 days in seconds
+const PASSWORD_RESET_TOKEN_EXPIRY = 60 * 60; // 1 hour in seconds
 
 // Get JWT signing keys from environment
 async function getAccessTokenKey(): Promise<CryptoKey> {
@@ -330,6 +336,39 @@ export async function loginUser(
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
+}
+
+// Password reset
+export async function createPasswordResetTokenForUser(user: User): Promise<string> {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  const token = encodeHex(bytes);
+
+  const tokenHash = await hashToken(token);
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY * 1000);
+  await createPasswordResetToken(user.id, tokenHash, expiresAt);
+
+  return token;
+}
+
+export async function resetPasswordWithToken(
+  token: string,
+  newPassword: string
+): Promise<boolean> {
+  const tokenHash = await hashToken(token);
+  const stored = await getPasswordResetToken(tokenHash);
+
+  if (!stored) return false;
+  if (stored.usedAt) return false;
+  if (new Date() > stored.expiresAt) return false;
+
+  const passwordHash = await hashPassword(newPassword);
+  await updateUserPassword(stored.userId, passwordHash);
+  await markPasswordResetTokenUsed(tokenHash);
+
+  // Log out all existing sessions for this user
+  await revokeAllUserTokens(stored.userId);
+
+  return true;
 }
 
 // Get user from request if authenticated (doesn't redirect, for middleware use)

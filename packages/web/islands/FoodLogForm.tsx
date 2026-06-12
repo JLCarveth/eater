@@ -146,7 +146,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
         throw new Error(data.error || "Failed to create food");
       }
 
-      window.location.href = "/foods";
+      globalThis.location.href = "/foods";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create food");
     } finally {
@@ -184,7 +184,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
         throw new Error(data.error || "Failed to update food");
       }
 
-      window.location.href = `/foods/${foodId}`;
+      globalThis.location.href = `/foods/${foodId}`;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update food");
     } finally {
@@ -215,7 +215,7 @@ export default function FoodLogForm({ mode, foodId, foodName, initialUpc, foodNu
       }
 
       trackEvent("Log_Food", { meal_type: mealType });
-      window.location.href = `/log/${loggedDate}`;
+      globalThis.location.href = `/log/${loggedDate}`;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to log food");
     } finally {

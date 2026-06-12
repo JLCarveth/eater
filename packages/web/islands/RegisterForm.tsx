@@ -49,7 +49,7 @@ export default function RegisterForm() {
 
       // Redirect to dashboard on success
       trackEvent("Signup");
-      window.location.href = "/dashboard";
+      globalThis.location.href = "/dashboard";
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {

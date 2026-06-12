@@ -55,6 +55,11 @@ REFRESH_TOKEN_SECRET=<32-byte-secret>
 # API (for web frontend)
 NUTRITION_API_URL=http://localhost:3000
 
+# Transactional email (password reset) via Resend
+RESEND_API_KEY=re_xxxxxxxxx
+EMAIL_FROM=MacroScope <no-reply@macros.jlcarveth.dev>
+APP_URL=https://macros.jlcarveth.dev
+
 # LLM (for API service)
 LLM_API_URL=https://api.openai.com/v1
 LLM_API_KEY=your-api-key

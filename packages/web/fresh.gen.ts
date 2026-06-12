@@ -7,10 +7,12 @@ import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $_middleware from "./routes/_middleware.ts";
 import * as $api_analyze from "./routes/api/analyze.ts";
+import * as $api_auth_forgot_password from "./routes/api/auth/forgot-password.ts";
 import * as $api_auth_login from "./routes/api/auth/login.ts";
 import * as $api_auth_logout from "./routes/api/auth/logout.ts";
 import * as $api_auth_refresh from "./routes/api/auth/refresh.ts";
 import * as $api_auth_register from "./routes/api/auth/register.ts";
+import * as $api_auth_reset_password from "./routes/api/auth/reset-password.ts";
 import * as $api_event from "./routes/api/event.ts";
 import * as $api_foods_id_ from "./routes/api/foods/[id].ts";
 import * as $api_foods_community from "./routes/api/foods/community.ts";
@@ -31,6 +33,7 @@ import * as $foods_id_ from "./routes/foods/[id].tsx";
 import * as $foods_id_edit from "./routes/foods/[id]/edit.tsx";
 import * as $foods_index from "./routes/foods/index.tsx";
 import * as $foods_new from "./routes/foods/new.tsx";
+import * as $forgot_password from "./routes/forgot-password.tsx";
 import * as $goals from "./routes/goals.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $js_script_js from "./routes/js/script.js.ts";
@@ -43,6 +46,7 @@ import * as $recipes_id_edit from "./routes/recipes/[id]/edit.tsx";
 import * as $recipes_index from "./routes/recipes/index.tsx";
 import * as $recipes_new from "./routes/recipes/new.tsx";
 import * as $register from "./routes/register.tsx";
+import * as $reset_password from "./routes/reset-password.tsx";
 import * as $scan from "./routes/scan.tsx";
 import * as $trends from "./routes/trends.tsx";
 import * as $upc from "./routes/upc.tsx";
@@ -53,6 +57,7 @@ import * as $DeleteButton from "./islands/DeleteButton.tsx";
 import * as $FoodBrowser from "./islands/FoodBrowser.tsx";
 import * as $FoodLogForm from "./islands/FoodLogForm.tsx";
 import * as $FoodSearch from "./islands/FoodSearch.tsx";
+import * as $ForgotPasswordForm from "./islands/ForgotPasswordForm.tsx";
 import * as $GoalSetup from "./islands/GoalSetup.tsx";
 import * as $ImageCropper from "./islands/ImageCropper.tsx";
 import * as $LoginForm from "./islands/LoginForm.tsx";
@@ -60,6 +65,7 @@ import * as $MacroProgressBar from "./islands/MacroProgressBar.tsx";
 import * as $RecipeBrowser from "./islands/RecipeBrowser.tsx";
 import * as $RecipeForm from "./islands/RecipeForm.tsx";
 import * as $RegisterForm from "./islands/RegisterForm.tsx";
+import * as $ResetPasswordForm from "./islands/ResetPasswordForm.tsx";
 import * as $TrendsView from "./islands/TrendsView.tsx";
 import * as $UpcLookup from "./islands/UpcLookup.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -71,10 +77,12 @@ const manifest = {
     "./routes/_layout.tsx": $_layout,
     "./routes/_middleware.ts": $_middleware,
     "./routes/api/analyze.ts": $api_analyze,
+    "./routes/api/auth/forgot-password.ts": $api_auth_forgot_password,
     "./routes/api/auth/login.ts": $api_auth_login,
     "./routes/api/auth/logout.ts": $api_auth_logout,
     "./routes/api/auth/refresh.ts": $api_auth_refresh,
     "./routes/api/auth/register.ts": $api_auth_register,
+    "./routes/api/auth/reset-password.ts": $api_auth_reset_password,
     "./routes/api/event.ts": $api_event,
     "./routes/api/foods/[id].ts": $api_foods_id_,
     "./routes/api/foods/community.ts": $api_foods_community,
@@ -95,6 +103,7 @@ const manifest = {
     "./routes/foods/[id]/edit.tsx": $foods_id_edit,
     "./routes/foods/index.tsx": $foods_index,
     "./routes/foods/new.tsx": $foods_new,
+    "./routes/forgot-password.tsx": $forgot_password,
     "./routes/goals.tsx": $goals,
     "./routes/index.tsx": $index,
     "./routes/js/script.js.ts": $js_script_js,
@@ -107,6 +116,7 @@ const manifest = {
     "./routes/recipes/index.tsx": $recipes_index,
     "./routes/recipes/new.tsx": $recipes_new,
     "./routes/register.tsx": $register,
+    "./routes/reset-password.tsx": $reset_password,
     "./routes/scan.tsx": $scan,
     "./routes/trends.tsx": $trends,
     "./routes/upc.tsx": $upc,
@@ -119,6 +129,7 @@ const manifest = {
     "./islands/FoodBrowser.tsx": $FoodBrowser,
     "./islands/FoodLogForm.tsx": $FoodLogForm,
     "./islands/FoodSearch.tsx": $FoodSearch,
+    "./islands/ForgotPasswordForm.tsx": $ForgotPasswordForm,
     "./islands/GoalSetup.tsx": $GoalSetup,
     "./islands/ImageCropper.tsx": $ImageCropper,
     "./islands/LoginForm.tsx": $LoginForm,
@@ -126,6 +137,7 @@ const manifest = {
     "./islands/RecipeBrowser.tsx": $RecipeBrowser,
     "./islands/RecipeForm.tsx": $RecipeForm,
     "./islands/RegisterForm.tsx": $RegisterForm,
+    "./islands/ResetPasswordForm.tsx": $ResetPasswordForm,
     "./islands/TrendsView.tsx": $TrendsView,
     "./islands/UpcLookup.tsx": $UpcLookup,
   },

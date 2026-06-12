@@ -1,7 +1,7 @@
 import { ComponentChildren, JSX } from "preact";
 import { Spinner } from "./Spinner.tsx";
 
-interface ButtonProps extends Omit<JSX.HTMLAttributes<HTMLButtonElement>, "size"> {
+interface ButtonProps extends Omit<JSX.HTMLAttributes<HTMLButtonElement>, "size" | "loading"> {
   variant?: "primary" | "secondary" | "danger" | "ghost" | "bare";
   size?: "sm" | "md" | "lg";
   loading?: boolean;

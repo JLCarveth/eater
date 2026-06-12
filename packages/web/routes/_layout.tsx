@@ -1,7 +1,8 @@
 import { type PageProps } from "$fresh/server.ts";
+import type { User } from "@nutrition-llama/shared";
 import { Button } from "../components/ui/index.ts";
 
-export default function Layout({ Component, state }: PageProps) {
+export default function Layout({ Component, state }: PageProps<unknown, { user: User | null }>) {
   const user = state?.user;
 
   return (

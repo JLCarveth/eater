@@ -354,9 +354,9 @@ export default function FoodBrowser({ initialFoods }: FoodBrowserProps) {
                     <FoodResultRow
                       name={result.productName}
                       calories={result.food.calories}
-                      protein={result.food.protein}
-                      carbohydrates={result.food.carbohydrates}
-                      totalFat={result.food.totalFat}
+                      protein={result.food.protein ?? null}
+                      carbohydrates={result.food.carbohydrates ?? null}
+                      totalFat={result.food.totalFat ?? null}
                       servingSizeValue={result.food.servingSizeValue}
                       servingSizeUnit={result.food.servingSizeUnit}
                       upcCode={result.barcode}

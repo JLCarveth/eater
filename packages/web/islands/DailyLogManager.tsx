@@ -286,9 +286,9 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
         }
       }
       // Community, OFF, or not found — go to full UPC flow to save first
-      window.location.href = `/upc?code=${encodeURIComponent(code.trim())}`;
+      globalThis.location.href = `/upc?code=${encodeURIComponent(code.trim())}`;
     } catch {
-      window.location.href = `/upc?code=${encodeURIComponent(code.trim())}`;
+      globalThis.location.href = `/upc?code=${encodeURIComponent(code.trim())}`;
     } finally {
       setBarcodeLoading(false);
     }
@@ -845,7 +845,7 @@ export default function DailyLogManager({ date, initialSummary, goals }: DailyLo
                                   C: {Math.round((entry.nutritionRecord.carbohydrates || 0) * entry.servings)}g
                                 </span>
                                 <span class="text-blue-600 font-medium">
-                                  F: {Math.round((entry.nutritionRecord.fat || 0) * entry.servings)}g
+                                  F: {Math.round((entry.nutritionRecord.totalFat || 0) * entry.servings)}g
                                 </span>
                               </div>
                             </div>

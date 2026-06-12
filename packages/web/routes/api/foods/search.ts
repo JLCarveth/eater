@@ -23,7 +23,7 @@ export const handler: Handlers = {
         );
       }
 
-      let results;
+      let results: unknown[];
 
       if (source === "off") {
         if (q.length < 2) {

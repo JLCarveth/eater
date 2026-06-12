@@ -152,7 +152,7 @@ export default function CameraCapture({ initialUpc }: CameraCaptureProps) {
 
       // Redirect to foods list
       trackEvent("Save_Food");
-      window.location.href = "/foods";
+      globalThis.location.href = "/foods";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save food");
     } finally {

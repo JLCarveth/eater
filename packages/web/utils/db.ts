@@ -2,7 +2,17 @@
  * Database utility functions using PostgreSQL
  */
 
-import postgres from "npm:postgres";
+import postgres, { type TransactionSql } from "npm:postgres";
+
+// postgres.js defines TransactionSql via Omit<Sql, ...>, and TypeScript's Omit
+// drops call signatures, leaving the tagged-template call untyped. Re-declare
+// the query signature here; transactions are callable at runtime.
+interface Tx extends TransactionSql {
+  <T extends readonly (object | undefined)[] = postgres.Row[]>(
+    template: TemplateStringsArray,
+    ...parameters: readonly postgres.ParameterOrFragment<never>[]
+  ): postgres.PendingQuery<T>;
+}
 import type {
   User,
   UserWithPassword,
@@ -197,6 +207,55 @@ export async function revokeAllUserTokens(userId: string): Promise<void> {
   await sql`
     UPDATE refresh_tokens SET revoked_at = NOW()
     WHERE user_id = ${userId} AND revoked_at IS NULL
+  `;
+}
+
+// ============ PASSWORD RESET TOKEN FUNCTIONS ============
+
+export async function createPasswordResetToken(
+  userId: string,
+  tokenHash: string,
+  expiresAt: Date
+): Promise<void> {
+  // Invalidate any previous unused tokens so only the latest link works
+  await sql`
+    DELETE FROM password_reset_tokens WHERE user_id = ${userId} AND used_at IS NULL
+  `;
+  await sql`
+    INSERT INTO password_reset_tokens (user_id, token_hash, expires_at)
+    VALUES (${userId}, ${tokenHash}, ${expiresAt})
+  `;
+}
+
+export async function getPasswordResetToken(
+  tokenHash: string
+): Promise<{ userId: string; expiresAt: Date; usedAt: Date | null } | null> {
+  const [row] = await sql`
+    SELECT user_id, expires_at, used_at
+    FROM password_reset_tokens WHERE token_hash = ${tokenHash}
+  `;
+
+  if (!row) return null;
+
+  return {
+    userId: row.user_id,
+    expiresAt: row.expires_at,
+    usedAt: row.used_at,
+  };
+}
+
+export async function markPasswordResetTokenUsed(tokenHash: string): Promise<void> {
+  await sql`
+    UPDATE password_reset_tokens SET used_at = NOW() WHERE token_hash = ${tokenHash}
+  `;
+}
+
+export async function updateUserPassword(
+  userId: string,
+  passwordHash: string
+): Promise<void> {
+  await sql`
+    UPDATE users SET password_hash = ${passwordHash} WHERE id = ${userId}
   `;
 }
 
@@ -511,7 +570,8 @@ export async function contributeCommunityFood(
 
   const upcCode = input.upcCode;
 
-  return await sql.begin(async (tx) => {
+  return await sql.begin(async (rawTx) => {
+    const tx = rawTx as Tx;
     // Check if a community food already exists for this UPC
     const [existing] = await tx`
       SELECT id FROM community_foods WHERE upc_code = ${upcCode}
@@ -572,7 +632,7 @@ export async function contributeCommunityFood(
 }
 
 async function handleExistingUpc(
-  tx: typeof sql,
+  tx: Tx,
   upcCode: string,
   userId: string,
   input: CreateNutritionRecordInput & { offProductUrl?: string }
@@ -798,6 +858,8 @@ export async function getDailySummary(
       nr.sodium,
       nr.upc_code,
       nr.source,
+      nr.unit_name,
+      nr.unit_weight_grams,
       nr.created_at as food_created_at
     FROM food_log fl
     JOIN nutrition_records nr ON fl.nutrition_record_id = nr.id
@@ -830,6 +892,8 @@ export async function getDailySummary(
       upcCode: row.upc_code as string | null,
       source: row.source as FoodSource,
       createdAt: row.food_created_at as Date,
+      unitName: row.unit_name as string | null ?? null,
+      unitWeightGrams: row.unit_weight_grams as number | null ?? null,
     },
   }));
 
