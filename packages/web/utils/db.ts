@@ -424,6 +424,22 @@ function buildNameCondition(query: string): any {
   return conditions.reduce((acc, cond) => sql`${acc} AND ${cond}`);
 }
 
+// Relevance ranking for name search: exact matches first, then prefix matches,
+// then trigram similarity (pg_trgm, indexed via migration 004), with shorter
+// (more generic) names breaking ties.
+// deno-lint-ignore no-explicit-any
+function buildRelevanceOrder(query: string, col: any = sql`name`): any {
+  const q = query.trim();
+  const prefix = `${q.replace(/[%_\\]/g, "\\$&")}%`;
+  return sql`
+    (lower(${col}) = lower(${q})) DESC,
+    (lower(${col}) LIKE lower(${prefix})) DESC,
+    similarity(${col}, ${q}) DESC,
+    length(${col}) ASC,
+    ${col} ASC
+  `;
+}
+
 export async function searchFoods(
   userId: string,
   query: string,
@@ -432,6 +448,7 @@ export async function searchFoods(
 ): Promise<NutritionRecordWithSource[]> {
   const systemUserId = await getSystemUserId();
   const nameCondition = buildNameCondition(query);
+  const relevanceOrder = buildRelevanceOrder(query);
 
   let rows: Record<string, unknown>[];
 
@@ -439,7 +456,7 @@ export async function searchFoods(
     rows = await sql`
       SELECT * FROM nutrition_records
       WHERE user_id = ${userId} AND ${nameCondition}
-      ORDER BY name ASC
+      ORDER BY ${relevanceOrder}
       LIMIT ${limit}
     `;
   } else if (source === "system") {
@@ -447,7 +464,7 @@ export async function searchFoods(
     rows = await sql`
       SELECT * FROM nutrition_records
       WHERE user_id = ${systemUserId} AND ${nameCondition}
-      ORDER BY name ASC
+      ORDER BY ${relevanceOrder}
       LIMIT ${limit}
     `;
   } else {
@@ -456,21 +473,25 @@ export async function searchFoods(
       rows = await sql`
         SELECT * FROM nutrition_records
         WHERE user_id = ${userId} AND ${nameCondition}
-        ORDER BY name ASC
+        ORDER BY ${relevanceOrder}
         LIMIT ${limit}
       `;
     } else {
+      // Wrapped in a subquery because Postgres only allows plain output
+      // columns (not expressions like similarity()) in a UNION's ORDER BY.
       rows = await sql`
-        (
-          SELECT *, 0 as sort_order FROM nutrition_records
-          WHERE user_id = ${userId} AND ${nameCondition}
-        )
-        UNION ALL
-        (
-          SELECT *, 1 as sort_order FROM nutrition_records
-          WHERE user_id = ${systemUserId} AND ${nameCondition}
-        )
-        ORDER BY sort_order ASC, name ASC
+        SELECT * FROM (
+          (
+            SELECT *, 0 as sort_order FROM nutrition_records
+            WHERE user_id = ${userId} AND ${nameCondition}
+          )
+          UNION ALL
+          (
+            SELECT *, 1 as sort_order FROM nutrition_records
+            WHERE user_id = ${systemUserId} AND ${nameCondition}
+          )
+        ) combined
+        ORDER BY sort_order ASC, ${relevanceOrder}
         LIMIT ${limit}
       `;
     }
@@ -724,12 +745,22 @@ export async function searchCommunityFoods(
         .map((t) => sql`cf.name ILIKE ${`%${t.replace(/[%_\\]/g, "\\$&")}%`}`)
         .reduce((acc: any, cond: any) => sql`${acc} AND ${cond}`);
 
+  // Same ranking as buildRelevanceOrder, but with verified_count as a
+  // popularity signal ahead of trigram similarity.
+  const q = query.trim();
+  const prefix = `${q.replace(/[%_\\]/g, "\\$&")}%`;
   const rows = await sql`
     SELECT cf.*, u.display_name as contributor_display_name
     FROM community_foods cf
     LEFT JOIN users u ON cf.contributed_by_user_id = u.id
     WHERE ${cfCondition}
-    ORDER BY cf.verified_count DESC, cf.name ASC
+    ORDER BY
+      (lower(cf.name) = lower(${q})) DESC,
+      (lower(cf.name) LIKE lower(${prefix})) DESC,
+      cf.verified_count DESC,
+      similarity(cf.name, ${q}) DESC,
+      length(cf.name) ASC,
+      cf.name ASC
     LIMIT ${limit}
   `;
 

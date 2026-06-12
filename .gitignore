@@ -39,3 +39,4 @@ npm-debug.log*
 coverage/
 
 CLAUDE.md
+openfoodfacts-products.jsonl
