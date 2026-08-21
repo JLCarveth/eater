@@ -6,6 +6,9 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $_middleware from "./routes/_middleware.ts";
+import * as $api_account_export from "./routes/api/account/export.ts";
+import * as $api_account_index from "./routes/api/account/index.ts";
+import * as $api_account_password from "./routes/api/account/password.ts";
 import * as $api_analyze from "./routes/api/analyze.ts";
 import * as $api_auth_forgot_password from "./routes/api/auth/forgot-password.ts";
 import * as $api_auth_login from "./routes/api/auth/login.ts";
@@ -48,11 +51,14 @@ import * as $recipes_new from "./routes/recipes/new.tsx";
 import * as $register from "./routes/register.tsx";
 import * as $reset_password from "./routes/reset-password.tsx";
 import * as $scan from "./routes/scan.tsx";
+import * as $settings from "./routes/settings.tsx";
 import * as $trends from "./routes/trends.tsx";
 import * as $upc from "./routes/upc.tsx";
 import * as $BarcodeScanner from "./islands/BarcodeScanner.tsx";
 import * as $CameraCapture from "./islands/CameraCapture.tsx";
+import * as $ChangePasswordForm from "./islands/ChangePasswordForm.tsx";
 import * as $DailyLogManager from "./islands/DailyLogManager.tsx";
+import * as $DeleteAccountForm from "./islands/DeleteAccountForm.tsx";
 import * as $DeleteButton from "./islands/DeleteButton.tsx";
 import * as $FoodBrowser from "./islands/FoodBrowser.tsx";
 import * as $FoodLogForm from "./islands/FoodLogForm.tsx";
@@ -76,6 +82,9 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
     "./routes/_middleware.ts": $_middleware,
+    "./routes/api/account/export.ts": $api_account_export,
+    "./routes/api/account/index.ts": $api_account_index,
+    "./routes/api/account/password.ts": $api_account_password,
     "./routes/api/analyze.ts": $api_analyze,
     "./routes/api/auth/forgot-password.ts": $api_auth_forgot_password,
     "./routes/api/auth/login.ts": $api_auth_login,
@@ -118,13 +127,16 @@ const manifest = {
     "./routes/register.tsx": $register,
     "./routes/reset-password.tsx": $reset_password,
     "./routes/scan.tsx": $scan,
+    "./routes/settings.tsx": $settings,
     "./routes/trends.tsx": $trends,
     "./routes/upc.tsx": $upc,
   },
   islands: {
     "./islands/BarcodeScanner.tsx": $BarcodeScanner,
     "./islands/CameraCapture.tsx": $CameraCapture,
+    "./islands/ChangePasswordForm.tsx": $ChangePasswordForm,
     "./islands/DailyLogManager.tsx": $DailyLogManager,
+    "./islands/DeleteAccountForm.tsx": $DeleteAccountForm,
     "./islands/DeleteButton.tsx": $DeleteButton,
     "./islands/FoodBrowser.tsx": $FoodBrowser,
     "./islands/FoodLogForm.tsx": $FoodLogForm,

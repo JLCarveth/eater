@@ -65,7 +65,8 @@ export default function Layout({ Component, state }: PageProps<unknown, { user: 
               {user ? (
                 <>
                   <a
-                    href="/dashboard"
+                    href="/settings"
+                    title="Account settings"
                     class="text-sm text-gray-600 hover:text-primary-600"
                   >
                     {user.displayName || user.email}

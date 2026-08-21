@@ -58,7 +58,7 @@ export async function createUser(
   const [row] = await sql`
     INSERT INTO users (email, password_hash, display_name)
     VALUES (${email}, ${passwordHash}, ${displayName || null})
-    RETURNING id, email, display_name, created_at, updated_at
+    RETURNING id, email, display_name, token_version, created_at, updated_at
   `;
 
   if (!row) throw new Error("Failed to create user");
@@ -67,6 +67,7 @@ export async function createUser(
     id: row.id,
     email: row.email,
     displayName: row.display_name,
+    tokenVersion: row.token_version,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -74,7 +75,7 @@ export async function createUser(
 
 export async function getUserByEmail(email: string): Promise<UserWithPassword | null> {
   const [row] = await sql`
-    SELECT id, email, password_hash, display_name, created_at, updated_at
+    SELECT id, email, password_hash, display_name, token_version, created_at, updated_at
     FROM users WHERE email = ${email}
   `;
 
@@ -85,6 +86,7 @@ export async function getUserByEmail(email: string): Promise<UserWithPassword | 
     email: row.email,
     passwordHash: row.password_hash,
     displayName: row.display_name,
+    tokenVersion: row.token_version,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -92,7 +94,7 @@ export async function getUserByEmail(email: string): Promise<UserWithPassword | 
 
 export async function getUserById(id: string): Promise<User | null> {
   const [row] = await sql`
-    SELECT id, email, display_name, created_at, updated_at
+    SELECT id, email, display_name, token_version, created_at, updated_at
     FROM users WHERE id = ${id}
   `;
 
@@ -102,9 +104,62 @@ export async function getUserById(id: string): Promise<User | null> {
     id: row.id,
     email: row.email,
     displayName: row.display_name,
+    tokenVersion: row.token_version,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
+}
+
+export async function getUserWithPasswordById(
+  id: string
+): Promise<UserWithPassword | null> {
+  const [row] = await sql`
+    SELECT id, email, password_hash, display_name, token_version, created_at, updated_at
+    FROM users WHERE id = ${id}
+  `;
+
+  if (!row) return null;
+
+  return {
+    id: row.id,
+    email: row.email,
+    passwordHash: row.password_hash,
+    displayName: row.display_name,
+    tokenVersion: row.token_version,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export async function getUserTokenVersion(id: string): Promise<number | null> {
+  const [row] = await sql`
+    SELECT token_version FROM users WHERE id = ${id}
+  `;
+
+  return row ? row.token_version : null;
+}
+
+export async function deleteUserAccount(userId: string): Promise<void> {
+  await sql.begin(async (rawTx) => {
+    const tx = rawTx as Tx;
+    // recipes.nutrition_record_id has no ON DELETE rule, so recipes must go
+    // before the users cascade deletes their backing nutrition_records
+    await tx`DELETE FROM recipes WHERE user_id = ${userId}`;
+
+    // The users cascade would drop this user's community_food_contributions
+    // without touching the aggregates derived from them (median nutrition
+    // values, verified_count). Delete the contributions explicitly and
+    // recompute each affected community food before deleting the user.
+    const affected = await tx`
+      DELETE FROM community_food_contributions WHERE user_id = ${userId}
+      RETURNING community_food_id
+    `;
+    for (const row of affected) {
+      await recomputeCommunityFoodAggregates(tx, row.community_food_id as string);
+    }
+
+    await tx`DELETE FROM users WHERE id = ${userId}`;
+  });
 }
 
 // ============ USER GOALS FUNCTIONS ============
@@ -254,8 +309,11 @@ export async function updateUserPassword(
   userId: string,
   passwordHash: string
 ): Promise<void> {
+  // Bumping token_version invalidates all outstanding access tokens, which
+  // embed the version they were issued under
   await sql`
-    UPDATE users SET password_hash = ${passwordHash} WHERE id = ${userId}
+    UPDATE users SET password_hash = ${passwordHash}, token_version = token_version + 1
+    WHERE id = ${userId}
   `;
 }
 
@@ -694,7 +752,18 @@ async function handleExistingUpc(
     return { created: false, food: mapCommunityFood(row) };
   }
 
-  // Recompute canonical values from all contributions using median
+  const updatedRow = await recomputeCommunityFoodAggregates(tx, communityFoodId);
+  return { created: false, food: mapCommunityFood(updatedRow) };
+}
+
+// Recompute a community food's canonical nutrition values (median across all
+// contributions) and verified_count. When no contributions remain, canonical
+// values are preserved and only verified_count is zeroed, matching the
+// backfill convention from migration 008.
+async function recomputeCommunityFoodAggregates(
+  tx: Tx,
+  communityFoodId: string
+): Promise<Record<string, unknown>> {
   const [medians] = await tx`
     SELECT
       PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY serving_size_value) AS median_serving_size_value,
@@ -711,7 +780,18 @@ async function handleExistingUpc(
     WHERE community_food_id = ${communityFoodId}
   `;
 
-  const [updatedRow] = await tx`
+  if (!medians || medians.contribution_count === 0) {
+    const [row] = await tx`
+      UPDATE community_foods SET verified_count = 0
+      WHERE id = ${communityFoodId}
+      RETURNING *, (
+        SELECT u.display_name FROM users u WHERE u.id = community_foods.contributed_by_user_id
+      ) AS contributor_display_name
+    `;
+    return row;
+  }
+
+  const [row] = await tx`
     UPDATE community_foods SET
       serving_size_value = ${medians.median_serving_size_value},
       calories = ${medians.median_calories},
@@ -728,8 +808,7 @@ async function handleExistingUpc(
       SELECT u.display_name FROM users u WHERE u.id = community_foods.contributed_by_user_id
     ) AS contributor_display_name
   `;
-
-  return { created: false, food: mapCommunityFood(updatedRow) };
+  return row;
 }
 
 export async function searchCommunityFoods(
@@ -1500,4 +1579,111 @@ export async function getLoggingStreak(
   if (dates.length === 0) longestStreak = 0;
 
   return { currentStreak, longestStreak };
+}
+
+// ============ DATA EXPORT ============
+
+export interface UserDataExport {
+  exportedAt: string;
+  profile: {
+    email: string;
+    displayName: string | null;
+    createdAt: Date;
+  };
+  goals: UserGoals | null;
+  foods: NutritionRecord[];
+  recipes: RecipeWithIngredients[];
+  foodLog: Array<{
+    id: string;
+    foodName: string;
+    nutritionRecordId: string;
+    servings: number;
+    loggedDate: string;
+    mealType: MealType;
+    createdAt: Date;
+  }>;
+  weightLog: WeightLogEntry[];
+  communityContributions: Array<{
+    upcCode: string;
+    name: string;
+    servingSizeValue: number;
+    servingSizeUnit: string;
+    calories: number;
+    createdAt: Date;
+  }>;
+}
+
+export async function exportUserData(userId: string): Promise<UserDataExport | null> {
+  const user = await getUserById(userId);
+  if (!user) return null;
+
+  const goals = await getUserGoals(userId);
+  const recipes = await getUserRecipes(userId);
+
+  const foodRows = await sql`
+    SELECT * FROM nutrition_records
+    WHERE user_id = ${userId} AND source != 'recipe'
+    ORDER BY created_at ASC
+  `;
+
+  const logRows = await sql`
+    SELECT fl.*, nr.name as food_name
+    FROM food_log fl
+    JOIN nutrition_records nr ON fl.nutrition_record_id = nr.id
+    WHERE fl.user_id = ${userId}
+    ORDER BY fl.logged_date ASC, fl.created_at ASC
+  `;
+
+  const weightRows = await sql`
+    SELECT * FROM weight_log WHERE user_id = ${userId} ORDER BY logged_date ASC
+  `;
+
+  const contributionRows = await sql`
+    SELECT cfc.*, cf.upc_code
+    FROM community_food_contributions cfc
+    JOIN community_foods cf ON cfc.community_food_id = cf.id
+    WHERE cfc.user_id = ${userId}
+    ORDER BY cfc.created_at ASC
+  `;
+
+  return {
+    exportedAt: new Date().toISOString(),
+    profile: {
+      email: user.email,
+      displayName: user.displayName,
+      createdAt: user.createdAt,
+    },
+    goals,
+    foods: foodRows.map(mapNutritionRecord),
+    recipes,
+    foodLog: logRows.map((row) => ({
+      id: row.id as string,
+      foodName: row.food_name as string,
+      nutritionRecordId: row.nutrition_record_id as string,
+      servings: Number(row.servings),
+      loggedDate: row.logged_date instanceof Date
+        ? row.logged_date.toISOString().split("T")[0]
+        : String(row.logged_date),
+      mealType: row.meal_type as MealType,
+      createdAt: row.created_at as Date,
+    })),
+    weightLog: weightRows.map((row) => ({
+      id: row.id as string,
+      userId: row.user_id as string,
+      loggedDate: row.logged_date instanceof Date
+        ? row.logged_date.toISOString().split("T")[0]
+        : String(row.logged_date),
+      weightKg: Number(row.weight_kg),
+      bodyFatPct: row.body_fat_pct != null ? Number(row.body_fat_pct) : null,
+      createdAt: row.created_at as Date,
+    })),
+    communityContributions: contributionRows.map((row) => ({
+      upcCode: row.upc_code as string,
+      name: row.name as string,
+      servingSizeValue: Number(row.serving_size_value),
+      servingSizeUnit: row.serving_size_unit as string,
+      calories: Number(row.calories),
+      createdAt: row.created_at as Date,
+    })),
+  };
 }

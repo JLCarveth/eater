@@ -17,6 +17,8 @@ import {
   getPasswordResetToken,
   markPasswordResetTokenUsed,
   updateUserPassword,
+  getUserWithPasswordById,
+  getUserTokenVersion,
 } from "./db.ts";
 
 const ACCESS_TOKEN_EXPIRY = 15 * 60; // 15 minutes in seconds
@@ -125,6 +127,7 @@ export async function createAccessToken(user: User): Promise<string> {
   const payload = {
     userId: user.id,
     email: user.email,
+    tokenVersion: user.tokenVersion,
     exp: getNumericDate(ACCESS_TOKEN_EXPIRY),
     iat: getNumericDate(0),
   };
@@ -162,8 +165,17 @@ async function hashToken(token: string): Promise<string> {
 export async function verifyAccessToken(token: string): Promise<JWTPayload | null> {
   try {
     const key = await getAccessTokenKey();
-    const payload = await verify(token, key);
-    return payload as unknown as JWTPayload;
+    const payload = await verify(token, key) as unknown as JWTPayload;
+
+    // Access tokens are otherwise stateless and would outlive a password
+    // change; reject tokens issued under an older token_version so all other
+    // sessions are cut off immediately, not at expiry
+    const currentVersion = await getUserTokenVersion(payload.userId);
+    if (currentVersion === null || payload.tokenVersion !== currentVersion) {
+      return null;
+    }
+
+    return payload;
   } catch {
     return null;
   }
@@ -333,6 +345,7 @@ export async function loginUser(
     id: user.id,
     email: user.email,
     displayName: user.displayName,
+    tokenVersion: user.tokenVersion,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
@@ -367,6 +380,34 @@ export async function resetPasswordWithToken(
 
   // Log out all existing sessions for this user
   await revokeAllUserTokens(stored.userId);
+
+  return true;
+}
+
+// Verify a logged-in user's password (for sensitive actions like account deletion)
+export async function verifyUserPassword(
+  userId: string,
+  password: string
+): Promise<boolean> {
+  const user = await getUserWithPasswordById(userId);
+  if (!user) return false;
+  return await verifyPassword(password, user.passwordHash);
+}
+
+// Change password while logged in; returns false if current password is wrong
+export async function changePassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<boolean> {
+  const valid = await verifyUserPassword(userId, currentPassword);
+  if (!valid) return false;
+
+  const passwordHash = await hashPassword(newPassword);
+  await updateUserPassword(userId, passwordHash);
+
+  // Log out all existing sessions; caller re-issues tokens for this one
+  await revokeAllUserTokens(userId);
 
   return true;
 }

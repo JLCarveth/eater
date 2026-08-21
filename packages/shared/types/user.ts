@@ -6,6 +6,7 @@ export interface User {
   id: string;
   email: string;
   displayName: string | null;
+  tokenVersion: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +34,7 @@ export interface AuthTokens {
 export interface JWTPayload {
   userId: string;
   email: string;
+  tokenVersion: number;
   iat: number;
   exp: number;
 }
