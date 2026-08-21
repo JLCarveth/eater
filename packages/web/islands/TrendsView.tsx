@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import type { WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
 import { Alert, Button, Card, SelectInput } from "../components/ui/index.ts";
 
-type Period = "week" | "month" | "3month";
+type Period = "week" | "month" | "3month" | "year";
 type WeightUnit = "kg" | "lbs";
 
 const KG_TO_LBS = 2.20462;
@@ -11,14 +11,22 @@ const periodLabels: Record<Period, string> = {
   week: "7 Days",
   month: "30 Days",
   "3month": "90 Days",
+  year: "1 Year",
+};
+
+const periodDays: Record<Period, number> = {
+  week: 7,
+  month: 30,
+  "3month": 90,
+  year: 365,
 };
 
 // --- Sub-components ---
 
-function PeriodSelector({ period, onChange }: { period: Period; onChange: (p: Period) => void }) {
+function PeriodSelector({ period, periods, onChange }: { period: Period; periods: Period[]; onChange: (p: Period) => void }) {
   return (
-    <div class="flex gap-2 p-1 bg-gray-100 rounded-lg max-w-md">
-      {(["week", "month", "3month"] as Period[]).map((p) => (
+    <div class="flex gap-2 p-1 bg-gray-100 rounded-lg max-w-lg">
+      {periods.map((p) => (
         <Button
           key={p}
           variant="bare"
@@ -397,21 +405,26 @@ function WeightHistoryTable({
 interface TrendsViewProps {
   initialWeightLog: WeightLogEntry[];
   initialTrends: TrendsData;
+  pro: boolean;
 }
 
-export default function TrendsView({ initialWeightLog, initialTrends }: TrendsViewProps) {
+export default function TrendsView({ initialWeightLog, initialTrends, pro }: TrendsViewProps) {
   const [period, setPeriod] = useState<Period>("month");
   const [weightLog, setWeightLog] = useState(initialWeightLog);
   const [trends, setTrends] = useState(initialTrends);
   const [loading, setLoading] = useState(false);
   const [weightUnit, setWeightUnit] = useState<WeightUnit>("lbs");
 
+  const periods: Period[] = pro
+    ? ["week", "month", "3month", "year"]
+    : ["week", "month", "3month"];
+
   const fetchData = async (p: Period) => {
     setLoading(true);
     try {
       const now = new Date();
       const endDate = now.toISOString().split("T")[0];
-      const daysBack = p === "week" ? 7 : p === "month" ? 30 : 90;
+      const daysBack = periodDays[p];
       const startDate = new Date(now.getTime() - daysBack * 24 * 60 * 60 * 1000)
         .toISOString()
         .split("T")[0];
@@ -461,7 +474,20 @@ export default function TrendsView({ initialWeightLog, initialTrends }: TrendsVi
 
   return (
     <div class="space-y-8">
-      <PeriodSelector period={period} onChange={handlePeriodChange} />
+      <PeriodSelector period={period} periods={periods} onChange={handlePeriodChange} />
+      {!pro && trends.limited && (
+        <div class="bg-primary-50 border border-primary-200 rounded-lg p-4 flex items-center justify-between gap-4 max-w-lg">
+          <p class="text-sm text-primary-800">
+            Free plan shows the last 14 days. Upgrade to Pro for full history.
+          </p>
+          <a
+            href="/account"
+            class="shrink-0 inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
+          >
+            Go Pro
+          </a>
+        </div>
+      )}
       <StreakDisplay currentStreak={trends.currentStreak} longestStreak={trends.longestStreak} />
       <CalorieChart calorieTrend={trends.calorieTrend} loading={loading} />
       <WeightChart

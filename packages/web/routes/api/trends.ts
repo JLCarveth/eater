@@ -1,6 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { getAuthPayload } from "../../utils/auth.ts";
-import { getCalorieTrend, getLoggingStreak } from "../../utils/db.ts";
+import { getCalorieTrend, getLoggingStreak, getUserById } from "../../utils/db.ts";
+import { FREE_TRENDS_DAYS, isPro } from "../../utils/plan.ts";
 
 export const handler: Handlers = {
   async GET(req) {
@@ -22,8 +23,20 @@ export const handler: Handlers = {
         case "3month":
           daysBack = 90;
           break;
+        case "year":
+          daysBack = 365;
+          break;
         default:
           daysBack = 7;
+      }
+
+      // Free users only see the most recent FREE_TRENDS_DAYS; Pro sees all.
+      const user = await getUserById(auth.userId);
+      const pro = isPro(user);
+      let limited = false;
+      if (!pro && daysBack > FREE_TRENDS_DAYS) {
+        daysBack = FREE_TRENDS_DAYS;
+        limited = true;
       }
 
       const startDate = new Date(now.getTime() - daysBack * 24 * 60 * 60 * 1000)
@@ -40,6 +53,8 @@ export const handler: Handlers = {
           calorieTrend,
           currentStreak: streak.currentStreak,
           longestStreak: streak.longestStreak,
+          limited,
+          pro,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );

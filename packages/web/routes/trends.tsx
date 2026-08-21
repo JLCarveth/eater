@@ -3,6 +3,7 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../utils/auth.ts";
 import type { User, WeightLogEntry, TrendsData } from "@nutrition-llama/shared";
 import { getWeightLog, getCalorieTrend, getLoggingStreak } from "../utils/db.ts";
+import { FREE_TRENDS_DAYS, isPro } from "../utils/plan.ts";
 import TrendsView from "../islands/TrendsView.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
@@ -11,6 +12,7 @@ interface TrendsPageData {
   user: User;
   weightLog: WeightLogEntry[];
   trends: TrendsData;
+  pro: boolean;
 }
 
 export const handler: Handlers<TrendsPageData> = {
@@ -20,9 +22,15 @@ export const handler: Handlers<TrendsPageData> = {
       return authResult.redirect;
     }
 
+    const pro = isPro(authResult.user!);
+    // Island defaults to the 30-day view; free users are capped at 14 days.
+    const requestedDays = 30;
+    const limited = !pro && requestedDays > FREE_TRENDS_DAYS;
+    const daysBack = limited ? FREE_TRENDS_DAYS : requestedDays;
+
     const now = new Date();
     const endDate = now.toISOString().split("T")[0];
-    const startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+    const startDate = new Date(now.getTime() - daysBack * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0];
 
@@ -41,7 +49,10 @@ export const handler: Handlers<TrendsPageData> = {
         calorieTrend,
         currentStreak: streak.currentStreak,
         longestStreak: streak.longestStreak,
+        limited,
+        pro,
       },
+      pro,
     });
   },
 };
@@ -62,6 +73,7 @@ export default function TrendsPage({ data }: PageProps<TrendsPageData>) {
         <TrendsView
           initialWeightLog={data.weightLog}
           initialTrends={data.trends}
+          pro={data.pro}
         />
       </PageShell>
     </>

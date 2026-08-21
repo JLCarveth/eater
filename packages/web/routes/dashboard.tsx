@@ -3,7 +3,9 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { requireAuth } from "../utils/auth.ts";
 import type { User, DailySummary, UserGoals } from "@nutrition-llama/shared";
 import { getDailySummary, getUserGoals } from "../utils/db.ts";
+import { isPro } from "../utils/plan.ts";
 import MacroProgressBar from "../islands/MacroProgressBar.tsx";
+import CoachCard from "../islands/CoachCard.tsx";
 import PageShell from "../components/PageShell.tsx";
 import PageHeader from "../components/PageHeader.tsx";
 import { Card, EmptyState, MacroSummaryGrid } from "../components/ui/index.ts";
@@ -12,6 +14,7 @@ interface DashboardData {
   user: User;
   summary: DailySummary | null;
   goals: UserGoals | null;
+  pro: boolean;
 }
 
 export const handler: Handlers<DashboardData> = {
@@ -31,12 +34,13 @@ export const handler: Handlers<DashboardData> = {
       user: authResult.user!,
       summary,
       goals,
+      pro: isPro(authResult.user!),
     });
   },
 };
 
 export default function Dashboard({ data }: PageProps<DashboardData>) {
-  const { user, summary, goals } = data;
+  const { user, summary, goals, pro } = data;
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -176,6 +180,9 @@ export default function Dashboard({ data }: PageProps<DashboardData>) {
             </div>
           </div>
         )}
+
+        {/* AI Macro Coach (Pro) */}
+        {pro && goals && <CoachCard />}
 
         {/* Daily Summary */}
         <Card>

@@ -41,9 +41,9 @@ export const handler: Handlers = {
       }
 
       // Validate serving size unit
-      if (!["g", "ml"].includes(body.servingSizeUnit)) {
+      if (!["g", "ml", "serving"].includes(body.servingSizeUnit)) {
         return new Response(
-          JSON.stringify({ error: "servingSizeUnit must be 'g' or 'ml'" }),
+          JSON.stringify({ error: "servingSizeUnit must be 'g', 'ml', or 'serving'" }),
           { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }

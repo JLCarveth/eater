@@ -65,7 +65,7 @@ export default function Layout({ Component, state }: PageProps<unknown, { user: 
               {user ? (
                 <>
                   <a
-                    href="/settings"
+                    href="/account"
                     title="Account settings"
                     class="text-sm text-gray-600 hover:text-primary-600"
                   >
@@ -167,6 +167,15 @@ export default function Layout({ Component, state }: PageProps<unknown, { user: 
                 </svg>
                 Trends
               </a>
+              <a
+                href="/account"
+                class="flex flex-col items-center px-2 py-1 text-xs font-medium text-gray-600 hover:text-primary-600"
+              >
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Account
+              </a>
             </div>
           </div>
         )}
@@ -181,12 +190,20 @@ export default function Layout({ Component, state }: PageProps<unknown, { user: 
           <p class="text-sm text-gray-500">
             MacroScope - Track your nutrition with AI
           </p>
-          <a
-            href="/privacy"
-            class="text-sm text-gray-500 hover:text-primary-600"
-          >
-            Privacy Policy
-          </a>
+          <div class="flex items-center gap-4">
+            <a
+              href="/terms"
+              class="text-sm text-gray-500 hover:text-primary-600"
+            >
+              Terms
+            </a>
+            <a
+              href="/privacy"
+              class="text-sm text-gray-500 hover:text-primary-600"
+            >
+              Privacy Policy
+            </a>
+          </div>
         </div>
       </footer>
     </div>

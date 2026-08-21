@@ -26,4 +26,8 @@ export interface TrendsData {
   calorieTrend: CalorieTrendPoint[];
   currentStreak: number;
   longestStreak: number;
+  /** True when the window was capped by the free-tier trends limit. */
+  limited?: boolean;
+  /** Whether the requesting user is on Pro. */
+  pro?: boolean;
 }

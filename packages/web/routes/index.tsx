@@ -1,5 +1,6 @@
 import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps } from "$fresh/server.ts";
+import TrackEvent from "../islands/TrackEvent.tsx";
 
 export const handler: Handlers = {
   GET(req, ctx) {
@@ -203,6 +204,72 @@ export default function Home() {
                 </p>
               </div>
 
+            </div>
+          </div>
+        </section>
+
+        {/* ── Pricing ──────────────────────────────────────────── */}
+        <section id="pricing" class="border-t border-gray-100 bg-white">
+          <TrackEvent event="view_pricing" />
+          <div class="max-w-5xl mx-auto px-6 lg:px-8 py-20">
+            <div class="text-center mb-12">
+              <span class="text-xs font-medium tracking-widest text-primary-600 uppercase">
+                Pricing
+              </span>
+              <h2
+                class="font-display text-ink mt-3"
+                style="font-family:'Fraunces',Georgia,serif; font-weight:700; font-size:clamp(2rem,4vw,3rem); line-height:1.1;"
+              >
+                Simple, honest pricing
+              </h2>
+              <p class="text-gray-500 mt-3">Start free. Upgrade when the AI coach earns its keep.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {/* Free */}
+              <div class="bg-warm border border-gray-200 rounded-3xl p-8 flex flex-col">
+                <h3 class="font-semibold text-ink text-xl mb-1">Free</h3>
+                <p class="text-gray-500 text-sm mb-5">Everything you need to log by hand.</p>
+                <div class="mb-6">
+                  <span class="font-display text-ink" style="font-family:'Fraunces',Georgia,serif; font-size:2.5rem; font-weight:700;">$0</span>
+                  <span class="text-gray-400 text-sm"> / forever</span>
+                </div>
+                <ul class="space-y-2 text-sm text-gray-600 flex-1">
+                  <li>✓ Barcode &amp; UPC logging</li>
+                  <li>✓ Manual food entry &amp; daily summaries</li>
+                  <li>✓ 10 free AI label scans</li>
+                  <li>✓ Last 14 days of trends</li>
+                  <li>✓ Up to 3 recipes</li>
+                </ul>
+                <a href="/register" class="pill-btn bg-white text-ink border border-gray-300 hover:bg-gray-50 mt-7 justify-center">
+                  Get started free
+                </a>
+              </div>
+
+              {/* Pro */}
+              <div class="bg-white border-2 border-primary-500 rounded-3xl p-8 flex flex-col relative shadow-sm">
+                <span class="absolute -top-3 right-6 bg-primary-600 text-white text-xs font-medium px-3 py-1 rounded-full">
+                  Best value
+                </span>
+                <h3 class="font-semibold text-ink text-xl mb-1">Pro</h3>
+                <p class="text-gray-500 text-sm mb-5">Your AI nutrition coach bundle.</p>
+                <div class="mb-1">
+                  <span class="font-display text-ink" style="font-family:'Fraunces',Georgia,serif; font-size:2.5rem; font-weight:700;">$24</span>
+                  <span class="text-gray-400 text-sm"> / year</span>
+                </div>
+                <p class="text-xs text-gray-400 mb-6">or $3.99/month — annual saves ~50%</p>
+                <ul class="space-y-2 text-sm text-gray-600 flex-1">
+                  <li>✓ <strong class="text-ink">Snap-a-meal</strong> — photo → macros</li>
+                  <li>✓ <strong class="text-ink">AI macro coach</strong> — daily suggestions</li>
+                  <li>✓ Unlimited history &amp; trends</li>
+                  <li>✓ Weekly email report</li>
+                  <li>✓ CSV export</li>
+                  <li>✓ Unlimited recipes &amp; goals</li>
+                </ul>
+                <a href="/register" class="pill-btn bg-primary-600 text-white hover:bg-primary-700 mt-7 justify-center">
+                  Start with Pro →
+                </a>
+              </div>
             </div>
           </div>
         </section>

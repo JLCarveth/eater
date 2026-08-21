@@ -346,6 +346,8 @@ export async function loginUser(
     email: user.email,
     displayName: user.displayName,
     tokenVersion: user.tokenVersion,
+    plan: user.plan,
+    stripeCustomerId: user.stripeCustomerId,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };

@@ -36,6 +36,10 @@ import type {
   RecipeIngredientWithFood,
   CreateRecipeInput,
   UpdateRecipeInput,
+  Subscription,
+  SubscriptionStatus,
+  UserPlan,
+  AiAction,
 } from "@nutrition-llama/shared";
 
 // Create connection with built-in pooling
@@ -58,7 +62,7 @@ export async function createUser(
   const [row] = await sql`
     INSERT INTO users (email, password_hash, display_name)
     VALUES (${email}, ${passwordHash}, ${displayName || null})
-    RETURNING id, email, display_name, token_version, created_at, updated_at
+    RETURNING id, email, display_name, token_version, plan, stripe_customer_id, created_at, updated_at
   `;
 
   if (!row) throw new Error("Failed to create user");
@@ -68,6 +72,8 @@ export async function createUser(
     email: row.email,
     displayName: row.display_name,
     tokenVersion: row.token_version,
+    plan: row.plan,
+    stripeCustomerId: row.stripe_customer_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -75,7 +81,7 @@ export async function createUser(
 
 export async function getUserByEmail(email: string): Promise<UserWithPassword | null> {
   const [row] = await sql`
-    SELECT id, email, password_hash, display_name, token_version, created_at, updated_at
+    SELECT id, email, password_hash, display_name, token_version, plan, stripe_customer_id, created_at, updated_at
     FROM users WHERE email = ${email}
   `;
 
@@ -87,6 +93,8 @@ export async function getUserByEmail(email: string): Promise<UserWithPassword | 
     passwordHash: row.password_hash,
     displayName: row.display_name,
     tokenVersion: row.token_version,
+    plan: row.plan,
+    stripeCustomerId: row.stripe_customer_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -94,7 +102,7 @@ export async function getUserByEmail(email: string): Promise<UserWithPassword | 
 
 export async function getUserById(id: string): Promise<User | null> {
   const [row] = await sql`
-    SELECT id, email, display_name, token_version, created_at, updated_at
+    SELECT id, email, display_name, token_version, plan, stripe_customer_id, created_at, updated_at
     FROM users WHERE id = ${id}
   `;
 
@@ -105,6 +113,8 @@ export async function getUserById(id: string): Promise<User | null> {
     email: row.email,
     displayName: row.display_name,
     tokenVersion: row.token_version,
+    plan: row.plan,
+    stripeCustomerId: row.stripe_customer_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -114,7 +124,7 @@ export async function getUserWithPasswordById(
   id: string
 ): Promise<UserWithPassword | null> {
   const [row] = await sql`
-    SELECT id, email, password_hash, display_name, token_version, created_at, updated_at
+    SELECT id, email, password_hash, display_name, token_version, plan, stripe_customer_id, created_at, updated_at
     FROM users WHERE id = ${id}
   `;
 
@@ -126,6 +136,8 @@ export async function getUserWithPasswordById(
     passwordHash: row.password_hash,
     displayName: row.display_name,
     tokenVersion: row.token_version,
+    plan: row.plan,
+    stripeCustomerId: row.stripe_customer_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -1346,6 +1358,13 @@ export async function getUserRecipes(userId: string): Promise<RecipeWithIngredie
   return results;
 }
 
+export async function countUserRecipes(userId: string): Promise<number> {
+  const [row] = await sql`
+    SELECT COUNT(*)::int as count FROM recipes WHERE user_id = ${userId}
+  `;
+  return row?.count ?? 0;
+}
+
 export async function getRecipeById(
   id: string,
   userId: string
@@ -1520,6 +1539,235 @@ export async function deleteRecipe(id: string, userId: string): Promise<boolean>
 
     return true;
   });
+}
+
+// ============ EXPORT / REPORTING FUNCTIONS ============
+
+export interface FoodLogExportRow {
+  loggedDate: string;
+  mealType: string;
+  name: string;
+  servings: number;
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  totalFat: number;
+  fiber: number;
+  sugars: number;
+  sodium: number;
+}
+
+// Flat food-log rows (servings-applied) for CSV export.
+export async function getFoodLogExport(userId: string): Promise<FoodLogExportRow[]> {
+  const rows = await sql`
+    SELECT
+      fl.logged_date, fl.meal_type, fl.servings,
+      nr.name, nr.calories, nr.protein, nr.carbohydrates, nr.total_fat,
+      nr.fiber, nr.sugars, nr.sodium
+    FROM food_log fl
+    JOIN nutrition_records nr ON fl.nutrition_record_id = nr.id
+    WHERE fl.user_id = ${userId}
+    ORDER BY fl.logged_date ASC, fl.created_at ASC
+  `;
+
+  return rows.map((row) => {
+    const servings = Number(row.servings);
+    return {
+      loggedDate: row.logged_date instanceof Date
+        ? row.logged_date.toISOString().split("T")[0]
+        : String(row.logged_date),
+      mealType: row.meal_type as string,
+      name: row.name as string,
+      servings,
+      calories: Number(row.calories ?? 0) * servings,
+      protein: Number(row.protein ?? 0) * servings,
+      carbohydrates: Number(row.carbohydrates ?? 0) * servings,
+      totalFat: Number(row.total_fat ?? 0) * servings,
+      fiber: Number(row.fiber ?? 0) * servings,
+      sugars: Number(row.sugars ?? 0) * servings,
+      sodium: Number(row.sodium ?? 0) * servings,
+    };
+  });
+}
+
+export async function getWeightLogAll(userId: string): Promise<WeightLogEntry[]> {
+  const rows = await sql`
+    SELECT * FROM weight_log WHERE user_id = ${userId} ORDER BY logged_date ASC
+  `;
+  return rows.map((row) => ({
+    id: row.id,
+    userId: row.user_id,
+    loggedDate: row.logged_date instanceof Date
+      ? row.logged_date.toISOString().split("T")[0]
+      : String(row.logged_date),
+    weightKg: Number(row.weight_kg),
+    bodyFatPct: row.body_fat_pct != null ? Number(row.body_fat_pct) : null,
+    createdAt: row.created_at,
+  }));
+}
+
+// Pro users who haven't opted out, for the weekly email report.
+export async function getProUsers(): Promise<User[]> {
+  const rows = await sql`
+    SELECT id, email, display_name, token_version, plan, stripe_customer_id, created_at, updated_at
+    FROM users WHERE plan = 'pro' AND email_weekly_report = TRUE
+  `;
+  return rows.map((row) => ({
+    id: row.id as string,
+    email: row.email as string,
+    displayName: row.display_name as string | null,
+    tokenVersion: row.token_version as number,
+    plan: row.plan as UserPlan,
+    stripeCustomerId: (row.stripe_customer_id as string | null) ?? null,
+    createdAt: row.created_at as Date,
+    updatedAt: row.updated_at as Date,
+  }));
+}
+
+// ============ SUBSCRIPTION / BILLING FUNCTIONS ============
+
+function mapSubscription(row: Record<string, unknown>): Subscription {
+  return {
+    id: row.id as string,
+    userId: row.user_id as string,
+    stripeCustomerId: row.stripe_customer_id as string,
+    stripeSubscriptionId: row.stripe_subscription_id as string,
+    status: row.status as SubscriptionStatus,
+    priceId: (row.price_id as string | null) ?? null,
+    currentPeriodEnd: (row.current_period_end as Date | null) ?? null,
+    cancelAtPeriodEnd: Boolean(row.cancel_at_period_end),
+    createdAt: row.created_at as Date,
+    updatedAt: row.updated_at as Date,
+  };
+}
+
+export async function getSubscription(userId: string): Promise<Subscription | null> {
+  // Most recent subscription for the user (a user may have historical rows).
+  const [row] = await sql`
+    SELECT * FROM subscriptions
+    WHERE user_id = ${userId}
+    ORDER BY created_at DESC
+    LIMIT 1
+  `;
+  if (!row) return null;
+  return mapSubscription(row);
+}
+
+export async function setUserPlan(userId: string, plan: UserPlan): Promise<void> {
+  await sql`UPDATE users SET plan = ${plan} WHERE id = ${userId}`;
+}
+
+export async function getUserEmailPref(userId: string): Promise<boolean> {
+  const [row] = await sql`SELECT email_weekly_report FROM users WHERE id = ${userId}`;
+  return row ? Boolean(row.email_weekly_report) : true;
+}
+
+export async function setUserEmailPref(userId: string, optIn: boolean): Promise<void> {
+  await sql`UPDATE users SET email_weekly_report = ${optIn} WHERE id = ${userId}`;
+}
+
+export async function getUserStripeCustomerId(userId: string): Promise<string | null> {
+  const [row] = await sql`SELECT stripe_customer_id FROM users WHERE id = ${userId}`;
+  return (row?.stripe_customer_id as string | null) ?? null;
+}
+
+export async function setUserStripeCustomerId(
+  userId: string,
+  stripeCustomerId: string
+): Promise<void> {
+  await sql`
+    UPDATE users SET stripe_customer_id = ${stripeCustomerId} WHERE id = ${userId}
+  `;
+}
+
+export async function getUserIdByStripeCustomerId(
+  stripeCustomerId: string
+): Promise<string | null> {
+  const [row] = await sql`
+    SELECT id FROM users WHERE stripe_customer_id = ${stripeCustomerId}
+  `;
+  return (row?.id as string | null) ?? null;
+}
+
+export interface UpsertSubscriptionInput {
+  userId: string;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  status: SubscriptionStatus;
+  priceId: string | null;
+  currentPeriodEnd: Date | null;
+  cancelAtPeriodEnd: boolean;
+}
+
+export async function upsertSubscription(
+  input: UpsertSubscriptionInput
+): Promise<Subscription> {
+  const [row] = await sql`
+    INSERT INTO subscriptions (
+      user_id, stripe_customer_id, stripe_subscription_id,
+      status, price_id, current_period_end, cancel_at_period_end
+    )
+    VALUES (
+      ${input.userId}, ${input.stripeCustomerId}, ${input.stripeSubscriptionId},
+      ${input.status}, ${input.priceId}, ${input.currentPeriodEnd},
+      ${input.cancelAtPeriodEnd}
+    )
+    ON CONFLICT (stripe_subscription_id)
+    DO UPDATE SET
+      status = ${input.status},
+      price_id = ${input.priceId},
+      current_period_end = ${input.currentPeriodEnd},
+      cancel_at_period_end = ${input.cancelAtPeriodEnd},
+      updated_at = NOW()
+    RETURNING *
+  `;
+  if (!row) throw new Error("Failed to upsert subscription");
+  return mapSubscription(row);
+}
+
+// Idempotency: returns true if this event was newly recorded (should be
+// processed), false if it was already seen (replay -> skip).
+export async function recordStripeEvent(
+  eventId: string,
+  type: string
+): Promise<boolean> {
+  const [row] = await sql`
+    INSERT INTO stripe_events (id, type)
+    VALUES (${eventId}, ${type})
+    ON CONFLICT (id) DO NOTHING
+    RETURNING id
+  `;
+  return Boolean(row);
+}
+
+// ============ AI USAGE FUNCTIONS ============
+
+export async function recordAiUsage(userId: string, action: AiAction): Promise<void> {
+  await sql`
+    INSERT INTO ai_usage (user_id, action) VALUES (${userId}, ${action})
+  `;
+}
+
+export async function countAiUsageThisMonth(userId: string): Promise<number> {
+  const [row] = await sql`
+    SELECT COUNT(*)::int as count FROM ai_usage
+    WHERE user_id = ${userId}
+      AND created_at >= date_trunc('month', NOW())
+  `;
+  return row?.count ?? 0;
+}
+
+// Lifetime count of a given AI action, used for the free trial allowance
+// (e.g. 10 lifetime label scans).
+export async function countAiUsageLifetime(
+  userId: string,
+  action: AiAction
+): Promise<number> {
+  const [row] = await sql`
+    SELECT COUNT(*)::int as count FROM ai_usage
+    WHERE user_id = ${userId} AND action = ${action}
+  `;
+  return row?.count ?? 0;
 }
 
 export async function getLoggingStreak(

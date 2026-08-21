@@ -55,6 +55,63 @@ export async function sendEmail(input: SendEmailInput): Promise<boolean> {
   return true;
 }
 
+export interface WeeklyReportData {
+  displayName: string;
+  daysLogged: number;
+  avgCalories: number;
+  totalCalories: number;
+  currentStreak: number;
+  weightChangeKg: number | null;
+}
+
+export async function sendWeeklyReportEmail(
+  to: string,
+  data: WeeklyReportData
+): Promise<boolean> {
+  const subject = "Your MacroScope week in review";
+  const appUrl = getAppUrl();
+
+  const weightLine = data.weightChangeKg != null
+    ? `Weight change: ${data.weightChangeKg >= 0 ? "+" : ""}${data.weightChangeKg.toFixed(1)} kg`
+    : "";
+
+  const text = `Hi ${data.displayName},
+
+Here's your week in review:
+
+- Days logged: ${data.daysLogged}/7
+- Average calories: ${Math.round(data.avgCalories)} kcal/day
+- Current streak: ${data.currentStreak} days
+${weightLine ? `- ${weightLine}\n` : ""}
+Keep it up! Open MacroScope: ${appUrl}/dashboard
+
+Manage your email preferences at ${appUrl}/account`;
+
+  const html = `
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #1f2937;">
+  <h1 style="font-size: 20px; margin-bottom: 16px;">Your week in review</h1>
+  <p style="line-height: 1.6;">Hi ${data.displayName}, here's how your week went:</p>
+  <ul style="line-height: 1.9; font-size: 15px;">
+    <li><strong>Days logged:</strong> ${data.daysLogged}/7</li>
+    <li><strong>Average calories:</strong> ${Math.round(data.avgCalories)} kcal/day</li>
+    <li><strong>Current streak:</strong> ${data.currentStreak} days</li>
+    ${weightLine ? `<li><strong>${weightLine}</strong></li>` : ""}
+  </ul>
+  <p style="margin: 24px 0;">
+    <a href="${appUrl}/dashboard"
+       style="background-color: #16a34a; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">
+      Open MacroScope
+    </a>
+  </p>
+  <p style="line-height: 1.6; font-size: 13px; color: #6b7280;">
+    You're receiving this because you're a MacroScope Pro member.
+    <a href="${appUrl}/account" style="color: #16a34a;">Manage email preferences</a>.
+  </p>
+</div>`;
+
+  return await sendEmail({ to, subject, html, text });
+}
+
 export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string

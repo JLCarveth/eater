@@ -1,10 +1,31 @@
 import { Handlers } from "$fresh/server.ts";
 import { getAuthPayload } from "../../utils/auth.ts";
+import { getUserById, recordAiUsage } from "../../utils/db.ts";
+import { checkAiAllowance, paywallResponse } from "../../utils/plan.ts";
+import { rateLimit, rateLimitResponse } from "../../utils/ratelimit.ts";
 
 export const handler: Handlers = {
   async POST(req) {
     const auth = await getAuthPayload(req);
     if (auth instanceof Response) return auth;
+
+    // Blunt bursts on the expensive vision call (per-user token bucket).
+    const rl = rateLimit(`ai:${auth.userId}`, 8, 0.1);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
+
+    // Gate: free users get a lifetime trial of label scans; Pro is capped by
+    // the monthly fair-use limit.
+    const user = await getUserById(auth.userId);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    const allowance = await checkAiAllowance(user, "label_scan");
+    if (!allowance.allowed) {
+      return paywallResponse(allowance.message!);
+    }
 
     try {
       // Get the API URL from environment
@@ -40,6 +61,10 @@ export const handler: Handlers = {
       }
 
       const result = await response.json();
+
+      // Meter only successful AI calls.
+      await recordAiUsage(auth.userId, "label_scan");
+
       return new Response(JSON.stringify(result), {
         status: 200,
         headers: { "Content-Type": "application/json" },

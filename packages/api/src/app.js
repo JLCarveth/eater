@@ -85,6 +85,88 @@ async function analyzeWithVisionAPI(imageBuffer, mimeType) {
   return JSON.parse(jsonStr);
 }
 
+const MEAL_SYSTEM_PROMPT = `You are a meal nutrition estimator. The image shows a plate or meal of prepared food (NOT a nutrition label).
+
+Identify each distinct food item on the plate, estimate its portion size, and estimate its macros. Then provide a combined total for the whole meal.
+
+Return ONLY valid JSON with this structure:
+{
+  "items": [
+    {
+      "name": "string (e.g. 'Grilled chicken breast')",
+      "servingSize": { "value": number, "unit": "g" | "ml" | "serving" },
+      "calories": { "value": number, "unit": "kcal" },
+      "totalFat": { "value": number, "unit": "g" },
+      "carbohydrates": { "value": number, "unit": "g" },
+      "protein": { "value": number, "unit": "g" },
+      "fiber": { "value": number, "unit": "g" },
+      "sugars": { "value": number, "unit": "g" },
+      "sodium": { "value": number, "unit": "mg" }
+    }
+  ],
+  "total": {
+    "servingSize": { "value": number, "unit": "serving" },
+    "calories": { "value": number, "unit": "kcal" },
+    "totalFat": { "value": number, "unit": "g" },
+    "carbohydrates": { "value": number, "unit": "g" },
+    "protein": { "value": number, "unit": "g" },
+    "fiber": { "value": number, "unit": "g" },
+    "sugars": { "value": number, "unit": "g" },
+    "sodium": { "value": number, "unit": "mg" }
+  }
+}
+
+Estimate realistic portion sizes from visual cues. The "total" MUST equal the sum of the item macros. Use "serving" as the total serving unit with value 1.
+Return ONLY the JSON object, no markdown or explanation.`;
+
+async function analyzeMealWithVisionAPI(imageBuffer, mimeType) {
+  const base64Image = imageBuffer.toString("base64");
+  const dataUrl = `data:${mimeType};base64,${base64Image}`;
+
+  const response = await fetch(`${LLM_API_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${LLM_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: LLM_MODEL,
+      messages: [
+        { role: "system", content: MEAL_SYSTEM_PROMPT },
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "Identify the foods on this plate and estimate the macros." },
+            { type: "image_url", image_url: { url: dataUrl } },
+          ],
+        },
+      ],
+      max_tokens: 1500,
+      temperature: 0.2,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`LLM API error: ${response.status} - ${error}`);
+  }
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content;
+
+  if (!content) {
+    console.error("LLM response:", JSON.stringify(data, null, 2));
+    throw new Error("No response content from LLM");
+  }
+
+  let jsonStr = content.trim();
+  if (jsonStr.startsWith("```")) {
+    jsonStr = jsonStr.replace(/```json?\n?/g, "").replace(/```$/g, "").trim();
+  }
+
+  return JSON.parse(jsonStr);
+}
+
 function initializeServer() {
   const upload = multer({ storage: multer.memoryStorage() });
 
@@ -113,6 +195,30 @@ function initializeServer() {
       if (logTimings) console.timeEnd(timerLabel);
       console.error(error);
       res.status(500).json({ error: "An error occurred during analysis" });
+    }
+  });
+
+  app.post("/analyze-meal", upload.single("image"), async (req, res) => {
+    const requestId = Date.now().toString(36);
+    const timerLabel = `Meal request ${requestId}`;
+    const logTimings = process.env.LOG_TIMINGS === "true";
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No image file uploaded" });
+      }
+
+      if (logTimings) console.time(timerLabel);
+
+      const result = await analyzeMealWithVisionAPI(req.file.buffer, req.file.mimetype);
+
+      if (logTimings) console.timeEnd(timerLabel);
+
+      res.json(result);
+    } catch (error) {
+      if (logTimings) console.timeEnd(timerLabel);
+      console.error(error);
+      res.status(500).json({ error: "An error occurred during meal analysis" });
     }
   });
 

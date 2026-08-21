@@ -5,9 +5,14 @@ import {
   createRefreshTokenForUser,
   setAuthCookies,
 } from "../../../utils/auth.ts";
+import { getClientIp, rateLimit, rateLimitResponse } from "../../../utils/ratelimit.ts";
 
 export const handler: Handlers = {
   async POST(req) {
+    // Blunt brute-force: ~10 attempts burst, refilling 1 per 6s per IP.
+    const rl = rateLimit(`login:${getClientIp(req)}`, 10, 1 / 6);
+    if (!rl.allowed) return rateLimitResponse(rl.retryAfter);
+
     try {
       const body = await req.json();
       const { email, password } = body;

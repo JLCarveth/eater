@@ -1,6 +1,7 @@
 import { Handlers } from "$fresh/server.ts";
 import { getAuthPayload } from "../../../utils/auth.ts";
-import { createRecipe, getUserRecipes } from "../../../utils/db.ts";
+import { countUserRecipes, createRecipe, getUserById, getUserRecipes } from "../../../utils/db.ts";
+import { FREE_RECIPE_LIMIT, isPro, paywallResponse } from "../../../utils/plan.ts";
 import type { CreateRecipeInput } from "@nutrition-llama/shared";
 
 export const handler: Handlers = {
@@ -28,6 +29,18 @@ export const handler: Handlers = {
     if (auth instanceof Response) return auth;
 
     try {
+      // Free users are capped; Pro is unlimited.
+      const user = await getUserById(auth.userId);
+      if (user && !isPro(user)) {
+        const count = await countUserRecipes(auth.userId);
+        if (count >= FREE_RECIPE_LIMIT) {
+          return paywallResponse(
+            `Free plan is limited to ${FREE_RECIPE_LIMIT} recipes. Upgrade to Pro for unlimited recipes.`,
+            403
+          );
+        }
+      }
+
       const body = await req.json();
 
       if (!body.name || typeof body.name !== "string" || !body.name.trim()) {

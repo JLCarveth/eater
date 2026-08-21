@@ -32,9 +32,25 @@ export interface NutritionData {
 }
 
 /**
+ * A single identified food item from a meal photo (snap-a-meal).
+ */
+export interface MealItem extends NutritionData {
+  name: string;
+}
+
+/**
+ * Response from the analyze-meal endpoint: the identified plate items plus
+ * a combined total for the whole meal.
+ */
+export interface MealAnalysis {
+  items: MealItem[];
+  total: NutritionData;
+}
+
+/**
  * Food source types
  */
-export type FoodSource = "manual" | "scan" | "api" | "openfoodfacts" | "community" | "recipe";
+export type FoodSource = "manual" | "scan" | "api" | "openfoodfacts" | "community" | "recipe" | "meal_scan";
 
 /**
  * Nutrition record stored in the database

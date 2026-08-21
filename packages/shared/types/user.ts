@@ -2,11 +2,15 @@
  * User-related types
  */
 
+export type UserPlan = "free" | "pro";
+
 export interface User {
   id: string;
   email: string;
   displayName: string | null;
   tokenVersion: number;
+  plan: UserPlan;
+  stripeCustomerId?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
